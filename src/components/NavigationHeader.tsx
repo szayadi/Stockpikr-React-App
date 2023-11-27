@@ -8,21 +8,23 @@ import {
   MenuItem,
   Toolbar,
   Tooltip,
-  Typography,
-} from "@mui/material";
-import * as React from "react";
-import { Link } from "react-router-dom";
+  Typography
+} from '@mui/material';
+import * as React from 'react';
+import { Link } from 'react-router-dom';
 
-const pages = ["What We Do", "Pricing", "About", "Contact"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = [
+  { title: 'What We Do', key: 'what-we-do' },
+  { title: 'Watchlist', key: 'watchlist' },
+  { title: 'Pricing', key: 'pricing' },
+  { title: 'About', key: 'about' },
+  { title: 'Contact', key: 'contact' }
+];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function NavigationHeader() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -50,18 +52,18 @@ function NavigationHeader() {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none'
             }}
           >
             StockPikr
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -74,23 +76,26 @@ function NavigationHeader() {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
+                vertical: 'bottom',
+                horizontal: 'left'
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
+                vertical: 'top',
+                horizontal: 'left'
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: "block", md: "none" },
+                display: { xs: 'block', md: 'none' }
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.key} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.title}</Typography>
+                  <Link style={{ textAlign: 'center' }} to={page.key}>
+                    {page.title}
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -102,24 +107,21 @@ function NavigationHeader() {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: "flex", md: "none" },
+              display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: "monospace",
+              fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none'
             }}
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Box key={page.key} sx={{ my: 2, marginLeft: 2, marginRight: 2 }}>
-                <Link
-                  style={{ color: "white", textDecoration: "none" }}
-                  to={page.key}
-                >
+                <Link style={{ color: 'white', textDecoration: 'none' }} to={page.key}>
                   {page.title}
                 </Link>
               </Box>
@@ -133,17 +135,17 @@ function NavigationHeader() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: "45px" }}
+              sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right'
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right'
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}

@@ -1,11 +1,16 @@
-import "./App.css";
-import NavigationHeader from "./components/NavigationHeader";
+import { BrowserRouter as Router } from 'react-router-dom';
+import './App.css';
+import NavigationHeader from './components/NavigationHeader';
+import routes from './routes';
 
 function App() {
   return (
-    <div className="App">
-      <NavigationHeader />
-    </div>
+    <Router>
+      <div className="App">
+        <NavigationHeader />
+        {routes()}
+      </div>
+    </Router>
   );
 }
 
