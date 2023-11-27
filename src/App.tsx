@@ -1,12 +1,9 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import NavigationHeader from './components/NavigationHeader';
-
+import "./App.css";
+import NavigationHeader from "./components/NavigationHeader";
 
 function App() {
   return (
-    <div className="App">     
+    <div className="App">
       <NavigationHeader />
     </div>
   );
