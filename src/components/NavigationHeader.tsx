@@ -19,7 +19,6 @@ const pages = [
   { title: 'Contact', key: 'contact' }
 ];
 const settings = [
-  { title: 'Profile', key: 'profile' },
   { title: 'Settings', key: 'settings' },
   { title: 'Dashboard', key: 'dashboard' },
   { title: 'Logout', key: 'logout' }
