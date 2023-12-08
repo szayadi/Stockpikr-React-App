@@ -58,7 +58,8 @@ export default function Settings() {
         position="fixed"
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          ml: { sm: `${drawerWidth}px`,
+         },
         }}
       >
       </AppBar>
@@ -70,7 +71,8 @@ export default function Settings() {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70},
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70, bgcolor: "rgb(20, 27, 45)", color: 'white'},
+            
           }}
         >
           {drawer}

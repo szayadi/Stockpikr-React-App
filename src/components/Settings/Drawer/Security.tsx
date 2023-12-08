@@ -1,5 +1,10 @@
 import React from 'react';
+import "./Drawer.css";
 
 export const Security: React.FC = () => {
-  return <div>Security Component</div>;
+  return (
+    <div> 
+      <h1>Security</h1>
+    </div>
+  )
 };
