@@ -10,6 +10,8 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
+import '../index.css';
+
 
 const pages = [
   { title: 'What We Do', key: 'what-we-do' },
@@ -40,7 +42,7 @@ function NavigationHeader() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: 'var(--navbar-bg-color)' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -148,7 +150,7 @@ function NavigationHeader() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" sx={{ color: 'var(--text-bg-color)' }} >{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
