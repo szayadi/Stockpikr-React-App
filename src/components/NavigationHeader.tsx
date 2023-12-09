@@ -20,7 +20,12 @@ const pages = [
   { title: 'About', key: 'about' },
   { title: 'Contact', key: 'contact' }
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = [
+  { title: 'Settings', key: 'settings' },
+  { title: 'Dashboard', key: 'dashboard' },
+  { title: 'Logout', key: 'logout' }
+];
+
 
 function NavigationHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -148,9 +153,11 @@ function NavigationHeader() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" sx={{ color: 'var(--text-bg-color)' }} >{setting}</Typography>
+              {settings.map((s) => (
+                <MenuItem key={s.key} onClick={handleCloseUserMenu}>
+                  <Link style={{ textAlign: 'center', color: 'black', textDecoration: 'none' }} to={s.key}>
+                    {s.title}
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
