@@ -42,54 +42,38 @@ export const Account: React.FC = () => {
         <Typography variant="h5" mt={2}>
           {accountValues.firstName} {accountValues.lastName}
         </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Stock Investor
-        </Typography>
       </Box>
 
       <Divider sx={{ marginBottom: 2 }} />
 
-      <Box display="grid" gap={2}>
-        {accountFields.map(({ label, name, type }: AccountField) => (
-          <TextField
-            key={name}
-            fullWidth
-            variant="outlined"
-            type={type}
-            label={label}
-            value={accountValues[name]}
-            name={name}
-            disabled={!isEditing} // Disable editing when not in edit mode
-          />
-        ))}
+      {isEditing ? (
+        <AccountForm initialValues={accountValues} onSubmit={handleFormSubmit} />
+      ) : (
+        <Box display="grid" gap={2}>
+          {accountFields.map(({ label, name, type }: AccountField) => (
+            <TextField
+              key={name}
+              fullWidth
+              variant="outlined"
+              type={type}
+              label={label}
+              value={accountValues[name]}
+              name={name}
+              disabled={!isEditing}
+            />
+          ))}
 
-        {isEditing && (
-          <Box display="flex" justifyContent="flex-end" mt={2}>
+          <Box display="flex" justifyContent="flex-end" mt={3}>
             <Button
-              type="submit"
-              color="primary"
-              variant="contained"
-              onClick={() => setIsEditing(false)}
+              variant="outlined"
+              startIcon={<EditIcon />}
+              onClick={handleEditClick}
             >
-              Save Changes
+              Edit
             </Button>
           </Box>
-        )}
-      </Box>
-
-      {!isEditing && (
-        <Box display="flex" justifyContent="flex-end" mt={3}>
-          <Button
-            variant="outlined"
-            startIcon={<EditIcon />}
-            onClick={handleEditClick}
-          >
-            Edit
-          </Button>
         </Box>
       )}
-
-      {isEditing && <AccountForm initialValues={accountValues} onSubmit={handleFormSubmit} />}
     </Paper>
   );
 };
