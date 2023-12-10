@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { Watchlist } from './components/Watchlist';
-import { Dashboard } from './components/Settings/Dashboard/Dashboard';
+import { Dashboard } from './components/Dashboard/Dashboard';
 import Settings from './components/Settings/Settings';
 
 

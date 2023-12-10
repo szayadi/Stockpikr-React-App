@@ -1,6 +1,4 @@
 import React from 'react';
-import "./Drawer.css";
-
 
 export const Help: React.FC = () => {
   return (

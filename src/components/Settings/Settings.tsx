@@ -71,8 +71,7 @@ export default function Settings() {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70, bgcolor: "rgb(20, 27, 45)", color: 'white'},
-            
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70},
           }}
         >
           {drawer}

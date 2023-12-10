@@ -1,6 +1,4 @@
 import React from 'react';
-import "./Drawer.css";
-
 
 export const Notifications: React.FC = () => {
   return (

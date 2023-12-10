@@ -1,5 +1,4 @@
 import React from 'react';
-import "./Drawer.css";
 
 export const Security: React.FC = () => {
   return (
