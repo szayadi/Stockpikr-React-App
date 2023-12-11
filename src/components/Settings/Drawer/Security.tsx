@@ -26,7 +26,6 @@ export const Security: React.FC<SecuritySettingsProps> = ({ twoFactorAuth }) => 
   };
 
   const handleChangePassword = () => {
-    console.log('Changing password...');
     handleCloseChangePasswordDialog();
   };
 
@@ -44,25 +43,6 @@ export const Security: React.FC<SecuritySettingsProps> = ({ twoFactorAuth }) => 
           <FormControlLabel
             control={<Switch checked={twoFactorAuthToggle} onChange={handleTwoFactorAuthToggle} />}
             label="Two-Factor Authentication"
-          />
-        </FormGroup>
-      </Box>
-
-      <Divider sx={{ mt: 3 }} />
-
-      <Box mt={3}>
-        <Typography variant="h5" mb={2}>
-          Additional Security Features
-        </Typography>
-
-        <FormGroup>
-          <FormControlLabel
-            control={<Switch />}
-            label="Password Expiry Reminder"
-          />
-          <FormControlLabel
-            control={<Switch />}
-            label="Device Management"
           />
         </FormGroup>
       </Box>
