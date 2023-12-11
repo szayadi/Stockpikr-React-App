@@ -26,9 +26,6 @@ export const Security: React.FC<SecuritySettingsProps> = ({ twoFactorAuth }) => 
   };
 
   const handleChangePassword = () => {
-    // Add logic to handle password change
-    // For example, you can send a request to the server to change the password
-    // and handle success or error accordingly
     console.log('Changing password...');
     handleCloseChangePasswordDialog();
   };
@@ -58,7 +55,6 @@ export const Security: React.FC<SecuritySettingsProps> = ({ twoFactorAuth }) => 
           Additional Security Features
         </Typography>
 
-        {/* Add additional security features here */}
         <FormGroup>
           <FormControlLabel
             control={<Switch />}

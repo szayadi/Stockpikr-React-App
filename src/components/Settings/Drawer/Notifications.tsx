@@ -47,8 +47,6 @@ export const Notifications: React.FC<NotificationsProps> = ({ emailNotifications
           Customization
         </Typography>
 
-        {/* Add additional customization features here */}
-        {/* Example: */}
         <FormGroup>
           <FormControlLabel
             control={<Switch />}

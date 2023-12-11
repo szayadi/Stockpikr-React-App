@@ -12,7 +12,7 @@ interface AccountField {
 export const Account: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [accountValues, setAccountValues] = useState<{ [key: string]: string }>({
-    // Placeholder values
+    // Placeholder values 
     firstName: 'John',
     lastName: 'Doe',
     address: '123 Main St',
