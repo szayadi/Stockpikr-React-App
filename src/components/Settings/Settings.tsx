@@ -15,6 +15,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import '../../index';
 
 const drawerWidth = 240;
 const drawingContents = ['Account', 'Notifications', 'Security', 'Appearance', 'Help'];
@@ -53,29 +54,22 @@ export default function Settings() {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
+    <Box sx={{ display: 'flex'}}>
+      <Drawer
+        variant="permanent"
+        anchor='left'
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          display: { xs: 'none', sm: 'block' },
+          '& .MuiDrawer-paper': { 
+            boxSizing: 'border-box',
+            width: drawerWidth, 
+            top: 65, 
+            backgroundColor: 'var(--settings-bg-color)', 
+            color: 'var(--text-color)'},
         }}
       >
-      </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }}}
-      >
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70},
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Box>
+        {drawer}
+      </Drawer>
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
