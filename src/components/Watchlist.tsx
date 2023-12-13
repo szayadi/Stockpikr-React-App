@@ -1,20 +1,13 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 function createData(name: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
   return { name, currentPrice, alertPrice, nearHigh, highest };
 }
 
 const rows = [
-  createData('COINBASE GLOBAL, INC. (XNAS:COIN)',  115.54 , 47.32, 110.59, 429.54),
-  createData('MICROVISION, INC. (XNAS:MVIS)', 2.50, 2.85, 5.80, 28.00),
-  createData('XPENG INC. (XNYS:XPEV)', 18.48, 6.61, 19.73, 56.45),
+  createData('COINBASE GLOBAL, INC. (XNAS:COIN)', 115.54, 47.32, 110.59, 429.54),
+  createData('MICROVISION, INC. (XNAS:MVIS)', 2.5, 2.85, 5.8, 28.0),
+  createData('XPENG INC. (XNYS:XPEV)', 18.48, 6.61, 19.73, 56.45)
 ];
 
 export function Watchlist() {
