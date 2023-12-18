@@ -1,53 +1,73 @@
-import React, { useState } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
-import {
-  Box,
-  Button,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { Box, Typography } from '@mui/material';
+import React from 'react';
+import StatBox from './Statbox';
+import Portfolio from './Portfolio';
 
-export default function Dashboard() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate(); // Use useNavigate for navigation
+const portfolioData = [
+  { symbol: 'AAPL', name: 'Apple Inc.', quantity: 10, avgPrice: 150.0 },
+  { symbol: 'GOOGL', name: 'Alphabet Inc.', quantity: 5, avgPrice: 2800.0 },
+  { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 3300.0, change: 10.0 },
+  { symbol: 'MSFT', name: 'Microsoft Corp.', price: 320.0, change: -5.0 },
+  { symbol: 'NFLX', name: 'Netflix Inc.', changePercent: 5.0 },
+  { symbol: 'TSLA', name: 'Tesla Inc.', changePercent: 3.0 },
+];
 
-  const handleSearch = () => {
-    // Assuming you have a route named '/search', you can update it as needed
-    navigate(`/search?query=${searchTerm}`);
-  };
-
+const Dashboard: React.FC = () => {
   return (
-    <Grid container justifyContent="center" alignItems="center">
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square sx={{ width: "100vh", padding: 3 }}>
-        <Box component="form" sx={{ display: 'flex', alignItems: 'center' }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="search"
-            label="Company or Stock Symbol"
-            name="search"
-            autoComplete="search"
-            sx={{ flexGrow: 1 }}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<SearchIcon />}
-            sx={{ ml: 2 }}
-            onClick={handleSearch}
-          >
-            Search
-          </Button>
+    <>
+      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        {/* Portfolio Box */}
+        <Box sx={{ backgroundColor: 'lightgrey', color: 'black', border: '1px solid black', margin: '15px', width: '65%', height: '300px' }}>
+          <Typography variant="h5">
+            Portfolio
+          </Typography>
+          <Box>
+            <Portfolio data={portfolioData} columns={['Symbol', 'Name', 'Quantity', 'Average Price']} />
+          </Box>
         </Box>
 
-        {/* Rest of your dashboard content */}
-      </Grid>
-    </Grid>
+        {/* Active Stocks Box */}
+        <Box sx={{ backgroundColor: 'lightgrey', color: 'black', border: '1px solid black', margin: '15px', width: '35%' }}>
+          <Typography variant="h5">
+            Active Stocks
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* StatBoxes */}
+      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', top: '0' }}>
+        <Box sx={{ backgroundColor: 'lightgrey', color: 'black', border: '1px solid black', margin: '15px', padding: '20px', top: '0' }}>
+          <StatBox
+            title="12,361"
+            subtitle="Active Gains"
+            progress="0.75"
+            difference="14%"
+            icon={
+              <TrendingUpIcon
+                sx={{ color: 'green', fontSize: '20px' }}
+              />
+            }
+          />
+        </Box>
+
+        <Box sx={{ backgroundColor: 'lightgrey', color: 'black', border: '1px solid black', margin: '15px', padding: '20px' }}>
+          <StatBox
+            title="12,361"
+            subtitle="Active Losses"
+            progress="0.75"
+            difference="-14%"
+            icon={
+              <TrendingDownIcon
+                sx={{ color: 'red', fontSize: '20px' }}
+              />
+            }
+          />
+        </Box>
+      </Box>
+    </>
   );
-}
+};
+
+export default Dashboard;
