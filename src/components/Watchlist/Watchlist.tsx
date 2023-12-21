@@ -1,6 +1,9 @@
+import { Dropdown } from '@mui/base/Dropdown';
+import { Menu } from '@mui/base/Menu';
+import { MenuButton } from '@mui/base/MenuButton';
+import { MenuItem } from '@mui/base/MenuItem';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useState } from 'react';
-import WatchlistDropDown from './Dropdown';
 
 function createData(name: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
   return { name, currentPrice, alertPrice, nearHigh, highest };
@@ -17,17 +20,37 @@ const stocksWatchList = [
   createData('LUCID GROUP, INC. (XNAS:LCID)', 1.287, 15.48, 7.28, 5.1823)
 ];
 
-const watchlists: { [key: string]: any[] } = {
+const defaultWatchlists: { [key: string]: any[] } = {
   'ETF WL': etfWatchList,
   'Stocks WL': stocksWatchList
 };
 
 export function Watchlist() {
   const [listKey, setListKey] = useState('ETF WL');
+  const [wlKeys, setWlKeys] = useState(Object.keys(defaultWatchlists));
+  const [watchlists, setWatchlists] = useState(defaultWatchlists);
+
+  const handleAppendNewKey = (key: string) => {
+    if (key) {
+      watchlists[key] = [];
+      setWatchlists(watchlists);
+      setWlKeys(Object.keys(watchlists));
+    }
+  };
 
   return (
     <TableContainer component={Paper}>
-      <WatchlistDropDown listKey={Object.keys(watchlists)} setListKey={setListKey} />
+      <Dropdown>
+        <MenuButton>My Watchlist</MenuButton>
+        <Menu>
+          {wlKeys.map((key) => (
+            <MenuItem onClick={() => setListKey(key)}>{key}</MenuItem>
+          ))}
+          <MenuItem onClick={() => handleAppendNewKey(`Empty WL ${Math.floor(Math.random() * 10000000)}`)}>
+            Add new Watchlist
+          </MenuItem>
+        </Menu>
+      </Dropdown>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
