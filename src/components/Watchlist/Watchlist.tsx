@@ -1,9 +1,19 @@
-import { Dropdown } from '@mui/base/Dropdown';
-import { Menu } from '@mui/base/Menu';
-import { MenuButton } from '@mui/base/MenuButton';
-import { MenuItem } from '@mui/base/MenuItem';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import RemoveIcon from '@mui/icons-material/Remove';
+import {
+  Button,
+  ButtonGroup,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from '@mui/material';
 import { useState } from 'react';
+import AutocompleteComponent from './Autocomplete';
 
 function createData(name: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
   return { name, currentPrice, alertPrice, nearHigh, highest };
@@ -26,7 +36,7 @@ const defaultWatchlists: { [key: string]: any[] } = {
 };
 
 export function Watchlist() {
-  const [listKey, setListKey] = useState('ETF WL');
+  const [wlKey, setWlKey] = useState('ETF WL');
   const [wlKeys, setWlKeys] = useState(Object.keys(defaultWatchlists));
   const [watchlists, setWatchlists] = useState(defaultWatchlists);
 
@@ -35,22 +45,39 @@ export function Watchlist() {
       watchlists[key] = [];
       setWatchlists(watchlists);
       setWlKeys(Object.keys(watchlists));
+      setWlKey(key);
     }
+  };
+
+  const handleOnClickSettings = () => {
+    console.log('Settings');
+  };
+
+  const handleClickAddStock = () => {
+    console.log('Add');
+  };
+
+  const handleClickDeleteStock = () => {
+    console.log('Delete');
   };
 
   return (
     <TableContainer component={Paper}>
-      <Dropdown>
-        <MenuButton>My Watchlist</MenuButton>
-        <Menu>
-          {wlKeys.map((key) => (
-            <MenuItem onClick={() => setListKey(key)}>{key}</MenuItem>
-          ))}
-          <MenuItem onClick={() => handleAppendNewKey(`Empty WL ${Math.floor(Math.random() * 10000000)}`)}>
-            Add new Watchlist
-          </MenuItem>
-        </Menu>
-      </Dropdown>
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <AutocompleteComponent watchlistKeys={wlKeys} handleAppendNewKey={handleAppendNewKey} setWlKey={setWlKey} />
+        <ButtonGroup variant="text" aria-label="text button group">
+          <Button>
+            <AddIcon onClick={handleClickAddStock} fontSize="medium" />
+          </Button>
+          <Button>
+            {' '}
+            <RemoveIcon onClick={handleClickDeleteStock} fontSize="medium" />
+          </Button>
+          <Button onClick={handleOnClickSettings}>
+            <MoreVertIcon fontSize="medium" />
+          </Button>
+        </ButtonGroup>
+      </div>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -62,7 +89,7 @@ export function Watchlist() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {watchlists[listKey].map((row) => (
+          {watchlists[wlKey].map((row) => (
             <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell component="th" scope="row">
                 {row.name}
