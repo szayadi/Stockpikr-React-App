@@ -52,6 +52,9 @@ export function Watchlist() {
   const [wlKey, setWlKey] = useState('ETF WL');
   const [wlKeys, setWlKeys] = useState(Object.keys(defaultWatchlists));
   const [watchlists, setWatchlists] = useState(defaultWatchlists);
+  const [addStockId, setAddStockId] = useState('');
+  const [addStockPrice, setAddStockPrice] = useState('');
+  const [stockTrackingDays, setStockTrackingDays] = useState(90);
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -76,6 +79,25 @@ export function Watchlist() {
 
   const handleClickDeleteStock = () => {
     console.log('Delete');
+  };
+
+  const onCancelAddStockDialog = () => {
+    setAddStockId('');
+    setAddStockPrice('');
+    setStockTrackingDays(90);
+    setAddStockDialog(false);
+  };
+
+  const isAddStockPriceValid = () => {
+    return addStockPrice !== '';
+  };
+
+  const isAddStockIdValid = () => {
+    return addStockId !== '';
+  };
+
+  const onConfirmAddStockDialog = () => {
+    console.log({ addStockId, addStockPrice, stockTrackingDays });
   };
 
   return (
@@ -123,18 +145,34 @@ export function Watchlist() {
         <DialogTitle>Add a new stock</DialogTitle>
         <DialogContent>
           <DialogContentText>To add a new stock, please enter the stock's unique Id</DialogContentText>
-          <TextField autoFocus margin="dense" id="stock-id" label="Stock Id" type="text" fullWidth variant="standard" />
+          <TextField
+            error={!isAddStockIdValid()}
+            autoFocus
+            required
+            margin="dense"
+            id="stock-id"
+            label="Stock Id"
+            type="text"
+            fullWidth
+            variant="standard"
+            helperText={!isAddStockIdValid() ? 'Stock Id cannot be empty' : ''}
+            onChange={(e) => setAddStockId(e.target.value)}
+          />
         </DialogContent>
         <DialogContent>
           <DialogContentText>At what price would you like to buy the stock?</DialogContentText>
           <TextField
+            error={!isAddStockPriceValid()}
             autoFocus
+            required
             margin="dense"
             id="stock-price"
             label="Buy price"
             type="text"
             fullWidth
             variant="standard"
+            helperText={!isAddStockPriceValid() ? 'Stock price cannot be empty' : ''}
+            onChange={(e) => setAddStockPrice(e.target.value)}
           />
         </DialogContent>
         <DialogContent>
@@ -142,15 +180,24 @@ export function Watchlist() {
             How many days? (90 days or 180 days) would you like to track the stock? (For near-term tracking)
           </DialogContentText>
           <FormControl>
-            <RadioGroup aria-labelledby="track-days" defaultValue="female" name="radio-buttons-group" row>
+            <RadioGroup
+              aria-labelledby="track-days"
+              defaultValue="female"
+              name="radio-buttons-group"
+              row
+              value={stockTrackingDays}
+              onChange={(e) => setStockTrackingDays(+e.target.value)}
+            >
               <FormControlLabel value={90} control={<Radio />} label="90 days" />
               <FormControlLabel value={180} control={<Radio />} label="180 days" />
             </RadioGroup>
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAddStockDialog(false)}>Cancel</Button>
-          <Button onClick={() => setAddStockDialog(false)}>Confirm</Button>
+          <Button onClick={onCancelAddStockDialog}>Cancel</Button>
+          <Button onClick={onConfirmAddStockDialog} disabled={!isAddStockIdValid() || !isAddStockPriceValid()}>
+            Confirm
+          </Button>
         </DialogActions>
       </Dialog>
     </TableContainer>
