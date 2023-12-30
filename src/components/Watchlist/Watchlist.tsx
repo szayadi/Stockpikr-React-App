@@ -2,16 +2,29 @@ import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
+  Box,
   Button,
   ButtonGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
   Paper,
+  Radio,
+  RadioGroup,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  TextField,
+  useTheme
 } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState } from 'react';
 import AutocompleteComponent from './Autocomplete';
 
@@ -39,6 +52,9 @@ export function Watchlist() {
   const [wlKey, setWlKey] = useState('ETF WL');
   const [wlKeys, setWlKeys] = useState(Object.keys(defaultWatchlists));
   const [watchlists, setWatchlists] = useState(defaultWatchlists);
+  const [isAddStockDialog, setAddStockDialog] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleAppendNewKey = (key: string) => {
     if (key) {
@@ -54,6 +70,7 @@ export function Watchlist() {
   };
 
   const handleClickAddStock = () => {
+    setAddStockDialog(true);
     console.log('Add');
   };
 
@@ -63,7 +80,7 @@ export function Watchlist() {
 
   return (
     <TableContainer component={Paper}>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <Box display="flex" flexDirection="row">
         <AutocompleteComponent watchlistKeys={wlKeys} handleAppendNewKey={handleAppendNewKey} setWlKey={setWlKey} />
         <ButtonGroup variant="text" aria-label="text button group">
           <Button>
@@ -77,7 +94,7 @@ export function Watchlist() {
             <MoreVertIcon fontSize="medium" />
           </Button>
         </ButtonGroup>
-      </div>
+      </Box>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -102,6 +119,40 @@ export function Watchlist() {
           ))}
         </TableBody>
       </Table>
+      <Dialog open={isAddStockDialog} onClose={() => setAddStockDialog(false)} fullScreen={fullScreen}>
+        <DialogTitle>Add a new stock</DialogTitle>
+        <DialogContent>
+          <DialogContentText>To add a new stock, please enter the stock's unique Id</DialogContentText>
+          <TextField autoFocus margin="dense" id="stock-id" label="Stock Id" type="text" fullWidth variant="standard" />
+        </DialogContent>
+        <DialogContent>
+          <DialogContentText>At what price would you like to buy the stock?</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="stock-price"
+            label="Buy price"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogContent>
+          <DialogContentText>
+            How many days? (90 days or 180 days) would you like to track the stock? (For near-term tracking)
+          </DialogContentText>
+          <FormControl>
+            <RadioGroup aria-labelledby="track-days" defaultValue="female" name="radio-buttons-group" row>
+              <FormControlLabel value={90} control={<Radio />} label="90 days" />
+              <FormControlLabel value={180} control={<Radio />} label="180 days" />
+            </RadioGroup>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAddStockDialog(false)}>Cancel</Button>
+          <Button onClick={() => setAddStockDialog(false)}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </TableContainer>
   );
 }
