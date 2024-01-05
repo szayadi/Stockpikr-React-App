@@ -1,3 +1,12 @@
+
+:root {
+  /* list of variables for the UI Palette, add colors in one place if possible */
+  --main-bg-color: #355C7D;
+  --navbar-bg-color: #182B39;
+  --settings-bg-color: #111e28;
+  --text-color: #FFFFFF;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +14,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--main-bg-color);
+  color: var(--text-color);
 }
 
 code {
