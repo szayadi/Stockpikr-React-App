@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
-import { Dashboard } from './components/Settings/Dashboard/Dashboard';
+import { Watchlist } from './components/Watchlist';
+import { Dashboard } from './components/Dashboard/Dashboard'
 import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
-import { Watchlist } from './components/Watchlist';
 
 export default () => (
   <Routes>

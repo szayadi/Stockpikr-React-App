@@ -59,17 +59,26 @@ export default function Settings() {
         variant="permanent"
         anchor='left'
         sx={{
-          display: { xs: 'none', sm: 'block' },
-          '& .MuiDrawer-paper': { 
-            boxSizing: 'border-box',
-            width: drawerWidth, 
-            top: 65, 
-            backgroundColor: 'var(--settings-bg-color)', 
-            color: 'var(--text-color)'},
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px`,
+         },
         }}
       >
-        {drawer}
-      </Drawer>
+      </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }}}
+      >
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70},
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
