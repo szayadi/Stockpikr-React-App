@@ -1,9 +1,14 @@
 import { Box, Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from 'react';
-import { AccountField, AccountFormProps } from '../../interfaces/AccountInterfaces';
+import { SubmitProp } from '../../interfaces/ISubmitProp';
 
+export interface AccountField {
+  label: string;
+  name: string;
+  type: string;
+}
 
-export const AccountForm: React.FC<AccountFormProps> = ({ initialValues, onSubmit }) => {
+export const AccountForm: React.FC<SubmitProp> = ({ initialValues, onSubmit }) => {
   const [accountValues, setAccountValues] = useState<{ [key: string]: string }>(initialValues);
 
   useEffect(() => {
