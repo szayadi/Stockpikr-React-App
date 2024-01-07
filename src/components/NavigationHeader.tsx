@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import '../index.css';
+
 
 const pages = [
   { title: 'What We Do', key: 'what-we-do' },
@@ -47,7 +49,7 @@ function NavigationHeader() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: 'var(--navbar-bg-color)' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography

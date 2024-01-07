@@ -15,6 +15,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import '../../index';
 
 const drawerWidth = 240;
 const drawingContents = ['Account', 'Notifications', 'Security', 'Appearance', 'Help'];
@@ -53,9 +54,10 @@ export default function Settings() {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
+    <Box sx={{ display: 'flex'}}>
+      <Drawer
+        variant="permanent"
+        anchor='left'
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px`,
