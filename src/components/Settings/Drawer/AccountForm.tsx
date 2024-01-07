@@ -1,16 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { AccountField, AccountFormProps } from '../../interfaces/AccountInterfaces';
 
-interface AccountField {
-  label: string;
-  name: string;
-  type: string;
-}
-
-interface AccountFormProps {
-  initialValues: { [key: string]: string };
-  onSubmit: (values: { [key: string]: string }) => void;
-}
 
 export const AccountForm: React.FC<AccountFormProps> = ({ initialValues, onSubmit }) => {
   const [accountValues, setAccountValues] = useState<{ [key: string]: string }>(initialValues);

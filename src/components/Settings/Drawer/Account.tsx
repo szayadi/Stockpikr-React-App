@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Avatar, Divider, Paper } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
+import { Avatar, Box, Button, Divider, Paper, TextField, Typography } from "@mui/material";
+import React, { useState } from 'react';
+import { AccountField } from '../../interfaces/AccountInterfaces';
 import { AccountForm } from './AccountForm';
-
-interface AccountField {
-  label: string;
-  name: string;
-  type: string;
-}
 
 export const Account: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
