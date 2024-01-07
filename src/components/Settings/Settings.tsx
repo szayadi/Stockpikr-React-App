@@ -5,7 +5,6 @@ import { Help } from './Drawer/Help';
 import { Notifications } from './Drawer/Notifications';
 import { Security } from './Drawer/Security';
 
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -55,14 +54,6 @@ export default function Settings() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            StockPikr
-          </Typography>
-        </Toolbar>
-      </AppBar>
-
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }}}
