@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {Account} from './Drawer/Account';
-import {Appearance} from './Drawer/Appearance';
-import {Help} from './Drawer/Help';
-import {Notifications} from './Drawer/Notifications';
-import {Security} from './Drawer/Security';
+import { Account } from './Drawer/Account';
+import { Appearance } from './Drawer/Appearance';
+import { Help } from './Drawer/Help';
+import { Notifications } from './Drawer/Notifications';
+import { Security } from './Drawer/Security';
 
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -54,27 +53,26 @@ export default function Settings() {
   );
 
   return (
-    <Box sx={{ display: 'flex'}}>
-      <Drawer
-        variant="permanent"
-        anchor='left'
-        sx={{
-          display: { xs: 'none', sm: 'block' },
-          '& .MuiDrawer-paper': { 
-            boxSizing: 'border-box',
-            width: drawerWidth, 
-            top: 65, 
-            backgroundColor: 'var(--settings-bg-color)', 
-            color: 'var(--text-color)'},
-        }}
+    <Box sx={{ display: 'flex' }}>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }}}
       >
-        {drawer}
-      </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70},
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
-        <Toolbar />
         <Typography paragraph>
           {selectedComponent && React.createElement(componentMapping[selectedComponent])}
         </Typography>
