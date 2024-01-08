@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { ISubmitProp } from '../../interfaces/ISubmitProp';
 
-interface AccountField {
+export interface IAccountField {
   label: string;
   name: string;
   type: string;
 }
 
-interface AccountFormProps {
-  initialValues: { [key: string]: string };
-  onSubmit: (values: { [key: string]: string }) => void;
-}
+export const accountFields: IAccountField[] = [
+  { label: 'First Name', name: 'firstName', type: 'text' },
+  { label: 'Last Name', name: 'lastName', type: 'text' },
+  { label: 'Address', name: 'address', type: 'text' },
+  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+];
 
-export const AccountForm: React.FC<AccountFormProps> = ({ initialValues, onSubmit }) => {
+export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) => {
   const [accountValues, setAccountValues] = useState<{ [key: string]: string }>(initialValues);
 
   useEffect(() => {
     setAccountValues(initialValues);
   }, [initialValues]);
 
-  const accountFields: AccountField[] = [
+  const accountFields: IAccountField[] = [
     { label: 'First Name', name: 'firstName', type: 'text' },
     { label: 'Last Name', name: 'lastName', type: 'text' },
     { label: 'Address', name: 'address', type: 'text' },
@@ -42,7 +45,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({ initialValues, onSubmi
             "& > div": { gridColumn: "span 4" },
           }}
         >
-          {accountFields.map(({ label, name, type }: AccountField) => (
+          {accountFields.map(({ label, name, type }: IAccountField) => (
             <TextField
               key={name}
               fullWidth

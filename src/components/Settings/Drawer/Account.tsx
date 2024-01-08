@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Avatar, Divider, Paper } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
-import { AccountForm } from './AccountForm';
-
-interface AccountField {
-  label: string;
-  name: string;
-  type: string;
-}
+import { Avatar, Box, Button, Divider, Paper, TextField, Typography } from "@mui/material";
+import React, { useState } from 'react';
+import { AccountForm, IAccountField, accountFields } from './AccountForm';
 
 export const Account: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -18,13 +12,6 @@ export const Account: React.FC = () => {
     address: '123 Main St',
     phoneNumber: '555-1234',
   });
-
-  const accountFields: AccountField[] = [
-    { label: 'First Name', name: 'firstName', type: 'text' },
-    { label: 'Last Name', name: 'lastName', type: 'text' },
-    { label: 'Address', name: 'address', type: 'text' },
-    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
-  ];
 
   const handleFormSubmit = (values: { [key: string]: string }) => {
     setAccountValues(values);
@@ -50,7 +37,7 @@ export const Account: React.FC = () => {
         <AccountForm initialValues={accountValues} onSubmit={handleFormSubmit} />
       ) : (
         <Box display="grid" gap={2}>
-          {accountFields.map(({ label, name, type }: AccountField) => (
+          {accountFields.map(({ label, name, type }: IAccountField) => (
             <TextField
               key={name}
               fullWidth
