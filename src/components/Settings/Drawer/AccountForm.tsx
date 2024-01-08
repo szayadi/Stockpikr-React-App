@@ -8,6 +8,13 @@ export interface IAccountField {
   type: string;
 }
 
+export const accountFields: IAccountField[] = [
+  { label: 'First Name', name: 'firstName', type: 'text' },
+  { label: 'Last Name', name: 'lastName', type: 'text' },
+  { label: 'Address', name: 'address', type: 'text' },
+  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+];
+
 export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) => {
   const [accountValues, setAccountValues] = useState<{ [key: string]: string }>(initialValues);
 

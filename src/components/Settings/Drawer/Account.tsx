@@ -1,7 +1,7 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Avatar, Box, Button, Divider, Paper, TextField, Typography } from "@mui/material";
 import React, { useState } from 'react';
-import { AccountForm, IAccountField } from './AccountForm';
+import { AccountForm, IAccountField, accountFields } from './AccountForm';
 
 export const Account: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -12,13 +12,6 @@ export const Account: React.FC = () => {
     address: '123 Main St',
     phoneNumber: '555-1234',
   });
-
-  const accountFields: IAccountField[] = [
-    { label: 'First Name', name: 'firstName', type: 'text' },
-    { label: 'Last Name', name: 'lastName', type: 'text' },
-    { label: 'Address', name: 'address', type: 'text' },
-    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
-  ];
 
   const handleFormSubmit = (values: { [key: string]: string }) => {
     setAccountValues(values);
