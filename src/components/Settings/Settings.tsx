@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {Account} from './Drawer/Account';
-import {Appearance} from './Drawer/Appearance';
-import {Help} from './Drawer/Help';
-import {Notifications} from './Drawer/Notifications';
-import {Security} from './Drawer/Security';
+import { Account } from './Drawer/Account';
+import { Appearance } from './Drawer/Appearance';
+import { Help } from './Drawer/Help';
+import { Notifications } from './Drawer/Notifications';
+import { Security } from './Drawer/Security';
 
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -15,6 +14,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import '../../index';
 
 const drawerWidth = 240;
 const drawingContents = ['Account', 'Notifications', 'Security', 'Appearance', 'Help'];
@@ -54,14 +54,6 @@ export default function Settings() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}
-      >
-      </AppBar>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }}}
@@ -76,11 +68,11 @@ export default function Settings() {
           {drawer}
         </Drawer>
       </Box>
+
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
-        <Toolbar />
         <Typography paragraph>
           {selectedComponent && React.createElement(componentMapping[selectedComponent])}
         </Typography>
