@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ISubmitProp } from '../../interfaces/ISubmitProp';
 
@@ -12,7 +12,7 @@ export const accountFields: IAccountField[] = [
   { label: 'First Name', name: 'firstName', type: 'text' },
   { label: 'Last Name', name: 'lastName', type: 'text' },
   { label: 'Address', name: 'address', type: 'text' },
-  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
 ];
 
 export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) => {
@@ -26,7 +26,7 @@ export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) 
     { label: 'First Name', name: 'firstName', type: 'text' },
     { label: 'Last Name', name: 'lastName', type: 'text' },
     { label: 'Address', name: 'address', type: 'text' },
-    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
   ];
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -42,7 +42,7 @@ export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) 
           gap="30px"
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
           sx={{
-            "& > div": { gridColumn: "span 4" },
+            '& > div': { gridColumn: 'span 4' }
           }}
         >
           {accountFields.map(({ label, name, type }: IAccountField) => (

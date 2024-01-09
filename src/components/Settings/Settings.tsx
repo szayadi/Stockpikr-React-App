@@ -25,7 +25,7 @@ const componentMapping: Record<string, React.ComponentType<any>> = {
   Notifications: Notifications,
   Security: Security,
   Appearance: Appearance,
-  Help: Help,
+  Help: Help
 };
 
 export default function Settings() {
@@ -54,25 +54,19 @@ export default function Settings() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }}}
-      >
+      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
         <Drawer
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70},
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: 70 }
           }}
         >
           {drawer}
         </Drawer>
       </Box>
 
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-      >
+      <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
         <Typography paragraph>
           {selectedComponent && React.createElement(componentMapping[selectedComponent])}
         </Typography>

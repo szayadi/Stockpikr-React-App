@@ -1,5 +1,5 @@
+import { Box, Paper, Switch, Typography } from '@mui/material';
 import React from 'react';
-import { Box, Typography, Switch, Paper } from "@mui/material";
 
 interface AppearanceSettingsProps {
   darkMode: boolean;
@@ -16,9 +16,7 @@ export const Appearance: React.FC<AppearanceSettingsProps> = ({ darkMode, toggle
       </Box>
 
       <Box mt={3} display="flex" alignItems="center" justifyContent="space-between">
-        <Typography variant="body1">
-          {darkMode ? 'Dark Mode' : 'Light Mode'}
-        </Typography>
+        <Typography variant="body1">{darkMode ? 'Dark Mode' : 'Light Mode'}</Typography>
         <Switch
           checked={darkMode}
           onChange={toggleDarkMode}

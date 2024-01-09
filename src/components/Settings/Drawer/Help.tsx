@@ -1,5 +1,5 @@
+import { Box, Divider, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import React from 'react';
-import { Box, Typography, Paper, List, ListItem, ListItemText, Divider } from "@mui/material";
 
 export const Help: React.FC = () => {
   return (
@@ -18,24 +18,16 @@ export const Help: React.FC = () => {
 
       <List sx={{ marginTop: 2 }}>
         <ListItem disablePadding>
-          <ListItemText
-            primary="Email Support"
-            secondary="support@example.com"
-          />
+          <ListItemText primary="Email Support" secondary="support@example.com" />
         </ListItem>
         <Divider />
         <ListItem disablePadding>
-          <ListItemText
-            primary="Phone Support"
-            secondary="+1 (123) 456-7890"
-          />
+          <ListItemText primary="Phone Support" secondary="+1 (123) 456-7890" />
         </ListItem>
       </List>
 
       <Box mt={3}>
-        <Typography variant="body2">
-          For additional information, please visit our Contact page.
-        </Typography>
+        <Typography variant="body2">For additional information, please visit our Contact page.</Typography>
       </Box>
     </Paper>
   );
