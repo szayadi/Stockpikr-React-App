@@ -4,7 +4,7 @@ import LandingPage from './components/LandingPage';
 import ContactUsPage from './components/Settings/ContactUs';
 import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
-import { Watchlist } from './components/Watchlist';
+import { Watchlist } from './components/Watchlist/Watchlist';
 
 export default () => (
   <Routes>
