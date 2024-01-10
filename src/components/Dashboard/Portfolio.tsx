@@ -1,15 +1,7 @@
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow
-} from '@mui/material';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { createPortfolioDataFromJson } from '../../Helper';
-import { StockData } from '../../interfaces/StockDataInterface';
+import { createPortfolioDataFromJson } from '../Helper';
+import { StockData } from '../interfaces/IStockData';
 
 const Portfolio: React.FC = () => {
   const [portfolioData, setPortfolioData] = useState<StockData[]>([]);
@@ -17,15 +9,11 @@ const Portfolio: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const json = require('../../../assets/mock_data.json');
-
-        const stockData : StockData[] = json.stocks || [];
-        console.log('Stocks:', stockData);
-
+        const json = require('../../assets/mock_data.json');
+        const stockData: StockData[] = json.stocks || [];
         const stockEntries = stockData.map((stock: StockData) => {
           return createPortfolioDataFromJson(stock.symbol, stock);
         });
-        
         setPortfolioData(stockEntries);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -36,8 +24,13 @@ const Portfolio: React.FC = () => {
   }, []);
 
   return (
-    <Box sx={{ borderRadius: '16', padding: '0 10px', marginBottom: '10px' }}>
-      <Paper elevation={1} variant="elevation" square={false} sx={{ display: 'flex', flexDirection: 'row', backgroundColor: 'white' }}>
+    <Box sx={{ borderRadius: '20', padding: '10px' }}>
+      <Paper
+        elevation={1}
+        variant="elevation"
+        square={false}
+        sx={{ display: 'flex', flexDirection: 'row', backgroundColor: 'white' }}
+      >
         <TableContainer component={Paper} sx={{}}>
           <Table>
             <TableBody>
@@ -58,7 +51,9 @@ const Portfolio: React.FC = () => {
               </TableRow>
               {portfolioData.map((row, index) => (
                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell component="th" scope="row" sx={{ }}>{row.symbol}</TableCell>
+                  <TableCell component="th" scope="row" sx={{}}>
+                    {row.symbol}
+                  </TableCell>
                   <TableCell align="right">{row.name}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">{row.changesPercentage}</TableCell>

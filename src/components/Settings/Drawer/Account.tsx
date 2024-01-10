@@ -1,16 +1,16 @@
 import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Box, Button, Divider, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Divider, Paper, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { AccountForm, IAccountField, accountFields } from './AccountForm';
 
 export const Account: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [accountValues, setAccountValues] = useState<{ [key: string]: string }>({
-    // Placeholder values 
+    // Placeholder values
     firstName: 'John',
     lastName: 'Doe',
     address: '123 Main St',
-    phoneNumber: '555-1234',
+    phoneNumber: '555-1234'
   });
 
   const handleFormSubmit = (values: { [key: string]: string }) => {
@@ -25,7 +25,7 @@ export const Account: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto', borderRadius: 8 }}>
       <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
-        <Avatar sx={{ bgcolor: "f4f", width: 100, height: 100 }}>JD</Avatar>
+        <Avatar sx={{ bgcolor: 'f4f', width: 100, height: 100 }}>JD</Avatar>
         <Typography variant="h5" mt={2}>
           {accountValues.firstName} {accountValues.lastName}
         </Typography>
@@ -51,11 +51,7 @@ export const Account: React.FC = () => {
           ))}
 
           <Box display="flex" justifyContent="flex-end" mt={3}>
-            <Button
-              variant="outlined"
-              startIcon={<EditIcon />}
-              onClick={handleEditClick}
-            >
+            <Button variant="outlined" startIcon={<EditIcon />} onClick={handleEditClick}>
               Edit
             </Button>
           </Box>

@@ -1,5 +1,19 @@
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControlLabel,
+  FormGroup,
+  Paper,
+  Switch,
+  TextField,
+  Typography
+} from '@mui/material';
 import React, { useState } from 'react';
-import { Box, Typography, Switch, FormGroup, FormControlLabel, Divider, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
 
 interface SecuritySettingsProps {
   twoFactorAuth: boolean;

@@ -14,20 +14,15 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import '../index.css';
 
-
 const pages = [
-  { title: 'What We Do', key: 'what-we-do' },
-  { title: 'Watchlist', key: 'watchlist' },
-  { title: 'Pricing', key: 'pricing' },
-  { title: 'About', key: 'about' },
-  { title: 'Contact', key: 'contact' }
+  { title: 'Dashboard', key: 'dashboard' },
+  { title: 'Watchlist', key: 'watchlist' }
 ];
 const settings = [
   { title: 'Settings', key: 'settings' },
-  { title: 'Dashboard', key: 'dashboard' },
+  { title: 'Contact Us', key: 'contactUs' },
   { title: 'Logout', key: 'logout' }
 ];
-
 
 function NavigationHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);

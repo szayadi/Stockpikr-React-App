@@ -1,5 +1,5 @@
+import { Box, Divider, FormControlLabel, FormGroup, Paper, Switch, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Box, Typography, Switch, FormGroup, FormControlLabel, Divider, Paper } from "@mui/material";
 
 interface NotificationsProps {
   emailNotifications: boolean;
@@ -48,14 +48,8 @@ export const Notifications: React.FC<NotificationsProps> = ({ emailNotifications
         </Typography>
 
         <FormGroup>
-          <FormControlLabel
-            control={<Switch />}
-            label="Allow Push Notifications"
-          />
-          <FormControlLabel
-            control={<Switch />}
-            label="Show Preview in Notifications"
-          />
+          <FormControlLabel control={<Switch />} label="Allow Push Notifications" />
+          <FormControlLabel control={<Switch />} label="Show Preview in Notifications" />
         </FormGroup>
       </Box>
     </Paper>
