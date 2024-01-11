@@ -1,7 +1,7 @@
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { createPortfolioDataFromJson } from '../Helper';
-import { StockData } from '../interfaces/StockDataInterface';
+import { StockData } from '../interfaces/IStockData';
 
 const Portfolio: React.FC = () => {
   const [portfolioData, setPortfolioData] = useState<StockData[]>([]);
