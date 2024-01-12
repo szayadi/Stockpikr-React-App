@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import LogoImage from '../assets/images/logo+title-light-mode.png'; // Import your logo image
 import '../index.css';
 
 const pages = [
@@ -47,23 +48,9 @@ function NavigationHeader() {
     <AppBar position="static" sx={{ backgroundColor: 'var(--navbar-bg-color)' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none'
-            }}
-          >
-            StockPikr
-          </Typography>
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <img src={LogoImage} alt="Logo" style={{ height: '65px', marginRight: '10px', borderRadius: '10px' }} />
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton

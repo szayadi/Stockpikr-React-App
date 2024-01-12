@@ -101,7 +101,10 @@ export function Watchlist() {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      sx={{ width: '95%', backgroundColor: 'white', borderRadius: '10px', margin: '20px' }}
+    >
       <Box display="flex" flexDirection="row">
         <AutocompleteComponent watchlistKeys={wlKeys} handleAppendNewKey={handleAppendNewKey} setWlKey={setWlKey} />
         <ButtonGroup variant="text" aria-label="text button group">
