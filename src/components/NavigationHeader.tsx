@@ -12,8 +12,9 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import LogoImage from '../assets/images/logo+title-light-mode.png'; // Import your logo image
+import LogoImage from '../assets/images/logo+title-light-mode.png';
 import '../index.css';
+import SearchBar from './SearchBar';
 
 const pages = [
   { title: 'Dashboard', key: 'dashboard' },
@@ -21,7 +22,6 @@ const pages = [
 ];
 const settings = [
   { title: 'Settings', key: 'settings' },
-  { title: 'Contact Us', key: 'contactUs' },
   { title: 'Logout', key: 'logout' }
 ];
 
@@ -49,8 +49,10 @@ function NavigationHeader() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/" style={{ textDecoration: 'none' }}>
-            <img src={LogoImage} alt="Logo" style={{ height: '65px', marginRight: '10px', borderRadius: '10px' }} />
+            <img src={LogoImage} alt="Logo" style={{ height: '60px', marginRight: '10px', borderRadius: '10px' }} />
           </Link>
+
+          <SearchBar></SearchBar>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -104,9 +106,7 @@ function NavigationHeader() {
               color: 'inherit',
               textDecoration: 'none'
             }}
-          >
-            LOGO
-          </Typography>
+          ></Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Box key={page.key} sx={{ my: 2, marginLeft: 2, marginRight: 2 }}>

@@ -1,4 +1,4 @@
-export interface StockData {
+export interface IStockDetails {
   symbol: string;
   name: string;
   quantity: number;

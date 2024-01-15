@@ -1,6 +1,6 @@
-import { StockData } from './interfaces/IStockData';
+import { IStockDetails } from '../interfaces/IStockDetails';
 
-export function createPortfolioDataFromJson(symbol: string, entry: any): StockData {
+export function createPortfolioDataFromJson(symbol: string, entry: any): IStockDetails {
   return {
     symbol: entry.symbol || symbol,
     name: entry.name || '',

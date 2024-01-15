@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { ISubmitProp } from '../../interfaces/ISubmitProp';
+import { ISubmitProp } from '../../../interfaces/ISubmitProp';
 
 export interface IAccountField {
   label: string;

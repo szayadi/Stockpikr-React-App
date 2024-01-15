@@ -1,17 +1,17 @@
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { IStockDetails } from '../../interfaces/IStockDetails';
 import { createPortfolioDataFromJson } from '../Helper';
-import { StockData } from '../interfaces/IStockData';
 
 const Portfolio: React.FC = () => {
-  const [portfolioData, setPortfolioData] = useState<StockData[]>([]);
+  const [portfolioData, setPortfolioData] = useState<IStockDetails[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const json = require('../../assets/mock_data.json');
-        const stockData: StockData[] = json.stocks || [];
-        const stockEntries = stockData.map((stock: StockData) => {
+        const stockData: IStockDetails[] = json.stocks || [];
+        const stockEntries = stockData.map((stock: IStockDetails) => {
           return createPortfolioDataFromJson(stock.symbol, stock);
         });
         setPortfolioData(stockEntries);
