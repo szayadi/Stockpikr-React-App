@@ -44,13 +44,22 @@
     },
     "/v3/search": {
       "get": {
-        "summary": "Search by ticker or name",
+        "summary": "Search for stocks by ticker or name",
         "parameters": [
           {
             "name": "query",
             "in": "query",
             "description": "Ticker or Name",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit results",
+            "required": false,
             "schema": {
               "type": "string"
             }
