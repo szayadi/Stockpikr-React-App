@@ -7,10 +7,12 @@ import { StockApiService } from '../services/StockApiService';
 
 const SearchBar: React.FC = () => {
   const [searchOptions, setSearchOptions] = useState<IStockData[]>([]);
+  const [inputSearch, setInputSearch] = useState<string>('');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleOnChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    setInputSearch(value);
     if (value.trim().length === 0) {
       return;
     }
@@ -19,15 +21,21 @@ const SearchBar: React.FC = () => {
     }
     timeoutRef.current = setTimeout(() => {
       fetchData(value);
-    }, 1500);
+    }, 1000);
   };
 
   const handleClose = () => {
     setSearchOptions([]);
   };
 
+  const filterOptions = (options: IStockData[], { inputValue }: { inputValue: string }) => {
+    return options.filter(
+      (stock) => stock.name.toLowerCase().includes(inputValue) || stock.symbol.toLowerCase().includes(inputValue)
+    );
+  };
+
   const handleOnChangeAutoComplete = (e: React.SyntheticEvent<Element, Event>, value: IStockData | null) => {
-    // When an Item is clicked, redirect to stock details page.
+    // Redirect to stock details page.
     console.log('item clicked', value);
   };
 
@@ -40,6 +48,13 @@ const SearchBar: React.FC = () => {
     });
   };
 
+  const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      // Redirect to stock details page.
+      console.log('Entered value', inputSearch);
+    }
+  };
+
   return (
     <div style={{ margin: '20px' }}>
       <ClickAwayListener onClickAway={handleClose}>
@@ -47,9 +62,11 @@ const SearchBar: React.FC = () => {
           options={searchOptions}
           onChange={handleOnChangeAutoComplete}
           getOptionLabel={(option) => option.symbol}
+          filterOptions={filterOptions}
           renderInput={(params) => (
             <TextField
               {...params}
+              onKeyDown={handleEnterPress}
               placeholder="Search by symbol or name"
               style={{ marginRight: '10px' }}
               onChange={handleOnChangeTextField}
@@ -60,20 +77,18 @@ const SearchBar: React.FC = () => {
               {...props}
               style={{
                 display: 'flex',
-                justifyContent: 'space-between',
                 fontSize: '15px',
-                whiteSpace: 'nowrap',
                 alignItems: 'center'
               }}
             >
-              <strong>{option.symbol}</strong>&nbsp;&nbsp;&nbsp;
-              {option.name}&nbsp;&nbsp;&nbsp;
-              <em>{option.exchangeShortName}</em>
+              <strong style={{ width: '150px', textAlign: 'left' }}>{option.symbol}</strong>
+              <span style={{ flex: 1, marginLeft: '10px', marginRight: '10px' }}>{option.name}</span>
+              <em style={{ width: '150px', textAlign: 'right' }}>{option.exchangeShortName}</em>
             </li>
           )}
           sx={{
             backgroundColor: 'white',
-            width: '500px',
+            width: '700px',
             borderRadius: 3,
             '& li': {
               width: 'auto'

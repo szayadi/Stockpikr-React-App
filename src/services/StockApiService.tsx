@@ -54,7 +54,6 @@ export class StockApiService {
   //----------------------------------------------------------------//
 
   public static async fetchCompanySearch(input: string): Promise<IStockData[]> {
-    //add return types
     if (input.trim().length === 0) {
       return [];
     }
