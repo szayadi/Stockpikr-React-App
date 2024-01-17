@@ -1,9 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard/Dashboard';
 import LandingPage from './components/LandingPage';
-import ContactUsPage from './components/Settings/ContactUs';
 import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
+import SwaggerDocs from './components/Swagger/SwaggerDocs';
 import { Watchlist } from './components/Watchlist/Watchlist';
 
 export default () => (
@@ -13,6 +13,6 @@ export default () => (
     <Route path="/dashboard" element={<Dashboard />} />
     <Route path="/settings" element={<Settings />} />
     <Route path="/signin" element={<SignIn />} />
-    <Route path="/contactUs" element={<ContactUsPage />} />
+    <Route path="/swaggerDocs" element={<SwaggerDocs />} />
   </Routes>
 );

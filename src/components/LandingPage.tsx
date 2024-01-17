@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 const LandingPage: React.FC = () => {
   return (
     <Container maxWidth="sm" style={{ marginTop: '50px' }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom color="black">
         Welcome to Our Website
       </Typography>
-      <Typography variant="body1" paragraph>
+      <Typography variant="body1" paragraph color="black">
         Explore our amazing features and services. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       </Typography>
       <Button variant="contained" color="primary" component={Link} to="/dashboard">
