@@ -1,34 +1,63 @@
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { Grid, Typography } from '@mui/material';
-import React from 'react';
-import Portfolio from './Portfolio';
-import StatBox from './Statbox';
+import { Grid, Paper, Typography, styled } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { IStockQuote } from '../../interfaces/IStockQuote';
+import { StockApiService } from '../../services/StockApiService';
+import StockDataTable from './StockQuoteDataTable';
 
 const Dashboard: React.FC = () => {
+  const [stockData, setStockData] = useState<IStockQuote[]>([]);
+
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      // Place holder symbols
+      const blueChipSymbols: string[] = ['AAPL', 'MSFT', 'AMZN', 'GOOGL', 'JNJ', 'PG', 'KO', 'JPM', 'DIS', 'INTC'];
+      StockApiService.fetchStockDetail(blueChipSymbols).then((response) => {
+        if (response == null) {
+          return;
+        }
+        setStockData(response);
+      });
+    };
+
+    fetchData();
+  }, []);
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff', //change to #fff later
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary
+  }));
+
   return (
-    <Grid container xs={12} sx={{ marginTop: '20px', justifyContent: 'center' }} item={true}>
-      <Grid xs={12} sm={8} item={true}>
-        <Typography variant="h5" sx={{ border: '1px solid black', backgroundColor: 'lightgrey' }}>
-          Portfolio
-          <Portfolio />
-        </Typography>
+    <Grid container>
+      <Grid xs={12}>
+        <Item elevation={0}>
+          <Typography variant="h4" sx={{ color: 'black', margin: '20px 0px' }}>
+            Portfolio
+          </Typography>{' '}
+        </Item>
       </Grid>
-      <Grid sx={{ display: 'flex', marginLeft: '10px', justifyContent: 'flex-end' }}>
-        <Typography variant="h5" sx={{ border: '1px solid black', backgroundColor: 'lightgrey' }}>
-          Stats
-          <StatBox
-            title="123.45"
-            subtitle="Active Gains"
-            difference="4%"
-            icon={<TrendingUpIcon sx={{ color: 'green', fontSize: '20px' }} />}
-          />
-          <StatBox
-            title="54.32"
-            subtitle="Active Losses"
-            difference="-14%"
-            icon={<TrendingUpIcon sx={{ color: 'green', fontSize: '20px' }} />}
-          />
-        </Typography>
+      <Grid xs={8}>
+        <Item elevation={0}>
+          <StockDataTable data={stockData} />
+        </Item>
+      </Grid>
+      <Grid xs={4}>
+        <Item elevation={0}>
+          <div style={{ backgroundColor: 'lightgray', height: 400 }}>PlaceHolder</div>
+        </Item>
+      </Grid>
+      <Grid xs={4}>
+        <Item elevation={0}>
+          <div style={{ backgroundColor: 'lightgray', height: 400 }}>PlaceHolder</div>
+        </Item>
+      </Grid>
+      <Grid xs={8}>
+        <Item elevation={0}>
+          <div style={{ backgroundColor: 'lightgray', height: 400 }}>PlaceHolder</div>
+        </Item>
       </Grid>
     </Grid>
   );

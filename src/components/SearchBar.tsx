@@ -40,7 +40,7 @@ const SearchBar: React.FC = () => {
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    StockApiService.fetchCompanySearch(value).then((response) => {
+    StockApiService.fetchStockSearch(value).then((response) => {
       if (response == null) {
         return;
       }

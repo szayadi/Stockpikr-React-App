@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { ICompanyProfile } from '../interfaces/ICompanyProfile';
 import IStockData from '../interfaces/IStockData';
+import { IStockQuote } from '../interfaces/IStockQuote';
 
 export class StockApiService {
   //----------------------------------------------------------------//
@@ -53,7 +54,7 @@ export class StockApiService {
   //                           Public
   //----------------------------------------------------------------//
 
-  public static async fetchCompanySearch(input: string): Promise<IStockData[]> {
+  public static async fetchStockSearch(input: string): Promise<IStockData[]> {
     if (input.trim().length === 0) {
       return [];
     }
@@ -71,6 +72,17 @@ export class StockApiService {
     }
     const url = `/v3/profile/${input}`;
     const response = await StockApiService.fetchData<ICompanyProfile[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+  public static async fetchStockDetail(input: string[]): Promise<IStockQuote[]> {
+    if (input.length === 0) {
+      return [];
+    }
+    const url = `https://financialmodelingprep.com/api/v3/quote/${input.join(',')}`;
+    const response = await StockApiService.fetchData<IStockQuote[]>(url);
     if (response) {
       return response;
     }
