@@ -18,7 +18,8 @@ import SearchBar from './SearchBar';
 
 const pages = [
   { title: 'Dashboard', key: 'dashboard' },
-  { title: 'Watchlist', key: 'watchlist' }
+  { title: 'Watchlist', key: 'watchlist' },
+  { title: 'My Positions', key: 'positions' }
 ];
 const settings = [
   { title: 'Settings', key: 'settings' },
