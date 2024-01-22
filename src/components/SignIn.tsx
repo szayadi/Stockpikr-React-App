@@ -74,7 +74,7 @@ export default function SignIn() {
             </Typography>
 
             <Button
-              href="http://localhost:8080/login/federated/google"
+              href={`${process.env.REACT_APP_GOOGLE_OAUTH_URL}`}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}

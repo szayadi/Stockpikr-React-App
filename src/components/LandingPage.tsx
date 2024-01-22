@@ -11,7 +11,7 @@ const LandingPage: React.FC = () => {
       <Typography variant="body1" paragraph color="black">
         Explore our amazing features and services. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       </Typography>
-      <Button variant="contained" color="primary" component={Link} to="/dashboard">
+      <Button variant="contained" color="primary" component={Link} to="/signin">
         Go to Dashboard
       </Button>
     </Container>
