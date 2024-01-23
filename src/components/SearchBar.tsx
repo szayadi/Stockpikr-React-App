@@ -2,6 +2,7 @@ import { ClickAwayListener } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import IStockData from '../interfaces/IStockData';
 import { StockApiService } from '../services/StockApiService';
 
@@ -9,6 +10,7 @@ const SearchBar: React.FC = () => {
   const [searchOptions, setSearchOptions] = useState<IStockData[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
 
   const handleOnChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -35,7 +37,7 @@ const SearchBar: React.FC = () => {
   };
 
   const handleOnChangeAutoComplete = (e: React.SyntheticEvent<Element, Event>, value: IStockData | null) => {
-    // Redirect to stock details page.
+    navigate('/details');
     console.log('item clicked', value);
   };
 
@@ -50,7 +52,7 @@ const SearchBar: React.FC = () => {
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      // Redirect to stock details page.
+      navigate('/details');
       console.log('Entered value', inputSearch);
     }
   };
