@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AutocompleteComponent from './Autocomplete';
 
 function createData(name: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
@@ -58,6 +59,7 @@ export function Watchlist() {
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
 
   const handleAppendNewKey = (key: string) => {
     if (key) {
@@ -132,7 +134,13 @@ export function Watchlist() {
         </TableHead>
         <TableBody>
           {watchlists[wlKey].map((row) => (
-            <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableRow
+              key={row.name}
+              onClick={() => {
+                navigate('/details');
+              }}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
