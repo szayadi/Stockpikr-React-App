@@ -3,6 +3,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getErrorResponse } from '../helper/errorResponse';
 import IStockData from '../interfaces/IStockData';
 import { StockApiService } from '../services/StockApiService';
 
@@ -48,8 +49,8 @@ const SearchBar: React.FC = () => {
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    StockApiService.fetchStockSearch(value).then((response) => {
-      if (response == null) {
+    StockApiService.fetchStockSearch(value).then((response): void => {
+      if (response == null || getErrorResponse(response)) {
         return;
       }
       setSearchOptions(response);
