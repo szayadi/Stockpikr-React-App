@@ -137,7 +137,7 @@ export function Watchlist() {
             <TableRow
               key={row.name}
               onClick={() => {
-                navigate('/details');
+                //navigate('/quote'); fix once the watch list pulls in real data
               }}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >

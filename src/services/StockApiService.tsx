@@ -1,13 +1,14 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { ICompanyProfile } from '../interfaces/ICompanyProfile';
 import IStockData from '../interfaces/IStockData';
+import { IStockQuote } from '../interfaces/IStockQuote';
 
 export class StockApiService {
   //----------------------------------------------------------------//
   //                           Properties
   //----------------------------------------------------------------//
 
-  private static _apiKeyParam = 'apikey=ROPW99YXmJVjIG1KKbbVXPP6R2hoBhP2';
+  private static _apiKeyParam = 'apikey=37457d0839506a1512a61230d005f67c';
   private static _apiService: AxiosInstance | null = null;
   public static get apiService(): AxiosInstance {
     if (StockApiService._apiService == null) {
@@ -44,6 +45,7 @@ export class StockApiService {
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         console.error('Error fetching company search results:', error.response.data);
+        return error.response.data;
       }
     }
     return null;
@@ -53,7 +55,7 @@ export class StockApiService {
   //                           Public
   //----------------------------------------------------------------//
 
-  public static async fetchCompanySearch(input: string): Promise<IStockData[]> {
+  public static async fetchStockSearch(input: string): Promise<IStockData[]> {
     if (input.trim().length === 0) {
       return [];
     }
@@ -71,6 +73,17 @@ export class StockApiService {
     }
     const url = `/v3/profile/${input}`;
     const response = await StockApiService.fetchData<ICompanyProfile[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+  public static async fetchStockQuote(input: string[]): Promise<IStockQuote[]> {
+    if (input.length === 0) {
+      return [];
+    }
+    const url = `https://financialmodelingprep.com/api/v3/quote/${input.join(',')}`;
+    const response = await StockApiService.fetchData<IStockQuote[]>(url);
     if (response) {
       return response;
     }

@@ -1,23 +1,22 @@
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { IStockDetails } from '../../interfaces/IStockDetails';
-import { createPortfolioDataFromJson } from '../Helper';
+import { IStockQuote } from '../../interfaces/IStockQuote';
 
 const Portfolio: React.FC = () => {
-  const [portfolioData, setPortfolioData] = useState<IStockDetails[]>([]);
+  const [portfolioData, setPortfolioData] = useState<IStockQuote[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const json = require('../../assets/mock_data.json');
-        const stockData: IStockDetails[] = json.stocks || [];
-        const stockEntries = stockData.map((stock: IStockDetails) => {
-          return createPortfolioDataFromJson(stock.symbol, stock);
-        });
-        setPortfolioData(stockEntries);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      // try {
+      //   const json = require('../../assets/mock_data.json');
+      //   const stockData: IStockQuote[] = json.stocks || [];
+      //   const stockEntries = stockData.map((stock: IStockQuote) => {
+      //     return createPortfolioDataFromJson(stock.symbol, stock);
+      //   });
+      //   setPortfolioData(stockEntries);
+      // } catch (error) {
+      //   console.error('Error fetching data:', error);
+      // }
     };
 
     fetchData();
@@ -57,9 +56,9 @@ const Portfolio: React.FC = () => {
                   <TableCell align="right">{row.name}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">{row.changesPercentage}</TableCell>
-                  <TableCell align="right">{row.thirtyDayChange}</TableCell>
+                  {/* <TableCell align="right">{row.thirtyDayChange}</TableCell>
                   <TableCell align="right">{row.oneYearChange}</TableCell>
-                  <TableCell align="right">{row.todayChangePercent}</TableCell>
+                  <TableCell align="right">{row.todayChangePercent}</TableCell> */}
                   <TableCell align="right">{row.dayLow}</TableCell>
                   <TableCell align="right">{row.dayHigh}</TableCell>
                   <TableCell align="right">{row.yearHigh}</TableCell>
