@@ -59,7 +59,12 @@ const SearchBar: React.FC = () => {
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      event.preventDefault(); // api does not accept stock name for quotes, so we force the user to select from the drop down
+      if (searchOptions.filter((options) => options.symbol === inputSearch)) {
+        navigate('/quote?symbol=' + inputSearch);
+        window.location.reload();
+      } else {
+        event.preventDefault(); // api does not accept stock name for quotes, so we force the user to select from the drop down if it does not match
+      }
     }
   };
 
