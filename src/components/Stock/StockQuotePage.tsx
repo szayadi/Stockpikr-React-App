@@ -75,11 +75,7 @@ export const StockQuotePage: React.FC = () => {
   }
 
   if (!quote || !companyProfile) {
-    return (
-      <Typography variant="h1" sx={{ margin: '300px', color: 'black' }}>
-        No Results Found!
-      </Typography>
-    );
+    return <div></div>;
   }
 
   return (
