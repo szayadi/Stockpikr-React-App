@@ -5,55 +5,60 @@ import { Link } from 'react-router-dom';
 const LandingPage: React.FC = () => {
   return (
     <Container
-      maxWidth="md"
-      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '50px' }}
+      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px'}}
     >
-      <div style={{ flex: 1 }}>
-        {/* Placeholder Image */}
+      <div style={{ flex: 1, alignItems: 'flex-e' }}>
         <img
-          src="https://via.placeholder.com/150"
+          src={require('../assets/images/image-landing-page.jpg')}
           alt="StockPikr Logo"
           style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
         />
       </div>
-      <div style={{ flex: 1, marginLeft: '20px', textAlign: 'left' }}>
-        <Typography variant="h4" component="h1" gutterBottom color="primary">
-          Create your Watchlist
+
+      <div style={{padding: '20px', textAlign: 'center' }}>
+        <Typography variant="h2" component="h2" color="#182b39">
+         StockPikr
         </Typography>
-        <Typography variant="body1" paragraph color="textSecondary">
-          Create a free StockPikr account to build your Watchlist. Explore amazing features:
+        <Typography variant="h4" component="h4" color="#182b39">
+         Create Your Watchlists
         </Typography>
-        <List>
-          <ListItem>
-            <ListItemText>
-              <Typography variant="body1" color="textSecondary">
-                Provides easy filtering and viewing of watchlists
-              </Typography>
-            </ListItemText>
-          </ListItem>
-          <ListItem>
-            <ListItemText>
-              <Typography variant="body1" color="textSecondary">
-                Track stock price movement on one screen
-              </Typography>
-            </ListItemText>
-          </ListItem>
-          <ListItem>
-            <ListItemText>
-              <Typography variant="body1" color="textSecondary">
-                Comprehensive analysis on individual stocks
-              </Typography>
-            </ListItemText>
-          </ListItem>
-          <ListItem>
-            <ListItemText>
-              <Typography variant="body1" color="textSecondary">
-                Build a plan before investing your money
-              </Typography>
-            </ListItemText>
-          </ListItem>
-        </List>
-        <Button variant="contained" color="primary" component={Link} to="/dashboard" style={{ marginTop: '20px' }}>
+        <div style={{ maxWidth: '500px', margin: 'auto', textAlign: 'center' }}>
+          <Typography variant="body1" paragraph color="textSecondary">
+            Create a free StockPikr account to build your Watchlist and explore amazing features:
+          </Typography>
+          <List style={{ maxWidth: '500px', textAlign: 'center', justifyContent: 'center', alignItems: 'center' }}>
+            <ListItem>
+              <ListItemText>
+                <Typography variant="body1" color="textSecondary">
+                  ✨ Provides easy filtering and viewing of watchlists
+                </Typography>
+              </ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>
+                <Typography variant="body1" color="textSecondary">
+                  📈 Track stock price movement on one screen
+                </Typography>
+              </ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>
+                <Typography variant="body1" color="textSecondary">
+                  📊 Comprehensive analysis on individual stocks
+                </Typography>
+              </ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>
+                <Typography variant="body1" color="textSecondary">
+                  📝 Build a plan before investing your money
+                </Typography>
+              </ListItemText>
+            </ListItem>
+          </List>
+        </div>
+
+        <Button variant="contained" color="primary" component={Link} to="/dashboard">
           Go to Dashboard
         </Button>
       </div>
@@ -62,3 +67,4 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
