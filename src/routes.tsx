@@ -5,7 +5,7 @@ import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
 import { StockDetails } from './components/StockDetails/StockDetails';
 import SwaggerDocs from './components/Swagger/SwaggerDocs';
-import { Watchlist } from './components/Watchlist/Watchlist';
+import Watchlist from './components/Watchlist/Watchlist';
 
 export default () => (
   <Routes>

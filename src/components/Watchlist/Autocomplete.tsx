@@ -33,10 +33,14 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchlistKeys, hand
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setValue(dialogValue.id);
-    handleAppendNewKey(dialogValue.id);
+    setValue(dialogValue.id.trim());
+    handleAppendNewKey(dialogValue.id.trim());
     handleClose();
   };
+
+  React.useEffect(() => {
+    if (value && !watchlistKeys.includes(value)) setValue('');
+  }, [watchlistKeys]);
 
   return (
     <React.Fragment>
@@ -59,7 +63,6 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchlistKeys, hand
           } else {
             if (newValue && newValue.id) {
               setValue(newValue.id);
-              console.log(watchlistKeys.includes(newValue.id));
               if (watchlistKeys.includes(newValue.id)) setWlKey(newValue.id);
             } else {
               setValue('');
