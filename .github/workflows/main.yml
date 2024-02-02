@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  REACT_APP_GOOGLE_OAUTH_URL: http://stockpikr.eastus2.cloudapp.azure.com:8080/login/federated/google
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
