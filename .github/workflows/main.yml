@@ -14,19 +14,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      with:
-        repository: Ring-A-Bell/StockPikr_Frontend
-        token: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Ring-A-Bell/StockPikr_Frontend
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
 
-    - name: Install Dependencies
-      run: npm install
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Deploy
-      run: npm run deploy
+      - name: Deploy
+        run: npm run deploy
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
