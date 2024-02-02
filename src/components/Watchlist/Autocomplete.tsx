@@ -10,14 +10,18 @@ import * as React from 'react';
 
 // Define the prop types for the component
 interface MyComponentProps {
-  watchlistKeys: string[];
+  watchListKeys: string[];
   handleAppendNewKey: (key: string) => void;
   setWlKey: (key: string) => void;
 }
 
 const filter = createFilterOptions<WatchlistId>();
 
-const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchlistKeys, handleAppendNewKey, setWlKey }) => {
+const AutocompleteComponent: React.FC<MyComponentProps> = ({
+  watchListKeys: watchListKeys,
+  handleAppendNewKey,
+  setWlKey
+}) => {
   const [value, setValue] = React.useState<string | null>(null);
   const [open, toggleOpen] = React.useState(false);
 
@@ -33,10 +37,14 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchlistKeys, hand
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setValue(dialogValue.id);
-    handleAppendNewKey(dialogValue.id);
+    setValue(dialogValue.id.trim());
+    handleAppendNewKey(dialogValue.id.trim());
     handleClose();
   };
+
+  React.useEffect(() => {
+    if (value && !watchListKeys.includes(value)) setValue('');
+  }, [watchListKeys]);
 
   return (
     <React.Fragment>
@@ -59,8 +67,7 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchlistKeys, hand
           } else {
             if (newValue && newValue.id) {
               setValue(newValue.id);
-              console.log(watchlistKeys.includes(newValue.id));
-              if (watchlistKeys.includes(newValue.id)) setWlKey(newValue.id);
+              if (watchListKeys.includes(newValue.id)) setWlKey(newValue.id);
             } else {
               setValue('');
             }
@@ -76,7 +83,7 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchlistKeys, hand
           return filtered;
         }}
         id="free-solo-dialog-demo"
-        options={watchlistKeys.map((key) => ({ id: key, inputValue: '' } as WatchlistId))}
+        options={watchListKeys.map((key) => ({ id: key, inputValue: '' } as WatchlistId))}
         getOptionLabel={(option) => {
           // e.g. value selected with enter, right from the input
           if (typeof option === 'string') {
@@ -93,7 +100,7 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchlistKeys, hand
         renderOption={(props, option) => <li {...props}>{option.id}</li>}
         sx={{ width: 300 }}
         freeSolo
-        renderInput={(params) => <TextField {...params} label={watchlistKeys.length > 0 ? watchlistKeys[0] : ''} />}
+        renderInput={(params) => <TextField {...params} label={watchListKeys.length > 0 ? watchListKeys[0] : ''} />}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>

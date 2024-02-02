@@ -15,6 +15,7 @@ export const StockDetails: React.FC = () => {
     };
 
     fetchData();
+    setDetailsData(null);
   }, []);
 
   return (

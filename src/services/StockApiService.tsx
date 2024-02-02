@@ -8,28 +8,15 @@ export class StockApiService {
   //                           Properties
   //----------------------------------------------------------------//
 
-  private static _apiKeyParam = 'apikey=ROPW99YXmJVjIG1KKbbVXPP6R2hoBhP2';
   private static _apiService: AxiosInstance | null = null;
   public static get apiService(): AxiosInstance {
     if (StockApiService._apiService == null) {
       StockApiService._apiService = axios.create({
-        baseURL: 'https://financialmodelingprep.com/api',
+        baseURL: process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-
-      StockApiService._apiService.interceptors.request.use(
-        (config) => {
-          if (config.method === 'get' && config.url) {
-            config.url += (config.url.includes('?') ? '&' : '?') + StockApiService._apiKeyParam;
-          }
-          return config;
-        },
-        (error) => {
-          return Promise.reject(error);
-        }
-      );
     }
     return StockApiService._apiService;
   }
@@ -58,30 +45,31 @@ export class StockApiService {
     if (input.trim().length === 0) {
       return [];
     }
+    // TODO: add pagination
     const searchQueryLimit = 10;
-    const url = `/v3/search?query=${input}&limit=${searchQueryLimit}`;
+    const url = `/api/stockdata/${input}?limit=${searchQueryLimit}`;
     const response = await StockApiService.fetchData<IStockData[]>(url);
     if (response) {
       return response;
     }
     return [];
   }
-  public static async fetchCompanyProfile(input: string): Promise<ICompanyProfile[]> {
+  public static async fetchCompanyProfiles(input: string): Promise<ICompanyProfile[]> {
     if (input.trim().length === 0) {
       return [];
     }
-    const url = `/v3/profile/${input}`;
+    const url = `/api/company-profile`;
     const response = await StockApiService.fetchData<ICompanyProfile[]>(url);
     if (response) {
       return response;
     }
     return [];
   }
-  public static async fetchStockDetail(input: string[]): Promise<IStockQuote[]> {
+  public static async fetchStockQuotes(input: string[]): Promise<IStockQuote[]> {
     if (input.length === 0) {
       return [];
     }
-    const url = `https://financialmodelingprep.com/api/v3/quote/${input.join(',')}`;
+    const url = `/api/stockdata/quote/${input}`;
     const response = await StockApiService.fetchData<IStockQuote[]>(url);
     if (response) {
       return response;

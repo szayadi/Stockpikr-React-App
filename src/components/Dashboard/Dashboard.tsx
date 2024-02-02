@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
     const fetchData = async (): Promise<void> => {
       // Place holder symbols
       const blueChipSymbols: string[] = ['AAPL', 'MSFT', 'AMZN', 'GOOGL', 'JNJ', 'PG', 'KO', 'JPM', 'DIS', 'INTC'];
-      StockApiService.fetchStockDetail(blueChipSymbols).then((response) => {
+      StockApiService.fetchStockQuotes(blueChipSymbols).then((response) => {
         if (response == null) {
           return;
         }
