@@ -7,6 +7,7 @@ on:
 
 env:
   REACT_APP_GOOGLE_OAUTH_URL: http://stockpikr.eastus2.cloudapp.azure.com:8080/login/federated/google
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   deploy:
@@ -15,6 +16,8 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+    
+    - run: git config --global url.https://$GH_TOKEN@github.com/
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
