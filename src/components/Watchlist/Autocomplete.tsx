@@ -17,11 +17,7 @@ interface MyComponentProps {
 
 const filter = createFilterOptions<WatchlistId>();
 
-const AutocompleteComponent: React.FC<MyComponentProps> = ({
-  watchListKeys: watchListKeys,
-  handleAppendNewKey,
-  setWlKey
-}) => {
+const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchListKeys, handleAppendNewKey, setWlKey }) => {
   const [value, setValue] = React.useState<string | null>(null);
   const [open, toggleOpen] = React.useState(false);
 
@@ -44,7 +40,7 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({
 
   React.useEffect(() => {
     if (value && !watchListKeys.includes(value)) setValue('');
-  }, [watchListKeys]);
+  }, [value, watchListKeys]);
 
   return (
     <React.Fragment>
