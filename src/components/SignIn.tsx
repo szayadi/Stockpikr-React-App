@@ -11,7 +11,6 @@ import {
   Typography,
   createTheme
 } from '@mui/material';
-import * as React from 'react';
 
 function Copyright(props: any) {
   return (
@@ -30,14 +29,14 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password')
-    });
-  };
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   console.log({
+  //     email: data.get('email'),
+  //     password: data.get('password')
+  //   });
+  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>

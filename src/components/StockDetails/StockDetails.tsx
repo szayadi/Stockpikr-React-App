@@ -1,28 +1,21 @@
 import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { IStockDetails } from '../../interfaces/IStockDetails';
-import { createPortfolioDataFromJson } from '../Helper';
+import { IStockQuote } from '../../interfaces/IStockQuote';
 
 export const StockDetails: React.FC = () => {
-  const [detailsData, setDetailsData] = useState<IStockDetails | null>(null);
+  const [detailsData, setDetailsData] = useState<IStockQuote | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const json = require('../../assets/mock_data.json');
-        const stockData: IStockDetails[] = json.stocks || [];
-        const stock = stockData.find((stock) => stock.symbol === 'MSFT');
-
-        if (stock) {
-          const stockEntry = createPortfolioDataFromJson(stock.symbol, stock);
-          setDetailsData(stockEntry);
-        }
+        // I will fix load data on the next PR, removed mock json data
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
+    setDetailsData(null);
   }, []);
 
   return (

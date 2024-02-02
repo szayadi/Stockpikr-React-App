@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { ICompanyProfile } from '../interfaces/ICompanyProfile';
 import IStockData from '../interfaces/IStockData';
+import { IStockQuote } from '../interfaces/IStockQuote';
 
 export class StockApiService {
   //----------------------------------------------------------------//
@@ -40,12 +41,12 @@ export class StockApiService {
   //                           Public
   //----------------------------------------------------------------//
 
-  public static async fetchListStockData(input: string, limit?: number): Promise<IStockData[]> {
+  public static async fetchStockSearch(input: string): Promise<IStockData[]> {
     if (input.trim().length === 0) {
       return [];
     }
     // TODO: add pagination
-    const searchQueryLimit = limit ? Math.min(limit, 100) : 10;
+    const searchQueryLimit = 10;
     const url = `/api/stockdata/${input}?limit=${searchQueryLimit}`;
     const response = await StockApiService.fetchData<IStockData[]>(url);
     if (response) {
@@ -53,13 +54,23 @@ export class StockApiService {
     }
     return [];
   }
-
   public static async fetchCompanyProfiles(input: string): Promise<ICompanyProfile[]> {
     if (input.trim().length === 0) {
       return [];
     }
     const url = `/api/company-profile`;
     const response = await StockApiService.fetchData<ICompanyProfile[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+  public static async fetchStockQuotes(input: string[]): Promise<IStockQuote[]> {
+    if (input.length === 0) {
+      return [];
+    }
+    const url = `/api/stockdata/quote/${input}`;
+    const response = await StockApiService.fetchData<IStockQuote[]>(url);
     if (response) {
       return response;
     }

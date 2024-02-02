@@ -7,7 +7,7 @@ import { StockDetails } from './components/StockDetails/StockDetails';
 import SwaggerDocs from './components/Swagger/SwaggerDocs';
 import Watchlist from './components/Watchlist/Watchlist';
 
-export default () => (
+const routes = () => (
   <Routes>
     <Route path="/" element={<LandingPage />} />
     <Route path="/watchlist" element={<Watchlist />} />
@@ -18,3 +18,4 @@ export default () => (
     <Route path="/details" element={<StockDetails />} />
   </Routes>
 );
+export default routes;

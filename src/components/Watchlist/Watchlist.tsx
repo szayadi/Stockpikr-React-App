@@ -18,7 +18,7 @@ import { serializeError } from 'serialize-error';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
-import DeleteWatchlistDialog from './DeleteWatchlistDialog';
+import DeleteWatchListDialog from './DeleteWatchlistDialog';
 
 function createData(symbol: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
   return { symbol, currentPrice, alertPrice, nearHigh, highest };
@@ -59,7 +59,7 @@ export default function Watchlist() {
           userID
         });
         if (!name) {
-          throw 'Watchlist Id is empty after creating';
+          throw Error('Watchlist Id is empty after creating');
         }
         console.log('watchlist id: ', name);
         watchlists[watchlistName] = [createData(name, 0, 0, 0, 0)];
@@ -73,9 +73,9 @@ export default function Watchlist() {
     }
   };
 
-  const handleOpenDeleteWatchlistDialog = () => {
-    setDeleteWatchlistDialog(true);
-  };
+  // const handleOpenDeleteWatchlistDialog = () => {
+  //   setDeleteWatchlistDialog(true);
+  // };
 
   const handleCloseDeleteWatchlistDialog = (watchlistName?: string) => {
     if (watchlistName && watchlists) {
@@ -102,7 +102,7 @@ export default function Watchlist() {
     >
       <Box display="flex" flexDirection="row">
         <AutocompleteComponent
-          watchlistKeys={wlKeys}
+          watchListKeys={wlKeys}
           handleAppendNewKey={handleCreateNewWatchlist}
           setWlKey={setWlKey}
         />
@@ -150,7 +150,7 @@ export default function Watchlist() {
         </TableBody>
       </Table>
       <AddStockDialog watchlistName={wlKey} isAddStockDialog={isAddStockDialog} setAddStockDialog={setAddStockDialog} />
-      <DeleteWatchlistDialog
+      <DeleteWatchListDialog
         watchlistName={wlKey}
         isDeleteWatchlistDialog={isDeleteWatchlistDialog}
         handleCloseDeleteWatchlistDialog={handleCloseDeleteWatchlistDialog}

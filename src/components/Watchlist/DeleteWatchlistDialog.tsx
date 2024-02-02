@@ -11,13 +11,13 @@ import {
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 
 // Define the prop types for the component
-interface DeleteWatchlistDialog {
+interface IDeleteWatchListDialog {
   watchlistName: string;
   isDeleteWatchlistDialog: boolean;
   handleCloseDeleteWatchlistDialog: (watchlistName?: string) => void;
 }
 
-const DeleteWatchlistDialog: React.FC<DeleteWatchlistDialog> = ({
+const DeleteWatchListDialog: React.FC<IDeleteWatchListDialog> = ({
   watchlistName,
   isDeleteWatchlistDialog,
   handleCloseDeleteWatchlistDialog
@@ -33,7 +33,7 @@ const DeleteWatchlistDialog: React.FC<DeleteWatchlistDialog> = ({
     console.log({ watchlistName });
     const result = await WatchlistApiService.deleteWatchlist(watchlistName);
     if (result && result.acknowledged && result.deletedCount === 1) {
-      alert("Delete the watchlist successfully");
+      alert('Delete the watchlist successfully');
       handleCloseDeleteWatchlistDialog(watchlistName);
     } else {
       handleCloseDeleteWatchlistDialog();
@@ -56,4 +56,4 @@ const DeleteWatchlistDialog: React.FC<DeleteWatchlistDialog> = ({
   );
 };
 
-export default DeleteWatchlistDialog;
+export default DeleteWatchListDialog;
