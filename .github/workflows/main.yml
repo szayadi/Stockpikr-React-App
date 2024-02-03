@@ -20,6 +20,8 @@ jobs:
           repository: Ring-A-Bell/StockPikr_Frontend
           token: ${{ secrets.GH_ACCESS_TOKEN }}
 
+      - run: git config --global url.https://$GH_ACCESS_TOKEN@github.com/.insteadOf https://github.com/
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
