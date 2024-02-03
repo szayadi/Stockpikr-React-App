@@ -22,7 +22,7 @@ interface AddStockDialogProps {
   setAddStockDialog: (value: boolean) => void;
 }
 
-const AddStockDialog: React.FC<AddStockDialogProps> = ({ watchlistName, isAddStockDialog, setAddStockDialog }) => {
+const AddStockDialog: React.FC<AddStockDialogProps> = ({ isAddStockDialog, setAddStockDialog }) => {
   const [addStockId, setAddStockId] = useState('');
   const [addStockPrice, setAddStockPrice] = useState('');
   const [stockTrackingDays, setStockTrackingDays] = useState(90);

@@ -6,7 +6,7 @@ export class ApiService {
   //                           Properties
   //----------------------------------------------------------------//
 
-  protected static baseEndpoint: string = '/api';
+  protected static baseEndpoint = '/api';
   private static _apiService: AxiosInstance | null = null;
   public static get apiService(): AxiosInstance {
     if (ApiService._apiService == null) {

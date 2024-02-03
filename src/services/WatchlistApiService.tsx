@@ -3,7 +3,7 @@ import { IWatchlistModel } from '../interfaces/IWatchlistModel';
 import { ApiService } from './ApiService';
 
 export class WatchlistApiService extends ApiService {
-  protected static endpoint: string = `${this.baseEndpoint}/watchlists`;
+  protected static endpoint = `${this.baseEndpoint}/watchlists`;
   //----------------------------------------------------------------//
   //                           Public
   //----------------------------------------------------------------//

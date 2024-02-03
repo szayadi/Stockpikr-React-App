@@ -38,7 +38,7 @@ export default function Watchlist() {
   useEffect(() => {
     const queryWatchlists = async () => {
       const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
-      let tempWls: { [key: string]: any[] } = {};
+      const tempWls: { [key: string]: any[] } = {};
       wls.forEach((wl, i) => {
         if (i === 0) setWlKey(wl.watchlistName);
         tempWls[wl.watchlistName] = [createData(wl.watchlistName, 0, 0, 0, 0)]; // FIXME: the watchlist query should also get list of stocks as well
