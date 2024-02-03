@@ -9,8 +9,8 @@ interface StatBoxProps {
 }
 
 const StatBox: React.FC<StatBoxProps> = ({ title, subtitle, icon, difference }) => {
-  let differenceColor = parseFloat(difference) > 0 ? 'green' : 'red';
-  let differenceEquation = parseFloat(difference) > 0 ? '+' : '';
+  const differenceColor = parseFloat(difference) > 0 ? 'green' : 'red';
+  const differenceEquation = parseFloat(difference) > 0 ? '+' : '';
 
   return (
     <Box width="100%">
