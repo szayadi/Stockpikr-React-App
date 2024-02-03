@@ -20,6 +20,11 @@ jobs:
           repository: Ring-A-Bell/StockPikr_Frontend
           token: ${{ secrets.GH_ACCESS_TOKEN }}
 
+      - name: Set up Git Identity
+        run: |
+          git config --global user.email "adi10rox@gmail.com"
+          git config --global user.name "Ring-A-Bell"
+
       - run: git config --global url.https://$GH_ACCESS_TOKEN@github.com/.insteadOf https://github.com/
 
       - name: Setup Node.js
