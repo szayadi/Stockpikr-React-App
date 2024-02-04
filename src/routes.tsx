@@ -5,9 +5,9 @@ import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
 import { StockQuotePage } from './components/Stock/StockQuotePage';
 import SwaggerDocs from './components/Swagger/SwaggerDocs';
-import { Watchlist } from './components/Watchlist/Watchlist';
+import Watchlist from './components/Watchlist/Watchlist';
 
-export default () => (
+const routes = () => (
   <Routes>
     <Route path="/" element={<LandingPage />} />
     <Route path="/watchlist" element={<Watchlist />} />
@@ -18,3 +18,4 @@ export default () => (
     <Route path="/quote" element={<StockQuotePage />} />
   </Routes>
 );
+export default routes;

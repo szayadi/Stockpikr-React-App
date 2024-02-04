@@ -21,7 +21,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ symbol }) => {
           script.onerror = reject;
         });
       } catch (error) {
-        console.error('Error loading TradingView library:', error);
+        throw new Error('Error loading TradingView library:' + error);
       }
     };
 
@@ -53,7 +53,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ symbol }) => {
           enabled_features: []
         });
       } catch (error) {
-        console.error('Error initializing TradingView chart:', error);
+        throw new Error('Error initializing TradingView chart:' + error);
       }
     };
 

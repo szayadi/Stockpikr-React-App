@@ -1,105 +1,93 @@
 import AddIcon from '@mui/icons-material/Add';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import RemoveIcon from '@mui/icons-material/Remove';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
   ButtonGroup,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControl,
-  FormControlLabel,
   Paper,
-  Radio,
-  RadioGroup,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  TextField,
-  useTheme
+  TableRow
 } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { serializeError } from 'serialize-error';
+import { WatchlistApiService } from '../../services/WatchlistApiService';
+import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
+import DeleteWatchListDialog from './DeleteWatchlistDialog';
 
-function createData(name: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
-  return { name, currentPrice, alertPrice, nearHigh, highest };
+function createData(symbol: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
+  return { symbol, currentPrice, alertPrice, nearHigh, highest };
 }
 
-const etfWatchList = [
-  createData('COINBASE GLOBAL, INC. (XNAS:COIN)', 115.54, 47.32, 110.59, 429.54),
-  createData('MICROVISION, INC. (XNAS:MVIS)', 2.5, 2.85, 5.8, 28.0),
-  createData('XPENG INC. (XNYS:XPEV)', 18.48, 6.61, 19.73, 56.45)
-];
+const userID = '000000000000000000001'; // FIXME: change to actual user id when the user feature is completed
+// const defaultStockSymbol = 'APPLE'; // FIXME:
 
-const stocksWatchList = [
-  createData('CHARGEPOINT HOLDINGS, INC. (XNYS:CHPT)', 3, 4.32, 2.59, 1.54),
-  createData('LUCID GROUP, INC. (XNAS:LCID)', 1.287, 15.48, 7.28, 5.1823)
-];
-
-const defaultWatchlists: { [key: string]: any[] } = {
-  'ETF WL': etfWatchList,
-  'Stocks WL': stocksWatchList
-};
-
-export function Watchlist() {
-  const [wlKey, setWlKey] = useState('ETF WL');
-  const [wlKeys, setWlKeys] = useState(Object.keys(defaultWatchlists));
-  const [watchlists, setWatchlists] = useState(defaultWatchlists);
-  const [addStockId, setAddStockId] = useState('');
-  const [addStockPrice, setAddStockPrice] = useState('');
-  const [stockTrackingDays, setStockTrackingDays] = useState(90);
+export default function Watchlist() {
+  const [wlKey, setWlKey] = useState('');
+  const [wlKeys, setWlKeys] = useState<string[]>([]);
+  const [watchlists, setWatchlists] = useState<{ [key: string]: any[] }>();
   const [isAddStockDialog, setAddStockDialog] = useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
   const navigate = useNavigate();
 
-  const handleAppendNewKey = (key: string) => {
-    if (key) {
-      watchlists[key] = [];
-      setWatchlists(watchlists);
-      setWlKeys(Object.keys(watchlists));
-      setWlKey(key);
+  useEffect(() => {
+    const queryWatchlists = async () => {
+      const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
+      const tempWls: { [key: string]: any[] } = {};
+      wls.forEach((wl, i) => {
+        if (i === 0) setWlKey(wl.watchlistName);
+        tempWls[wl.watchlistName] = [createData(wl.watchlistName, 0, 0, 0, 0)]; // FIXME: the watchlist query should also get list of stocks as well
+      });
+      setWatchlists(tempWls);
+      setWlKeys(Object.keys(tempWls));
+    };
+    queryWatchlists();
+  }, []);
+
+  const handleCreateNewWatchlist = async (watchlistName: string) => {
+    if (watchlistName && watchlists) {
+      try {
+        const name = await WatchlistApiService.createWatchlist({
+          watchlistName,
+          tickers: [],
+          userID
+        });
+        if (!name) {
+          throw Error('Watchlist Id is empty after creating');
+        }
+        watchlists[watchlistName] = [createData(name, 0, 0, 0, 0)];
+        setWatchlists(watchlists);
+        setWlKeys(Object.keys(watchlists));
+        setWlKey(watchlistName);
+      } catch (error) {
+        alert(JSON.stringify(serializeError(error)));
+      }
     }
   };
 
-  const handleOnClickSettings = () => {
-    console.log('Settings');
+  // const handleOpenDeleteWatchlistDialog = () => {
+  //   setDeleteWatchlistDialog(true);
+  // };
+
+  const handleCloseDeleteWatchlistDialog = (watchlistName?: string) => {
+    if (watchlistName && watchlists) {
+      // re-render with deleted watchlist removed from our state so that we dont need to query watchlists again
+      delete watchlists[watchlistName];
+      const keys = Object.keys(watchlists);
+      setWatchlists(watchlists);
+      setWlKeys(keys);
+      setWlKey('');
+    }
+    setDeleteWatchlistDialog(false);
   };
 
   const handleClickAddStock = () => {
     setAddStockDialog(true);
-    console.log('Add');
-  };
-
-  const handleClickDeleteStock = () => {
-    console.log('Delete');
-  };
-
-  const onCancelAddStockDialog = () => {
-    setAddStockId('');
-    setAddStockPrice('');
-    setStockTrackingDays(90);
-    setAddStockDialog(false);
-  };
-
-  const isAddStockPriceValid = () => {
-    return addStockPrice !== '';
-  };
-
-  const isAddStockIdValid = () => {
-    return addStockId !== '';
-  };
-
-  const onConfirmAddStockDialog = () => {
-    console.log({ addStockId, addStockPrice, stockTrackingDays });
   };
 
   return (
@@ -108,24 +96,25 @@ export function Watchlist() {
       sx={{ width: '95%', backgroundColor: 'white', borderRadius: '10px', margin: '20px' }}
     >
       <Box display="flex" flexDirection="row">
-        <AutocompleteComponent watchlistKeys={wlKeys} handleAppendNewKey={handleAppendNewKey} setWlKey={setWlKey} />
+        <AutocompleteComponent
+          watchListKeys={wlKeys}
+          handleAppendNewKey={handleCreateNewWatchlist}
+          setWlKey={setWlKey}
+        />
         <ButtonGroup variant="text" aria-label="text button group">
           <Button>
             <AddIcon onClick={handleClickAddStock} fontSize="medium" />
           </Button>
           <Button>
             {' '}
-            <RemoveIcon onClick={handleClickDeleteStock} fontSize="medium" />
-          </Button>
-          <Button onClick={handleOnClickSettings}>
-            <MoreVertIcon fontSize="medium" />
+            <DeleteIcon onClick={() => setDeleteWatchlistDialog(true)} fontSize="medium" />
           </Button>
         </ButtonGroup>
       </Box>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
+            <TableCell>Symbol</TableCell>
             <TableCell align="right">Current Price</TableCell>
             <TableCell align="right">Alert Price</TableCell>
             <TableCell align="right">Near High</TableCell>
@@ -133,84 +122,34 @@ export function Watchlist() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {watchlists[wlKey].map((row) => (
-            <TableRow
-              key={row.name}
-              onClick={() => {
-                //navigate('/quote'); fix once the watch list pulls in real data
-              }}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.currentPrice}</TableCell>
-              <TableCell align="right">{row.alertPrice}</TableCell>
-              <TableCell align="right">{row.nearHigh}</TableCell>
-              <TableCell align="right">{row.highest}</TableCell>
-            </TableRow>
-          ))}
+          {watchlists &&
+            Object.keys(watchlists).length > 0 &&
+            wlKey &&
+            watchlists[wlKey].map((row) => (
+              <TableRow
+                key={row.symbol}
+                onClick={() => {
+                  navigate('/quote');
+                }}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.symbol}
+                </TableCell>
+                <TableCell align="right">{row.currentPrice}</TableCell>
+                <TableCell align="right">{row.alertPrice}</TableCell>
+                <TableCell align="right">{row.nearHigh}</TableCell>
+                <TableCell align="right">{row.highest}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
-      <Dialog open={isAddStockDialog} onClose={() => setAddStockDialog(false)} fullScreen={fullScreen}>
-        <DialogTitle>Add a new stock</DialogTitle>
-        <DialogContent>
-          <DialogContentText>To add a new stock, please enter the stock's unique Id</DialogContentText>
-          <TextField
-            error={!isAddStockIdValid()}
-            autoFocus
-            required
-            margin="dense"
-            id="stock-id"
-            label="Stock Id"
-            type="text"
-            fullWidth
-            variant="standard"
-            helperText={!isAddStockIdValid() ? 'Stock Id cannot be empty' : ''}
-            onChange={(e) => setAddStockId(e.target.value)}
-          />
-        </DialogContent>
-        <DialogContent>
-          <DialogContentText>At what price would you like to buy the stock?</DialogContentText>
-          <TextField
-            error={!isAddStockPriceValid()}
-            autoFocus
-            required
-            margin="dense"
-            id="stock-price"
-            label="Buy price"
-            type="text"
-            fullWidth
-            variant="standard"
-            helperText={!isAddStockPriceValid() ? 'Stock price cannot be empty' : ''}
-            onChange={(e) => setAddStockPrice(e.target.value)}
-          />
-        </DialogContent>
-        <DialogContent>
-          <DialogContentText>
-            How many days? (90 days or 180 days) would you like to track the stock? (For near-term tracking)
-          </DialogContentText>
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="track-days"
-              defaultValue="female"
-              name="radio-buttons-group"
-              row
-              value={stockTrackingDays}
-              onChange={(e) => setStockTrackingDays(+e.target.value)}
-            >
-              <FormControlLabel value={90} control={<Radio />} label="90 days" />
-              <FormControlLabel value={180} control={<Radio />} label="180 days" />
-            </RadioGroup>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onCancelAddStockDialog}>Cancel</Button>
-          <Button onClick={onConfirmAddStockDialog} disabled={!isAddStockIdValid() || !isAddStockPriceValid()}>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <AddStockDialog watchlistName={wlKey} isAddStockDialog={isAddStockDialog} setAddStockDialog={setAddStockDialog} />
+      <DeleteWatchListDialog
+        watchlistName={wlKey}
+        isDeleteWatchlistDialog={isDeleteWatchlistDialog}
+        handleCloseDeleteWatchlistDialog={handleCloseDeleteWatchlistDialog}
+      />
     </TableContainer>
   );
 }
