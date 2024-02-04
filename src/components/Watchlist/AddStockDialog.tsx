@@ -45,7 +45,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({ isAddStockDialog, setAd
   };
 
   const onConfirmAddStockDialog = () => {
-    console.log({ addStockId, addStockPrice, stockTrackingDays });
+    //console.log({ addStockId, addStockPrice, stockTrackingDays });
   };
 
   return (

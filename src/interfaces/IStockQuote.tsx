@@ -20,4 +20,5 @@ export interface IStockQuote {
   pe: number;
   earningsAnnouncement: string;
   sharesOutstanding: number;
+  timestamp: number;
 }

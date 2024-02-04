@@ -30,7 +30,6 @@ const DeleteWatchListDialog: React.FC<IDeleteWatchListDialog> = ({
   };
 
   const onConfirmDeleteWatchlist = async () => {
-    console.log({ watchlistName });
     const result = await WatchlistApiService.deleteWatchlist(watchlistName);
     if (result && result.acknowledged && result.deletedCount === 1) {
       alert('Delete the watchlist successfully');

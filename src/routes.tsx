@@ -3,7 +3,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import LandingPage from './components/LandingPage';
 import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
-import { StockDetails } from './components/StockDetails/StockDetails';
+import { StockQuotePage } from './components/Stock/StockQuotePage';
 import SwaggerDocs from './components/Swagger/SwaggerDocs';
 import Watchlist from './components/Watchlist/Watchlist';
 
@@ -15,7 +15,7 @@ const routes = () => (
     <Route path="/settings" element={<Settings />} />
     <Route path="/signin" element={<SignIn />} />
     <Route path="/swaggerDocs" element={<SwaggerDocs />} />
-    <Route path="/details" element={<StockDetails />} />
+    <Route path="/quote" element={<StockQuotePage />} />
   </Routes>
 );
 export default routes;

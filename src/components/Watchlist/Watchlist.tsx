@@ -50,7 +50,6 @@ export default function Watchlist() {
   }, []);
 
   const handleCreateNewWatchlist = async (watchlistName: string) => {
-    console.log('in handle create new watchlist: ', watchlistName);
     if (watchlistName && watchlists) {
       try {
         const name = await WatchlistApiService.createWatchlist({
@@ -61,13 +60,11 @@ export default function Watchlist() {
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        console.log('watchlist id: ', name);
         watchlists[watchlistName] = [createData(name, 0, 0, 0, 0)];
         setWatchlists(watchlists);
         setWlKeys(Object.keys(watchlists));
         setWlKey(watchlistName);
       } catch (error) {
-        console.log('error creating a new watchlist: ', error);
         alert(JSON.stringify(serializeError(error)));
       }
     }
@@ -82,7 +79,6 @@ export default function Watchlist() {
       // re-render with deleted watchlist removed from our state so that we dont need to query watchlists again
       delete watchlists[watchlistName];
       const keys = Object.keys(watchlists);
-      console.log('keys: ', keys);
       setWatchlists(watchlists);
       setWlKeys(keys);
       setWlKey('');
@@ -92,7 +88,6 @@ export default function Watchlist() {
 
   const handleClickAddStock = () => {
     setAddStockDialog(true);
-    console.log('Add');
   };
 
   return (
@@ -134,7 +129,7 @@ export default function Watchlist() {
               <TableRow
                 key={row.symbol}
                 onClick={() => {
-                  navigate('/details');
+                  navigate('/quote');
                 }}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >

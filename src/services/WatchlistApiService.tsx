@@ -30,19 +30,16 @@ export class WatchlistApiService extends ApiService {
 
   public static async fetchWatchlist(watchlistName: string): Promise<IWatchlistModel | null> {
     const response = await super.fetchData<IWatchlistModel>(`${this.endpoint}/${watchlistName}`);
-    console.log({ response });
     return response;
   }
 
   public static async createWatchlist(wl: Omit<IWatchlistModel, 'watchlistID'>): Promise<string | null> {
     const response = await super.postData<string>(`${this.endpoint}`, wl);
-    console.log({ response });
     return response;
   }
 
   public static async deleteWatchlist(watchlistName: string): Promise<DeleteResult | null> {
     const response = await super.deleteData<DeleteResult>(`${this.endpoint}/${watchlistName}`);
-    console.log({ response });
     return response;
   }
 }

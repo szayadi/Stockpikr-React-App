@@ -32,6 +32,7 @@ export class StockApiService {
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         console.error('Error fetching company search results:', error.response.data);
+        return error.response.data;
       }
     }
     return null;
@@ -54,18 +55,18 @@ export class StockApiService {
     }
     return [];
   }
-  public static async fetchCompanyProfiles(input: string): Promise<ICompanyProfile[]> {
+  public static async fetchCompanyProfile(input: string): Promise<ICompanyProfile[]> {
     if (input.trim().length === 0) {
       return [];
     }
-    const url = `/api/company-profile`;
+    const url = `/api/stockdata/profile/${input}`;
     const response = await StockApiService.fetchData<ICompanyProfile[]>(url);
     if (response) {
       return response;
     }
     return [];
   }
-  public static async fetchStockQuotes(input: string[]): Promise<IStockQuote[]> {
+  public static async fetchStockQuote(input: string[]): Promise<IStockQuote[]> {
     if (input.length === 0) {
       return [];
     }

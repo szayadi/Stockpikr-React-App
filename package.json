@@ -24,6 +24,7 @@
     "serialize-error": "^11.0.3",
     "swagger-ui": "^5.11.0",
     "swagger-ui-react": "^5.11.0",
+    "tradingview-widget": "^0.0.1",
     "typescript": "^5.3.3",
     "web-vitals": "^2.1.4"
   },
