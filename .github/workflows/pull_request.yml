@@ -1,0 +1,41 @@
+name: Test and Deploy for PRs
+
+on:
+  push:
+    branches:
+      - '*'
+
+env:
+  REACT_APP_GOOGLE_OAUTH_URL: http://stockpikr.eastus2.cloudapp.azure.com:8080/login/federated/google
+  GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Ring-A-Bell/StockPikr_Frontend
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Set up Git Identity
+        run: |
+          git config --global user.email "adi10rox@gmail.com"
+          git config --global user.name "Ring-A-Bell"
+
+      - run: git config --global url.https://$GH_ACCESS_TOKEN@github.com/.insteadOf https://github.com/
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Deploy to Test Environment
+        run: npm run deploy-test-environment
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
