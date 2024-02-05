@@ -6,12 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { getErrorResponse } from '../helper/errorResponse';
 import IStockData from '../interfaces/IStockData';
 import { StockApiService } from '../services/StockApiService';
+import { useAsyncError } from './GlobalErrorBoundary';
 
 const SearchBar: React.FC = () => {
   const [searchOptions, setSearchOptions] = useState<IStockData[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
+  const throwError = useAsyncError();
 
   const handleOnChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -51,12 +53,16 @@ const SearchBar: React.FC = () => {
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    StockApiService.fetchStockSearch(value).then((response): void => {
-      if (response == null || getErrorResponse(response)) {
-        return;
-      }
-      setSearchOptions(response);
-    });
+    await StockApiService.fetchStockSearch(value)
+      .then((response): void => {
+        if (response == null || getErrorResponse(response)) {
+          return;
+        }
+        setSearchOptions(response);
+      })
+      .catch((error) => {
+        throwError(error);
+      });
   };
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {

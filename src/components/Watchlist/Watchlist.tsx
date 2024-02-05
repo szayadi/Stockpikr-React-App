@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
+import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
@@ -30,42 +31,45 @@ const userID = '000000000000000000001'; // FIXME: change to actual user id when 
 export default function Watchlist() {
   const [wlKey, setWlKey] = useState('');
   const [wlKeys, setWlKeys] = useState<string[]>([]);
-  const [watchlists, setWatchlists] = useState<{ [key: string]: any[] }>();
+  const [watchLists, setWatchLists] = useState<{ [key: string]: any[] }>();
   const [isAddStockDialog, setAddStockDialog] = useState(false);
-  const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
+  const [isDeleteWatchListDialog, setDeleteWatchlistDialog] = useState(false);
   const navigate = useNavigate();
+  const throwError = useAsyncError();
 
   useEffect(() => {
-    const queryWatchlists = async () => {
-      const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
+    const queryWatchLists = async () => {
+      const wls = await WatchlistApiService.fetchWatchListsByUserId(userID);
       const tempWls: { [key: string]: any[] } = {};
       wls.forEach((wl, i) => {
-        if (i === 0) setWlKey(wl.watchlistName);
-        tempWls[wl.watchlistName] = [createData(wl.watchlistName, 0, 0, 0, 0)]; // FIXME: the watchlist query should also get list of stocks as well
+        if (i === 0) setWlKey(wl.name);
+        tempWls[wl.name] = [createData(wl.name, 0, 0, 0, 0)]; // FIXME: the watch list query should also get list of stocks as well
       });
-      setWatchlists(tempWls);
+      setWatchLists(tempWls);
       setWlKeys(Object.keys(tempWls));
     };
-    queryWatchlists();
+    queryWatchLists().catch((error) => {
+      throwError(error);
+    });
   }, []);
 
-  const handleCreateNewWatchlist = async (watchlistName: string) => {
-    if (watchlistName && watchlists) {
+  const handleCreateNewWatchlist = async (value: string) => {
+    if (value && watchLists) {
       try {
         const name = await WatchlistApiService.createWatchlist({
-          watchlistName,
+          name: value,
           tickers: [],
           userID
         });
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        watchlists[watchlistName] = [createData(name, 0, 0, 0, 0)];
-        setWatchlists(watchlists);
-        setWlKeys(Object.keys(watchlists));
-        setWlKey(watchlistName);
+        watchLists[value] = [createData(name, 0, 0, 0, 0)];
+        setWatchLists(watchLists);
+        setWlKeys(Object.keys(watchLists));
+        setWlKey(value);
       } catch (error) {
-        alert(JSON.stringify(serializeError(error)));
+        console.error(JSON.stringify(serializeError(error)));
       }
     }
   };
@@ -74,12 +78,12 @@ export default function Watchlist() {
   //   setDeleteWatchlistDialog(true);
   // };
 
-  const handleCloseDeleteWatchlistDialog = (watchlistName?: string) => {
-    if (watchlistName && watchlists) {
-      // re-render with deleted watchlist removed from our state so that we dont need to query watchlists again
-      delete watchlists[watchlistName];
-      const keys = Object.keys(watchlists);
-      setWatchlists(watchlists);
+  const handleCloseDeleteWatchlistDialog = (name?: string) => {
+    if (name && watchLists) {
+      // re-render with deleted watch list removed from our state so that we don't need to query watch lists again
+      delete watchLists[name];
+      const keys = Object.keys(watchLists);
+      setWatchLists(watchLists);
       setWlKeys(keys);
       setWlKey('');
     }
@@ -122,10 +126,10 @@ export default function Watchlist() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {watchlists &&
-            Object.keys(watchlists).length > 0 &&
+          {watchLists &&
+            Object.keys(watchLists).length > 0 &&
             wlKey &&
-            watchlists[wlKey].map((row) => (
+            watchLists[wlKey].map((row) => (
               <TableRow
                 key={row.symbol}
                 onClick={() => {
@@ -146,9 +150,9 @@ export default function Watchlist() {
       </Table>
       <AddStockDialog watchlistName={wlKey} isAddStockDialog={isAddStockDialog} setAddStockDialog={setAddStockDialog} />
       <DeleteWatchListDialog
-        watchlistName={wlKey}
-        isDeleteWatchlistDialog={isDeleteWatchlistDialog}
-        handleCloseDeleteWatchlistDialog={handleCloseDeleteWatchlistDialog}
+        watchListName={wlKey}
+        isDeleteWatchListDialog={isDeleteWatchListDialog}
+        handleCloseDeleteWatchListDialog={handleCloseDeleteWatchlistDialog}
       />
     </TableContainer>
   );

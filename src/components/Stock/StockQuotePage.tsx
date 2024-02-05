@@ -10,6 +10,7 @@ import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { StockApiService } from '../../services/StockApiService';
+import { useAsyncError } from '../GlobalErrorBoundary';
 import CompanyOverviewCard from './Components/CompanyOverviewCard';
 import StockCard from './Components/StockCard';
 import TradingViewChart from './Components/TradingViewChart';
@@ -28,8 +29,10 @@ export const StockQuotePage: React.FC = () => {
       return;
     }
 
+    const throwError = useAsyncError();
+
     const fetchQuoteData = async () => {
-      StockApiService.fetchStockQuote([symbolParam]).then((response): void => {
+      await StockApiService.fetchStockQuote([symbolParam]).then((response): void => {
         if (response == null) {
           return;
         }
@@ -39,7 +42,7 @@ export const StockQuotePage: React.FC = () => {
     };
 
     const fetchCompanyProfile = async () => {
-      StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
+      await StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
         if (response == null) {
           return;
         }
@@ -47,8 +50,12 @@ export const StockQuotePage: React.FC = () => {
         setCompanyProfile(company);
       });
     };
-    fetchQuoteData();
-    fetchCompanyProfile();
+    fetchQuoteData().catch((error) => {
+      throwError(error);
+    });
+    fetchCompanyProfile().catch((error) => {
+      throwError(error);
+    });
   }, []);
 
   const handleAddToWatchlist = () => {
