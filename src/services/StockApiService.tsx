@@ -70,7 +70,7 @@ export class StockApiService {
     if (input.length === 0) {
       return [];
     }
-    const url = `/api/stockdata/quote/${input}`;
+    const url = `/api/lateststockinfo/quotes/${input}`;
     const response = await StockApiService.fetchData<IStockQuote[]>(url);
     if (response) {
       return response;
