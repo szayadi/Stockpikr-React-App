@@ -1,7 +1,7 @@
 name: Deploy on Main Push
 
 on:
-  push:
+  pull_request:
     branches:
       - '*'
 
@@ -50,7 +50,5 @@ jobs:
           npm install -g yarn
           yarn
 
-      - name: Deploy to Test Environment
-        run: yarn deploy-test-environment
-        env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Build
+        run: yarn build
