@@ -25,8 +25,8 @@ import {
   useTheme
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useAppSelector } from '../../store/hooks';
 import AutocompleteComponent from './Autocomplete';
 
 function createData(name: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
@@ -59,7 +59,14 @@ export function Watchlist() {
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
+
+  const watchlist = useAppSelector((state) => state.watchlist.value);
+  console.log('Watchlist:', watchlist);
+
+  useEffect(() => {
+    console.log(watchlist);
+  }, [watchlist]);
 
   const handleAppendNewKey = (key: string) => {
     if (key) {
@@ -133,9 +140,9 @@ export function Watchlist() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {watchlists[wlKey].map((row) => (
+          {watchlist.map((row, index) => (
             <TableRow
-              key={row.name}
+              key={index}
               onClick={() => {
                 //navigate('/quote'); fix once the watch list pulls in real data
               }}
@@ -144,10 +151,10 @@ export function Watchlist() {
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-              <TableCell align="right">{row.currentPrice}</TableCell>
-              <TableCell align="right">{row.alertPrice}</TableCell>
-              <TableCell align="right">{row.nearHigh}</TableCell>
-              <TableCell align="right">{row.highest}</TableCell>
+              <TableCell align="right">{row.price}</TableCell>
+              <TableCell align="right">{row.price}</TableCell>
+              <TableCell align="right">{row.dayHigh}</TableCell>
+              <TableCell align="right">{row.dayLow}</TableCell>
             </TableRow>
           ))}
         </TableBody>

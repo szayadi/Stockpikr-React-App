@@ -8,7 +8,7 @@ export class StockApiService {
   //                           Properties
   //----------------------------------------------------------------//
 
-  private static _apiKeyParam = 'apikey=37457d0839506a1512a61230d005f67c';
+  private static _apiKeyParam = 'apikey=3310f6e51bf5bbdf5643c6d243cfa922';
   private static _apiService: AxiosInstance | null = null;
   public static get apiService(): AxiosInstance {
     if (StockApiService._apiService == null) {

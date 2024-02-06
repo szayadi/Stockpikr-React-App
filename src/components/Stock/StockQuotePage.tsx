@@ -10,6 +10,8 @@ import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { StockApiService } from '../../services/StockApiService';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addStock } from '../../store/slices/watchlistSlice';
 import CompanyOverviewCard from './Components/CompanyOverviewCard';
 import StockCard from './Components/StockCard';
 import TradingViewChart from './Components/TradingViewChart';
@@ -17,6 +19,9 @@ import TradingViewChart from './Components/TradingViewChart';
 export const StockQuotePage: React.FC = () => {
   const [quote, setQuote] = useState<IStockQuote | null>(null);
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
+  const [disableWatchlistBtn, setDisableWatchlistBtn] = useState(false);
+  const watchlist = useAppSelector((state) => state.watchlist.value);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchQuoteData = async () => {
@@ -54,7 +59,11 @@ export const StockQuotePage: React.FC = () => {
   }, []);
 
   const handleAddToWatchlist = () => {
-    console.log('Added to watchlist');
+    console.log('Adding to watchlist:', quote);
+    if (quote && !watchlist.some((quoteInArray) => quoteInArray.symbol === quote?.symbol)) {
+      dispatch(addStock(quote));
+      setDisableWatchlistBtn(true);
+    }
   };
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -89,6 +98,7 @@ export const StockQuotePage: React.FC = () => {
               variant="contained"
               onClick={handleAddToWatchlist}
               size="large"
+              disabled={disableWatchlistBtn}
               startIcon={<AddCircleOutlineOutlinedIcon />}
             >
               Add To Watchlist
