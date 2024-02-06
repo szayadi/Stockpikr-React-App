@@ -2,69 +2,97 @@ import { Button, Container, List, ListItem, ListItemText, Typography } from '@mu
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+
 const LandingPage: React.FC = () => {
   return (
-    <Container
-      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px'}}
-    >
-      <div style={{ flex: 1, alignItems: 'flex-e' }}>
-        <img
-          src={require('../assets/images/image-landing-page.jpg')}
-          alt="StockPikr Logo"
-          style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-        />
-      </div>
-
-      <div style={{padding: '20px', textAlign: 'center' }}>
-        <Typography variant="h2" component="h2" color="#182b39">
-         StockPikr
+    <Container style={{ margin: '50', padding: '50', display: 'flex', flexDirection: "row-reverse", justifyContent: "space-between", alignItems: "center" }}>
+      <Container style={{ display: 'flex', flexDirection: "column", justifyContent: "center", alignItems: "center", padding: '20px', flex: 1 }}>
+        <Typography variant="h1" component="h1" style={{
+          color: '#182b39',
+          fontFamily: "'Raleway', sans-serif",
+          fontSize: '100px',
+          margin: '20px',
+          fontWeight: 300
+        }}>
+          StockPikr
         </Typography>
-        <Typography variant="h4" component="h4" color="#182b39">
-         Create Your Watchlists
+        <Typography variant="h3" component="h3" style={{
+          color: '#182b39',
+          margin: '5px',
+          fontFamily: "'Raleway', sans-serif",
+          fontWeight: 300
+        }}>
+          Create Your Watchlists
         </Typography>
         <div style={{ maxWidth: '500px', margin: 'auto', textAlign: 'center' }}>
-          <Typography variant="body1" paragraph color="textSecondary">
+          <Typography variant="body1" color="textPrimary" style={{
+            color: '#182b39',
+            margin: '5px',
+            fontFamily: "'Raleway', sans-serif",
+            fontWeight: 500
+          }}>
             Create a free StockPikr account to build your Watchlist and explore amazing features:
           </Typography>
-          <List style={{ maxWidth: '500px', textAlign: 'center', justifyContent: 'center', alignItems: 'center' }}>
-            <ListItem>
-              <ListItemText>
-                <Typography variant="body1" color="textSecondary">
+          <List style={{
+            maxWidth: '500px',
+            margin: 'auto',
+            textAlign: 'center',
+            fontFamily: "'Raleway', sans-serif",
+            fontWeight: 500
+          }}>
+            <ListItem style={{ textAlign: 'center' }}>
+              <ListItemText style={{ textAlign: 'center' }}>
+                <Typography variant="body1" color="textPrimary" style={{ fontFamily: "'Raleway', sans-serif", fontWeight: 500 }}>
                   ✨ Provides easy filtering and viewing of watchlists
                 </Typography>
               </ListItemText>
             </ListItem>
-            <ListItem>
-              <ListItemText>
-                <Typography variant="body1" color="textSecondary">
+            <ListItem style={{ textAlign: 'center' }}>
+              <ListItemText style={{ textAlign: 'center' }}>
+                <Typography variant="body1" color="textPrimary" style={{ fontFamily: "'Raleway', sans-serif", fontWeight: 500 }}>
                   📈 Track stock price movement on one screen
                 </Typography>
               </ListItemText>
             </ListItem>
-            <ListItem>
-              <ListItemText>
-                <Typography variant="body1" color="textSecondary">
+            <ListItem style={{ textAlign: 'center' }}>
+              <ListItemText style={{ textAlign: 'center' }}>
+                <Typography variant="body1" color="textPrimary" style={{ fontFamily: "'Raleway', sans-serif", fontWeight: 500 }}>
                   📊 Comprehensive analysis on individual stocks
                 </Typography>
               </ListItemText>
             </ListItem>
-            <ListItem>
-              <ListItemText>
-                <Typography variant="body1" color="textSecondary">
+            <ListItem style={{ textAlign: 'center' }}>
+              <ListItemText style={{ textAlign: 'center' }}>
+                <Typography variant="body1" color="textPrimary" style={{ fontFamily: "'Raleway', sans-serif", fontWeight: 500 }}>
                   📝 Build a plan before investing your money
                 </Typography>
               </ListItemText>
             </ListItem>
           </List>
-        </div>
 
-        <Button variant="contained" color="primary" component={Link} to="/dashboard">
-          Go to Dashboard
-        </Button>
+          <Button variant="contained" color="primary" style={{
+            backgroundColor: 'var(--navbar-bg-color)',
+            textDecoration: 'none',
+            borderRadius: '20px',
+            padding: '10px 20px',
+            fontWeight: 'bold',
+            fontFamily: 'inherit',
+            border: '2px black solid'
+          }} component={Link} to="/dashboard">
+            Go to Dashboard
+          </Button>
+        </div>
+      </Container>
+      <div style={{ margin: '50', padding: '50', flex: 1 }}>
+        <img
+          src={require('../assets/images/image-landing-page.jpg')}
+          alt="StockPikr Image"
+          style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+        />
       </div>
     </Container>
   );
 };
 
-export default LandingPage;
 
+export default LandingPage;

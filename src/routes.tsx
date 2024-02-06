@@ -5,7 +5,7 @@ import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
 import { StockQuotePage } from './components/Stock/StockQuotePage';
 import SwaggerDocs from './components/Swagger/SwaggerDocs';
-import { Watchlist } from './components/Watchlist/Watchlist';
+import Watchlist from './components/Watchlist/Watchlist';
 import Positions from './components/Positions/Positions';
 
 const routes = () => (
