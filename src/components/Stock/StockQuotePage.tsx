@@ -18,6 +18,7 @@ import TradingViewChart from './Components/TradingViewChart';
 export const StockQuotePage: React.FC = () => {
   const [quote, setQuote] = useState<IStockQuote | null>(null);
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
+  const throwError = useAsyncError();
 
   useEffect(() => {
     const url = window.location.href;
@@ -28,9 +29,6 @@ export const StockQuotePage: React.FC = () => {
     if (symbolParam == null) {
       return;
     }
-
-    const throwError = useAsyncError();
-
     const fetchQuoteData = async () => {
       await StockApiService.fetchStockQuote([symbolParam]).then((response): void => {
         if (response == null) {

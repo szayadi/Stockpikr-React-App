@@ -4,7 +4,7 @@ import { Component, ReactNode, useCallback, useState } from 'react';
 export const useAsyncError = () => {
   const [, setError] = useState();
   return useCallback(
-    (e: any) => {
+    (e: unknown) => {
       setError(() => {
         throw e;
       });

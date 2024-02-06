@@ -10,11 +10,12 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LogoImage from '../assets/images/logo+title-light-mode.png';
 import '../index.css';
 import SearchBar from './SearchBar';
+import UserSettingsDialog from './UserSettingsDialog';
 
 const pages = [
   { title: 'Dashboard', key: 'dashboard' },
@@ -26,8 +27,9 @@ const settings = [
 ];
 
 function NavigationHeader() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -42,6 +44,15 @@ function NavigationHeader() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleSettingsClick = () => {
+    handleCloseUserMenu(); // Close the user menu
+    setOpenSettingsDialog(true); // Open the settings dialog
+  };
+
+  const handleCloseSettingsDialog = () => {
+    setOpenSettingsDialog(false); // Close the settings dialog
   };
 
   return (
@@ -140,12 +151,21 @@ function NavigationHeader() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((s) => (
-                <MenuItem key={s.key} onClick={handleCloseUserMenu}>
-                  <Link style={{ textAlign: 'center', color: 'black', textDecoration: 'none' }} to={s.key}>
-                    {s.title}
-                  </Link>
+                <MenuItem key={s.key} onClick={s.key === 'settings' ? handleSettingsClick : handleCloseUserMenu}>
+                  {s.key === 'settings' ? (
+                    <Typography style={{ textAlign: 'center', color: 'black' }}>{s.title}</Typography>
+                  ) : (
+                    <Link style={{ textAlign: 'center', color: 'black', textDecoration: 'none' }} to={s.key}>
+                      {s.title}
+                    </Link>
+                  )}
                 </MenuItem>
               ))}
+              <UserSettingsDialog
+                open={openSettingsDialog}
+                handleClose={handleCloseSettingsDialog}
+                initialValues={{}}
+              />
             </Menu>
           </Box>
         </Toolbar>

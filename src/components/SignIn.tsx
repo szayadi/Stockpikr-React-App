@@ -12,19 +12,6 @@ import {
   createTheme
 } from '@mui/material';
 
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Stockpikr
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
@@ -80,7 +67,14 @@ export default function SignIn() {
             >
               Sign In with Google
             </Button>
-            <Copyright sx={{ mt: 5 }} />
+            <Typography variant="body2" color="text.secondary" align="center">
+              {'Copyright © '}
+              <Link color="inherit" href="#">
+                Stockpikr
+              </Link>{' '}
+              {new Date().getFullYear()}
+              {'.'}
+            </Typography>
           </Box>
         </Grid>
       </Grid>
