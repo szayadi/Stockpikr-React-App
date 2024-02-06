@@ -6,6 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
@@ -22,6 +23,7 @@ export const StockQuotePage: React.FC = () => {
   const [disableWatchlistBtn, setDisableWatchlistBtn] = useState(false);
   const watchlist = useAppSelector((state) => state.watchlist.value);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const url = window.location.href;
@@ -54,10 +56,12 @@ export const StockQuotePage: React.FC = () => {
     };
     fetchQuoteData();
     fetchCompanyProfile();
-  }, []);
+    // setDisableWatchlistBtn(
+    //   !!quote && !watchlist.some((quoteInArray: IStockQuote) => quoteInArray.symbol === quote?.symbol)
+    // );
+  }, [navigate]);
 
   const handleAddToWatchlist = () => {
-    console.log('Adding to watchlist:', quote);
     if (quote && !watchlist.some((quoteInArray) => quoteInArray.symbol === quote?.symbol)) {
       dispatch(addStock(quote));
       setDisableWatchlistBtn(true);
