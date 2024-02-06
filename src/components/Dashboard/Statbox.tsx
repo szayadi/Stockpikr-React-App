@@ -9,7 +9,7 @@ interface StatBoxProps {
 }
 
 const StatBox: React.FC<StatBoxProps> = ({ stock }) => {
-  let isPositive = stock.changesPercentage > 0 ? 'green' : 'red';
+  const isPositive = stock.changesPercentage > 0 ? 'green' : 'red';
 
   return (
     <Card sx={{}} elevation={0}>

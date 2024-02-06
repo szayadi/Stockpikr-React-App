@@ -19,12 +19,14 @@ const SearchBar: React.FC = () => {
     if (value.trim().length === 0) {
       return;
     }
+
+    // debounce
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = setTimeout(() => {
       fetchData(value);
-    }, 1000);
+    }, 600);
   };
 
   const handleClose = () => {
@@ -59,7 +61,7 @@ const SearchBar: React.FC = () => {
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      if (searchOptions.filter((options) => options.symbol === inputSearch)) {
+      if (searchOptions.find((options) => options.symbol.toLocaleLowerCase() === inputSearch.toLocaleLowerCase())) {
         navigate('/quote?symbol=' + inputSearch);
         window.location.reload();
       } else {

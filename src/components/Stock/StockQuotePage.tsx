@@ -24,12 +24,16 @@ export const StockQuotePage: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    const url = window.location.href;
+    const hashIndex = url.indexOf('#');
+    const hash = hashIndex !== -1 ? url.slice(hashIndex + 1) : '';
+    const searchParams = new URLSearchParams(hash);
+    const symbolParam = searchParams.get('/quote?symbol');
+    if (symbolParam == null) {
+      return;
+    }
+
     const fetchQuoteData = async () => {
-      const url = new URL(window.location.href);
-      const symbolParam = url.searchParams.get('symbol');
-      if (symbolParam == null) {
-        return;
-      }
       StockApiService.fetchStockQuote([symbolParam]).then((response): void => {
         if (response == null) {
           return;
@@ -40,11 +44,6 @@ export const StockQuotePage: React.FC = () => {
     };
 
     const fetchCompanyProfile = async () => {
-      const url = new URL(window.location.href);
-      const symbolParam = url.searchParams.get('symbol');
-      if (symbolParam == null) {
-        return;
-      }
       StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
         if (response == null) {
           return;
@@ -53,7 +52,6 @@ export const StockQuotePage: React.FC = () => {
         setCompanyProfile(company);
       });
     };
-
     fetchQuoteData();
     fetchCompanyProfile();
   }, []);
