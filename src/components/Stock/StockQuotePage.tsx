@@ -6,14 +6,13 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { SymbolInfo, TechnicalAnalysis } from 'react-ts-tradingview-widgets';
+import { FundamentalData, SymbolInfo, TechnicalAnalysis } from 'react-ts-tradingview-widgets';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { StockApiService } from '../../services/StockApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import CompanyOverviewCard from './Components/CompanyOverviewCard';
-import StockCard from './Components/StockCard';
 import TradingViewChart from './Components/TradingViewChart';
 
 export const StockQuotePage: React.FC = () => {
@@ -101,8 +100,8 @@ export const StockQuotePage: React.FC = () => {
         </Grid>
         <Grid xs={4}>
           <Item elevation={0}>
-            <SymbolInfo symbol={quote.symbol} colorTheme="dark" autosize></SymbolInfo>
-            <StockCard stock={quote} />
+            <SymbolInfo symbol={quote.symbol} autosize></SymbolInfo>
+            <FundamentalData symbol={quote.symbol} height={760} width="100%"></FundamentalData>
           </Item>
         </Grid>
         <Grid xs={8}>
@@ -117,7 +116,7 @@ export const StockQuotePage: React.FC = () => {
         </Grid>
         <Grid xs={8}>
           <Item elevation={0}>
-            <TechnicalAnalysis symbol={quote.symbol || ''} colorTheme="dark" width="100%"></TechnicalAnalysis>
+            <TechnicalAnalysis symbol={quote.symbol || ''} width="100%"></TechnicalAnalysis>
           </Item>
         </Grid>
       </Grid>

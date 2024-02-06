@@ -9,8 +9,22 @@ import {
   Paper,
   ThemeProvider,
   Typography,
+  TypographyProps,
   createTheme
 } from '@mui/material';
+
+function Copyright(props: TypographyProps<'span', { component?: 'span' }>) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="#">
+        Stockpikr
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -67,14 +81,7 @@ export default function SignIn() {
             >
               Sign In with Google
             </Button>
-            <Typography variant="body2" color="text.secondary" align="center">
-              {'Copyright © '}
-              <Link color="inherit" href="#">
-                Stockpikr
-              </Link>{' '}
-              {new Date().getFullYear()}
-              {'.'}
-            </Typography>
+            <Copyright></Copyright>
           </Box>
         </Grid>
       </Grid>

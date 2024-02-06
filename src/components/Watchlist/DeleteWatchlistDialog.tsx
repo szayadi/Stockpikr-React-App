@@ -8,6 +8,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import * as React from 'react';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 
 // Define the prop types for the component

@@ -1,5 +1,6 @@
 import { Grid, Paper, styled } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { TickerTape } from 'react-ts-tradingview-widgets';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { StockApiService } from '../../services/StockApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
@@ -36,6 +37,11 @@ const Dashboard: React.FC = () => {
 
   return (
     <Grid container sx={{ marginTop: '50px' }}>
+      <Grid item xs={12}>
+        <Item elevation={0}>
+          <TickerTape></TickerTape>
+        </Item>
+      </Grid>
       <Grid item xs={8}>
         <Item elevation={0}>
           <StockDataTable data={stockData} />

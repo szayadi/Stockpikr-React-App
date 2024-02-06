@@ -15,7 +15,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ symbol }) => {
         autosize: true,
         symbol: symbol || '',
         timezone: 'America/Vancouver',
-        theme: 'dark',
+        theme: 'light',
         style: '1',
         locale: 'en',
         enable_publishing: false,

@@ -11,7 +11,7 @@ import { useAsyncError } from './GlobalErrorBoundary';
 const SearchBar: React.FC = () => {
   const [searchOptions, setSearchOptions] = useState<IStockData[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
   const throwError = useAsyncError();
 

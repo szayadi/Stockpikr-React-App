@@ -2,6 +2,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Button,
   Container,
   IconButton,
   Menu,
@@ -10,16 +11,16 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import LogoImage from '../assets/images/logo+title-light-mode.png';
 import '../index.css';
 import SearchBar from './SearchBar';
-import UserSettingsDialog from './UserSettingsDialog';
 
 const pages = [
   { title: 'Dashboard', key: 'dashboard' },
-  { title: 'Watchlist', key: 'watchlist' }
+  { title: 'Watchlist', key: 'watchlist' },
+  { title: 'My Positions', key: 'positions' }
 ];
 const settings = [
   { title: 'Settings', key: 'settings' },
@@ -27,9 +28,9 @@ const settings = [
 ];
 
 function NavigationHeader() {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -46,17 +47,16 @@ function NavigationHeader() {
     setAnchorElUser(null);
   };
 
-  const handleSettingsClick = () => {
-    handleCloseUserMenu(); // Close the user menu
-    setOpenSettingsDialog(true); // Open the settings dialog
+  const handleLogIn = () => {
+    setIsLoggedIn(true);
   };
 
-  const handleCloseSettingsDialog = () => {
-    setOpenSettingsDialog(false); // Close the settings dialog
+  const handleLogOut = () => {
+    setIsLoggedIn(false);
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'var(--navbar-bg-color)' }}>
+    <AppBar position="static" sx={{ backgroundColor: 'var(--navbar-bg-color)', fontFamily: 'Raleway' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/" style={{ textDecoration: 'none' }}>
@@ -128,46 +128,77 @@ function NavigationHeader() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((s) => (
-                <MenuItem key={s.key} onClick={s.key === 'settings' ? handleSettingsClick : handleCloseUserMenu}>
-                  {s.key === 'settings' ? (
-                    <Typography style={{ textAlign: 'center', color: 'black' }}>{s.title}</Typography>
-                  ) : (
-                    <Link style={{ textAlign: 'center', color: 'black', textDecoration: 'none' }} to={s.key}>
+          {isLoggedIn ? (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((s) =>
+                  s.key === 'logout' ? (
+                    <MenuItem
+                      key={s.key}
+                      onClick={handleLogOut}
+                      style={{ textDecoration: 'none', fontFamily: 'Raleway', fontWeight: 500 }}
+                    >
                       {s.title}
-                    </Link>
-                  )}
-                </MenuItem>
-              ))}
-              <UserSettingsDialog
-                open={openSettingsDialog}
-                handleClose={handleCloseSettingsDialog}
-                initialValues={{}}
-              />
-            </Menu>
-          </Box>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem key={s.key} onClick={handleCloseUserMenu}>
+                      <Link
+                        style={{
+                          textAlign: 'center',
+                          color: 'black',
+                          textDecoration: 'none',
+                          fontFamily: 'Raleway',
+                          fontWeight: 500
+                        }}
+                        to={s.key}
+                      >
+                        {s.title}
+                      </Link>
+                    </MenuItem>
+                  )
+                )}
+              </Menu>
+            </Box>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleLogIn}
+              style={{
+                backgroundColor: 'var(--navbar-bg-color)',
+                textDecoration: 'none',
+                borderRadius: '20px',
+                padding: '10px 20px',
+                fontWeight: 'bold',
+                fontFamily: 'inherit',
+                border: '2px white solid'
+              }}
+              component={Link}
+              to="/signin"
+            >
+              Sign In
+            </Button>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
