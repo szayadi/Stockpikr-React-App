@@ -41,7 +41,7 @@ export class BaseApiService {
     }
   }
 
-  protected static async postData<T>(url: string, data: any): Promise<T | null> {
+  protected static async postData<T>(url: string, data: unknown): Promise<T | null> {
     try {
       const response = await BaseApiService.apiService.post<T>(url, data);
       return response.data;

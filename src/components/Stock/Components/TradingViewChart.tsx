@@ -6,61 +6,50 @@ interface TradingViewChartProps {
 
 const TradingViewChart: React.FC<TradingViewChartProps> = ({ symbol }) => {
   useEffect(() => {
-    const loadTradingViewLibrary = async () => {
-      try {
-        // Load TradingView library dynamically
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://s3.tradingview.com/tv.js';
-        script.async = true;
-        document.head.appendChild(script);
-        await new Promise<void>((resolve, reject) => {
-          script.onload = () => {
-            resolve();
-          };
-          script.onerror = reject;
-        });
-      } catch (error) {
-        throw new Error('Error loading TradingView library:' + error);
-      }
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/tv.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    script.onload = () => {
+      new window.TradingView.widget({
+        autosize: true,
+        symbol: symbol || '',
+        timezone: 'America/Vancouver',
+        theme: 'dark',
+        style: '1',
+        locale: 'en',
+        enable_publishing: false,
+        withdateranges: true,
+        range: 'YTD',
+        hide_side_toolbar: false,
+        allow_symbol_change: true,
+        details: true,
+        hotlist: true,
+        calendar: true,
+        show_popup_button: true,
+        popup_width: '1000',
+        popup_height: '650',
+        container_id: 'tradingview_f71d8'
+      });
     };
+    document.body.appendChild(script);
 
-    const initializeWidget = async () => {
-      try {
-        // Ensure TradingView library is loaded
-        await loadTradingViewLibrary();
-
-        // Initialize TradingView widget
-        new window.TradingView.widget({
-          symbol: symbol,
-          width: '100%',
-          height: '800',
-          locale: 'en',
-          autosize: true,
-          //theme: 'dark',
-          toolbar_bg: '#f1f3f6',
-          enable_publishing: false,
-          allow_symbol_change: true,
-          details: true,
-          hotlist: true,
-          calendar: true,
-          studies: ['RSI@tv-basicstudies'],
-          container_id: 'tv_chart_container',
-          fullscreen: true,
-          interval: '1D',
-          container: 'tv_chart_container',
-          disabled_features: [],
-          enabled_features: []
-        });
-      } catch (error) {
-        throw new Error('Error initializing TradingView chart:' + error);
-      }
+    // Clean up
+    return () => {
+      document.body.removeChild(script);
     };
+  }, []);
 
-    initializeWidget();
-  }, [symbol]);
-
-  return <div id="tv_chart_container" style={{ width: '100%', height: '800px' }}></div>;
+  return (
+    <div className="tradingview-widget-container" style={{ height: '1000px', width: '100%' }}>
+      <div id="tradingview_f71d8" style={{ height: 'calc(100% - 32px)', width: '100%' }}></div>
+      <div className="tradingview-widget-copyright">
+        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
+          <span className="blue-text">Track all markets on TradingView</span>
+        </a>
+      </div>
+    </div>
+  );
 };
 
 export default TradingViewChart;

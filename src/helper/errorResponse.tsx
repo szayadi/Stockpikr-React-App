@@ -1,6 +1,16 @@
-export const getErrorResponse = (res: any): string => {
+interface ErrorMessage {
+  'Error Message': string;
+}
+
+export const getErrorResponse = (res: unknown): string => {
   if (res == null) {
     return '';
   }
-  return res['Error Message'];
+
+  if (typeof res === 'object' && 'Error Message' in res) {
+    const errorResponse = res as ErrorMessage;
+    return errorResponse['Error Message'];
+  }
+
+  return '';
 };

@@ -14,13 +14,19 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { serializeError } from 'serialize-error';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
 
+export interface TempWatchListData {
+  symbol: string;
+  currentPrice: number;
+  alertPrice: number;
+  nearHigh: number;
+  highest: number;
+}
 function createData(symbol: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
   return { symbol, currentPrice, alertPrice, nearHigh, highest };
 }
@@ -31,7 +37,7 @@ const userID = '000000000000000000001'; // FIXME: change to actual user id when 
 export default function Watchlist() {
   const [wlKey, setWlKey] = useState('');
   const [wlKeys, setWlKeys] = useState<string[]>([]);
-  const [watchLists, setWatchLists] = useState<{ [key: string]: any[] }>();
+  const [watchLists, setWatchLists] = useState<{ [key: string]: TempWatchListData[] }>();
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const [isDeleteWatchListDialog, setDeleteWatchlistDialog] = useState(false);
   const navigate = useNavigate();
@@ -40,7 +46,7 @@ export default function Watchlist() {
   useEffect(() => {
     const queryWatchLists = async () => {
       const wls = await WatchlistApiService.fetchWatchListsByUserId(userID);
-      const tempWls: { [key: string]: any[] } = {};
+      const tempWls: { [key: string]: TempWatchListData[] } = {};
       wls.forEach((wl, i) => {
         if (i === 0) setWlKey(wl.name);
         tempWls[wl.name] = [createData(wl.name, 0, 0, 0, 0)]; // FIXME: the watch list query should also get list of stocks as well
@@ -69,7 +75,7 @@ export default function Watchlist() {
         setWlKeys(Object.keys(watchLists));
         setWlKey(value);
       } catch (error) {
-        console.error(JSON.stringify(serializeError(error)));
+        //console.error(JSON.stringify(serializeError(error)));
       }
     }
   };

@@ -6,6 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { SymbolInfo, TechnicalAnalysis } from 'react-ts-tradingview-widgets';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
@@ -100,12 +101,13 @@ export const StockQuotePage: React.FC = () => {
         </Grid>
         <Grid xs={4}>
           <Item elevation={0}>
+            <SymbolInfo symbol={quote.symbol} colorTheme="dark" autosize></SymbolInfo>
             <StockCard stock={quote} />
           </Item>
         </Grid>
         <Grid xs={8}>
           <Item elevation={0}>
-            <TradingViewChart symbol={quote.symbol} />
+            <TradingViewChart symbol={quote.symbol || ''} />
           </Item>
         </Grid>
         <Grid xs={4}>
@@ -114,7 +116,9 @@ export const StockQuotePage: React.FC = () => {
           </Item>
         </Grid>
         <Grid xs={8}>
-          <Item elevation={0}>xs=8</Item>
+          <Item elevation={0}>
+            <TechnicalAnalysis symbol={quote.symbol || ''} colorTheme="dark" width="100%"></TechnicalAnalysis>
+          </Item>
         </Grid>
       </Grid>
     </Box>
