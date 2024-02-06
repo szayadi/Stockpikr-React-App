@@ -1,0 +1,54 @@
+name: Deploy on Main Push
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  REACT_APP_GOOGLE_OAUTH_URL: http://stockpikr.eastus2.cloudapp.azure.com:8080/login/federated/google
+  GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Ring-A-Bell/StockPikr_Frontend
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Set up Git Identity
+        run: |
+          git config --global user.email "adi10rox@gmail.com"
+          git config --global user.name "Ring-A-Bell"
+
+      - run: git config --global url.https://$GH_ACCESS_TOKEN@github.com/.insteadOf https://github.com/
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            ./node_modules/
+          key: ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install Dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          npm install -g yarn
+          yarn
+
+      - name: Build
+        run: yarn build
