@@ -10,7 +10,7 @@ import { StockApiService } from '../services/StockApiService';
 const SearchBar: React.FC = () => {
   const [searchOptions, setSearchOptions] = useState<IStockData[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
 
   const handleOnChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {

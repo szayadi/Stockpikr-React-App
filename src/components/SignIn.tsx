@@ -9,10 +9,11 @@ import {
   Paper,
   ThemeProvider,
   Typography,
+  TypographyProps,
   createTheme
 } from '@mui/material';
 
-function Copyright(props: any) {
+function Copyright(props: TypographyProps<'span', { component?: 'span' }>) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}

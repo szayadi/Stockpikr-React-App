@@ -59,7 +59,7 @@ export default function Settings() {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: '7%' }
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: '11%' }
           }}
         >
           {drawer}
