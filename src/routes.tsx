@@ -3,12 +3,12 @@ import Dashboard from './components/Dashboard/Dashboard';
 import LandingPage from './components/LandingPage';
 import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
-import { StockDetails } from './components/StockDetails/StockDetails';
+import { StockQuotePage } from './components/Stock/StockQuotePage';
 import SwaggerDocs from './components/Swagger/SwaggerDocs';
 import { Watchlist } from './components/Watchlist/Watchlist';
 import Positions from './components/Positions/Positions';
 
-export default () => (
+const routes = () => (
   <Routes>
     <Route path="/" element={<LandingPage />} />
     <Route path="/watchlist" element={<Watchlist />} />
@@ -17,6 +17,7 @@ export default () => (
     <Route path="/settings" element={<Settings />} />
     <Route path="/signin" element={<SignIn />} />
     <Route path="/swaggerDocs" element={<SwaggerDocs />} />
-    <Route path="/details" element={<StockDetails />} />
+    <Route path="/quote" element={<StockQuotePage />} />
   </Routes>
 );
+export default routes;

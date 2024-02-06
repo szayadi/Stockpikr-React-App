@@ -1,38 +1,39 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
 import React from 'react';
+import { dateFormatter } from '../../helper/dateFormatter';
+import { numberFormatter, percentageFormatter } from '../../helper/numberFormatter';
+import { IStockQuote } from '../../interfaces/IStockQuote';
 
 interface StatBoxProps {
-  title: string;
-  subtitle: string;
-  icon: React.ReactNode;
-  difference: string;
+  stock: IStockQuote;
 }
 
-const StatBox: React.FC<StatBoxProps> = ({ title, subtitle, icon, difference }) => {
-  let differenceColor = parseFloat(difference) > 0 ? 'green' : 'red';
-  let differenceEquation = parseFloat(difference) > 0 ? '+' : '';
+const StatBox: React.FC<StatBoxProps> = ({ stock }) => {
+  const isPositive = stock.changesPercentage > 0 ? 'green' : 'red';
 
   return (
-    <Box width="100%">
-      <Box display="flex" justifyContent="center">
-        <Paper
-          sx={{ backgroundColor: 'white', borderRadius: '10px', margin: '10px', padding: '10px', alignItems: 'center' }}
-          elevation={3}
-        >
-          {icon}
-          <Typography variant="h4" fontWeight="bold" sx={{ color: 'black' }}>
-            {title}
-          </Typography>
-          <Typography variant="subtitle1" sx={{ color: 'black' }}>
-            {subtitle}
-          </Typography>
-          <Typography variant="h6" fontStyle="italic" sx={{ color: differenceColor }}>
-            {differenceEquation}
-            {difference}
-          </Typography>
-        </Paper>
-      </Box>
-    </Box>
+    <Card sx={{}} elevation={0}>
+      <CardContent>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h6" fontWeight="bold" sx={{ color: 'black' }}>
+              {stock.name} ({stock.symbol})
+            </Typography>
+            <Typography variant="h6" fontWeight="bold" sx={{ color: 'black' }}>
+              {stock.price}
+            </Typography>
+            <Typography variant="caption" fontWeight="italic" sx={{ color: 'black' }}>
+              as of {dateFormatter(stock.timestamp)}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="h6" fontStyle="italic" sx={{ color: isPositive ? 'green' : 'red' }}>
+              {numberFormatter.format(stock.change)} ({percentageFormatter(stock.changesPercentage)})
+            </Typography>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
   );
 };
 

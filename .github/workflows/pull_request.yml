@@ -1,9 +1,9 @@
 name: Deploy on Main Push
 
 on:
-  push:
+  pull_request:
     branches:
-      - master
+      - '*'
 
 env:
   REACT_APP_GOOGLE_OAUTH_URL: http://stockpikr.eastus2.cloudapp.azure.com:8080/login/federated/google
@@ -50,7 +50,5 @@ jobs:
           npm install -g yarn
           yarn
 
-      - name: Deploy
-        run: yarn deploy
-        env:
-          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Build
+        run: yarn build
