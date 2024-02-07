@@ -67,7 +67,7 @@ export default function Settings() {
       </Box>
 
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
-        <Typography paragraph>
+        <Typography component={'span'}>
           {selectedComponent && React.createElement(componentMapping[selectedComponent])}
         </Typography>
       </Box>
