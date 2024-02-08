@@ -132,8 +132,8 @@ export default function Watchlist() {
             Object.keys(watchlists).length > 0 &&
             wlKey &&
             watchlists[wlKey].map((row) => (
+              // TODO: set unique key for the watchlist tickers
               <TableRow
-                key={row?.symbol}
                 onClick={() => {
                   navigate('/quote');
                 }}

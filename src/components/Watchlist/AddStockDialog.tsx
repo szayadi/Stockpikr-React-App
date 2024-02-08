@@ -37,7 +37,6 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   const [addStockId, setAddStockId] = useState('');
   const [addStockPrice, setAddStockPrice] = useState('');
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
-  const [selectedWatchlistId, setSelectedWatchlistId] = useState('');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -57,7 +56,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   };
 
   const onConfirmAddStockDialog = async () => {
-    console.log({ addStockId, addStockPrice, stockTrackingDays, selectedWatchlistId });
+    console.log({ addStockId, addStockPrice, stockTrackingDays });
     const tickers = [{ symbol: addStockId, alertPrice: Number(addStockPrice) }];
     const res = await WatchlistApiService.addStockToWatchlist(tickers, watchlistName, userID);
     console.log('response: ', res);
