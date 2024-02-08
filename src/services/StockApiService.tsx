@@ -31,7 +31,7 @@ export class StockApiService {
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        console.error('Error fetching company search results:', error.response.data);
+        //console.error('Error fetching company search results:', error.response.data);
         return error.response.data;
       }
     }
