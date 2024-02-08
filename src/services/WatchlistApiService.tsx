@@ -38,6 +38,11 @@ export class WatchlistApiService extends ApiService {
     return response;
   }
 
+  public static async addStockToWatchlist(wl: IWatchlistModel, watchlistID: string): Promise<string | null> {
+    const response = await super.putData<string>(`${this.endpoint}/${watchlistID}`, wl);
+    return response;
+  }
+
   public static async deleteWatchlist(watchlistName: string): Promise<DeleteResult | null> {
     const response = await super.deleteData<DeleteResult>(`${this.endpoint}/${watchlistName}`);
     return response;

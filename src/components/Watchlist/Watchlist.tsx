@@ -35,17 +35,77 @@ export default function Watchlist() {
   const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const queryWatchlists = async () => {
-      const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
-      const tempWls: { [key: string]: any[] } = {};
-      wls.forEach((wl, i) => {
-        if (i === 0) setWlKey(wl.watchlistName);
-        tempWls[wl.watchlistName] = [createData(wl.watchlistName, 0, 0, 0, 0)]; // FIXME: the watchlist query should also get list of stocks as well
+  const queryWatchlists = async () => {
+    const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
+    // const wls = [
+    //   {
+    //     _id: 'randomId1',
+    //     watchlistName: 'watchlist2',
+    //     userID: 'randomUserId1',
+    //     tickers: [
+    //       {
+    //         symbol: 'AAPL',
+    //         alertPrice: 125,
+    //         _id: 'randomId2'
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     _id: 'randomId3',
+    //     watchlistName: 'Watchlist_FAANG',
+    //     userID: 'randomUserId1',
+    //     tickers: [
+    //       {
+    //         symbol: 'NFLX',
+    //         alertPrice: 420,
+    //         _id: 'randomId4'
+    //       },
+    //       {
+    //         symbol: 'META',
+    //         alertPrice: 304,
+    //         _id: 'randomId5'
+    //       },
+    //       {
+    //         symbol: 'AAPL',
+    //         alertPrice: 69,
+    //         _id: 'randomId6'
+    //       },
+    //       {
+    //         symbol: 'AMZN',
+    //         alertPrice: 50,
+    //         _id: 'randomId7'
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     _id: 'randomId8',
+    //     watchlistName: 'Temp_Watchlist3',
+    //     userID: 'randomUserId1',
+    //     tickers: [
+    //       {
+    //         symbol: 'AAPL',
+    //         alertPrice: 3000,
+    //         _id: 'randomId9'
+    //       }
+    //     ]
+    //   }
+    // ];
+
+    const tempWls: { [key: string]: any[] } = {};
+    wls?.forEach((wl, i) => {
+      if (i === 0) setWlKey(wl.watchlistName);
+      if (!tempWls[wl.watchlistName]) {
+        tempWls[wl.watchlistName] = [];
+      }
+      wl.tickers?.forEach((ticker, j) => {
+        tempWls[wl.watchlistName].push(createData(ticker.symbol, j, ticker.alertPrice, 0, 0));
       });
-      setWatchlists(tempWls);
-      setWlKeys(Object.keys(tempWls));
-    };
+    });
+    setWlKeys(Object.keys(tempWls));
+    setWatchlists(tempWls);
+  };
+
+  useEffect(() => {
     queryWatchlists();
   }, []);
 
@@ -60,10 +120,14 @@ export default function Watchlist() {
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        watchlists[watchlistName] = [createData(name, 0, 0, 0, 0)];
-        setWatchlists(watchlists);
-        setWlKeys(Object.keys(watchlists));
-        setWlKey(watchlistName);
+        // const tempWls = watchlists;
+        // tempWls[name]
+        // watchlists[watchlistName] = [createData(name, 0, 0, 0, 0)];
+        // setWatchlists(watchlists);
+        // setWlKeys(Object.keys(watchlists));
+        // setWlKey(watchlistName);
+        queryWatchlists();
+        setWlKey(name);
       } catch (error) {
         alert(JSON.stringify(serializeError(error)));
       }
@@ -127,19 +191,19 @@ export default function Watchlist() {
             wlKey &&
             watchlists[wlKey].map((row) => (
               <TableRow
-                key={row.symbol}
+                key={row?.symbol}
                 onClick={() => {
                   navigate('/quote');
                 }}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.symbol}
+                  {row?.symbol}
                 </TableCell>
-                <TableCell align="right">{row.currentPrice}</TableCell>
-                <TableCell align="right">{row.alertPrice}</TableCell>
-                <TableCell align="right">{row.nearHigh}</TableCell>
-                <TableCell align="right">{row.highest}</TableCell>
+                <TableCell align="right">{row?.currentPrice}</TableCell>
+                <TableCell align="right">{row?.alertPrice}</TableCell>
+                <TableCell align="right">{row?.nearHigh}</TableCell>
+                <TableCell align="right">{row?.highest}</TableCell>
               </TableRow>
             ))}
         </TableBody>

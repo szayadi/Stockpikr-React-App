@@ -9,11 +9,13 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Select, // Added Select import
   TextField,
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { WatchlistApiService } from '../../services/WatchlistApiService';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
@@ -26,6 +28,8 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({ isAddStockDialog, setAd
   const [addStockId, setAddStockId] = useState('');
   const [addStockPrice, setAddStockPrice] = useState('');
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
+  const [selectedWatchlistId, setSelectedWatchlistId] = useState('');
+  const [watchlists, setWatchlists] = useState<string[]>([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -44,15 +48,48 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({ isAddStockDialog, setAd
     setAddStockDialog(false);
   };
 
-  const onConfirmAddStockDialog = () => {
-    //console.log({ addStockId, addStockPrice, stockTrackingDays });
+  const onConfirmAddStockDialog = async () => {
+    console.log({ addStockId, addStockPrice, stockTrackingDays, selectedWatchlistId });
+    const data = {
+      watchlistName: selectedWatchlistId,
+      userID: '',
+      tickers: [{ symbol: addStockId, alertPrice: Number(addStockPrice) }]
+    };
+    console.log(data);
+    const res = await WatchlistApiService.addStockToWatchlist(data, selectedWatchlistId);
   };
+
+  useEffect(() => {
+    const queryWatchlists = async () => {
+      const wls = await WatchlistApiService.fetchWatchlistsByUserId('000000000000000000001');
+      const tempWls: string[] = [];
+      console.log('wals 0 ', wls);
+      wls?.forEach((wl, i) => {
+        if (i === 0) setSelectedWatchlistId(wl.watchlistName);
+        tempWls.push(wl.watchlistName);
+      });
+      setWatchlists(tempWls);
+    };
+    queryWatchlists();
+  }, []);
 
   return (
     <Dialog open={isAddStockDialog} onClose={() => setAddStockDialog(false)} fullScreen={fullScreen}>
       <DialogTitle>Add a new stock</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a new stock, please enter the stock's unique Id</DialogContentText>
+        <DialogContentText>
+          To add a new stock, please select a watchlist and enter the stock's Ticker and Buy Price
+        </DialogContentText>
+        <FormControl fullWidth>
+          <Select native value={selectedWatchlistId} onChange={(e) => setSelectedWatchlistId(e.target.value)}>
+            {watchlists.map((watchlist) => (
+              <option key={watchlist} value={watchlist}>
+                {watchlist}
+              </option>
+            ))}
+            {/* Add more options based on the watchlist ids */}
+          </Select>
+        </FormControl>
         <TextField
           error={!isAddStockIdValid()}
           autoFocus
