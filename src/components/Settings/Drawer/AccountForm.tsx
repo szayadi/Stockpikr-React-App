@@ -11,8 +11,9 @@ export interface IAccountField {
 export const accountFields: IAccountField[] = [
   { label: 'First Name', name: 'firstName', type: 'text' },
   { label: 'Last Name', name: 'lastName', type: 'text' },
-  { label: 'Address', name: 'address', type: 'text' },
-  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
+  { label: 'Email ID', name: 'email', type: 'text' },
+  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+  { label: 'Profile Picture', name: 'profilePic', type: 'text' }
 ];
 
 export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) => {
@@ -25,8 +26,9 @@ export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) 
   const accountFields: IAccountField[] = [
     { label: 'First Name', name: 'firstName', type: 'text' },
     { label: 'Last Name', name: 'lastName', type: 'text' },
-    { label: 'Address', name: 'address', type: 'text' },
-    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
+    { label: 'Email ID', name: 'email', type: 'text' },
+    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+    { label: 'Profile Picture', name: 'profilePic', type: 'text' }
   ];
 
   const handleFormSubmit = (e: React.FormEvent) => {
