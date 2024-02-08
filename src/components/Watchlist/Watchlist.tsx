@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
+import { userID } from '../../helper/constants';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
@@ -24,7 +25,6 @@ function createData(symbol: string, currentPrice: number, alertPrice: number, ne
   return { symbol, currentPrice, alertPrice, nearHigh, highest };
 }
 
-const userID = '000000000000000000001'; // FIXME: change to actual user id when the user feature is completed
 // const defaultStockSymbol = 'APPLE'; // FIXME:
 
 export default function Watchlist() {
@@ -37,69 +37,13 @@ export default function Watchlist() {
 
   const queryWatchlists = async () => {
     const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
-    // const wls = [
-    //   {
-    //     _id: 'randomId1',
-    //     watchlistName: 'watchlist2',
-    //     userID: 'randomUserId1',
-    //     tickers: [
-    //       {
-    //         symbol: 'AAPL',
-    //         alertPrice: 125,
-    //         _id: 'randomId2'
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     _id: 'randomId3',
-    //     watchlistName: 'Watchlist_FAANG',
-    //     userID: 'randomUserId1',
-    //     tickers: [
-    //       {
-    //         symbol: 'NFLX',
-    //         alertPrice: 420,
-    //         _id: 'randomId4'
-    //       },
-    //       {
-    //         symbol: 'META',
-    //         alertPrice: 304,
-    //         _id: 'randomId5'
-    //       },
-    //       {
-    //         symbol: 'AAPL',
-    //         alertPrice: 69,
-    //         _id: 'randomId6'
-    //       },
-    //       {
-    //         symbol: 'AMZN',
-    //         alertPrice: 50,
-    //         _id: 'randomId7'
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     _id: 'randomId8',
-    //     watchlistName: 'Temp_Watchlist3',
-    //     userID: 'randomUserId1',
-    //     tickers: [
-    //       {
-    //         symbol: 'AAPL',
-    //         alertPrice: 3000,
-    //         _id: 'randomId9'
-    //       }
-    //     ]
-    //   }
-    // ];
-
-    const tempWls: { [key: string]: any[] } = {};
-    wls?.forEach((wl, i) => {
+    let tempWls: { [key: string]: any[] } = {};
+    wls.forEach((wl, i) => {
       if (i === 0) setWlKey(wl.watchlistName);
       if (!tempWls[wl.watchlistName]) {
         tempWls[wl.watchlistName] = [];
       }
-      wl.tickers?.forEach((ticker, j) => {
-        tempWls[wl.watchlistName].push(createData(ticker.symbol, j, ticker.alertPrice, 0, 0));
-      });
+      tempWls[wl.watchlistName] = wl.tickers;
     });
     setWlKeys(Object.keys(tempWls));
     setWatchlists(tempWls);
@@ -120,13 +64,11 @@ export default function Watchlist() {
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        // const tempWls = watchlists;
-        // tempWls[name]
-        // watchlists[watchlistName] = [createData(name, 0, 0, 0, 0)];
-        // setWatchlists(watchlists);
-        // setWlKeys(Object.keys(watchlists));
-        // setWlKey(watchlistName);
-        queryWatchlists();
+        watchlists[watchlistName] = [];
+        setWatchlists(watchlists);
+        setWlKeys(Object.keys(watchlists));
+        setWlKey(watchlistName);
+        // queryWatchlists();
         setWlKey(name);
       } catch (error) {
         alert(JSON.stringify(serializeError(error)));
@@ -208,7 +150,13 @@ export default function Watchlist() {
             ))}
         </TableBody>
       </Table>
-      <AddStockDialog watchlistName={wlKey} isAddStockDialog={isAddStockDialog} setAddStockDialog={setAddStockDialog} />
+      <AddStockDialog
+        watchlistName={wlKey}
+        watchlists={watchlists}
+        setWatchlists={setWatchlists}
+        isAddStockDialog={isAddStockDialog}
+        setAddStockDialog={setAddStockDialog}
+      />
       <DeleteWatchListDialog
         watchlistName={wlKey}
         isDeleteWatchlistDialog={isDeleteWatchlistDialog}

@@ -1,5 +1,5 @@
 import { DeleteResult } from '../interfaces/IMongo';
-import { IWatchlistModel } from '../interfaces/IWatchlistModel';
+import { IWatchlistModel, Ticker } from '../interfaces/IWatchlistModel';
 import { ApiService } from './ApiService';
 
 export class WatchlistApiService extends ApiService {
@@ -38,8 +38,12 @@ export class WatchlistApiService extends ApiService {
     return response;
   }
 
-  public static async addStockToWatchlist(wl: IWatchlistModel, watchlistID: string): Promise<string | null> {
-    const response = await super.putData<string>(`${this.endpoint}/${watchlistID}`, wl);
+  public static async addStockToWatchlist(
+    tickers: Ticker[],
+    watchlistID: string,
+    userID: string = ''
+  ): Promise<string | null> {
+    const response = await super.putData<string>(`${this.endpoint}/${watchlistID}?userId=${userID}`, tickers);
     return response;
   }
 
