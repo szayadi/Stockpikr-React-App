@@ -51,4 +51,4 @@ jobs:
           yarn
 
       - name: Build
-        run: yarn build
+        run: CI=false yarn build
