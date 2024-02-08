@@ -39,7 +39,7 @@ export class WatchlistApiService extends ApiService {
   }
 
   public static async addStockToWatchlist(
-    tickers: Ticker[],
+    tickers: Omit<Ticker, 'nearHigh' | 'highest' | 'currentPrice'>[],
     watchlistID: string,
     userID: string = ''
   ): Promise<string | null> {

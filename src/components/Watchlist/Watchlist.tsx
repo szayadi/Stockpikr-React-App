@@ -1,38 +1,50 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
-} from '@mui/material';
+import { Box, Button, ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
+import { Ticker } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
+import { EnhancedTableToolbar, WatchlistTableHeadWithCheckbox } from './THeadCheckBoxAndSort';
 
-function createData(symbol: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
-  return { symbol, currentPrice, alertPrice, nearHigh, highest };
-}
-
-// const defaultStockSymbol = 'APPLE'; // FIXME:
+type Order = 'asc' | 'desc';
 
 export default function Watchlist() {
+  // watchlists state props
   const [wlKey, setWlKey] = useState('');
   const [wlKeys, setWlKeys] = useState<string[]>([]);
   const [watchlists, setWatchlists] = useState<{ [key: string]: any[] }>();
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
+
+  // table props
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Ticker>('symbol');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Ticker) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelected = watchlists ? watchlists[wlKey].map((n) => n.symbol) : [];
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
   const navigate = useNavigate();
 
   const queryWatchlists = async () => {
@@ -117,16 +129,16 @@ export default function Watchlist() {
           </Button>
         </ButtonGroup>
       </Box>
+      <EnhancedTableToolbar numSelected={selected.length} />
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Symbol</TableCell>
-            <TableCell align="right">Current Price</TableCell>
-            <TableCell align="right">Alert Price</TableCell>
-            <TableCell align="right">Near High</TableCell>
-            <TableCell align="right">Highest</TableCell>
-          </TableRow>
-        </TableHead>
+        <WatchlistTableHeadWithCheckbox
+          numSelected={selected.length}
+          order={order}
+          orderBy={orderBy}
+          onSelectAllClick={handleSelectAllClick}
+          onRequestSort={handleRequestSort}
+          rowCount={watchlists ? watchlists[wlKey].length : 0}
+        />
         <TableBody>
           {watchlists &&
             Object.keys(watchlists).length > 0 &&
@@ -139,6 +151,7 @@ export default function Watchlist() {
                 }}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
+                <TableCell padding="checkbox"></TableCell>
                 <TableCell component="th" scope="row">
                   {row?.symbol}
                 </TableCell>
