@@ -31,7 +31,7 @@ export class ApiService {
       // TODO: handle status code error
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        console.error('Error fetching data:', error.response.data);
+        //console.error('Error fetching data:', error.response.data);
         alert(JSON.stringify(error.response.data));
       }
     }
@@ -45,7 +45,7 @@ export class ApiService {
       // TODO: handle status code error
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        console.error('Error posting data:', error.response.data);
+        //console.error('Error posting data:', error.response.data);
         alert(JSON.stringify(error.response.data));
       }
     }
@@ -72,7 +72,7 @@ export class ApiService {
       // TODO: handle status code error
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        console.error('Error deleting data:', error.response.data);
+        //console.error('Error deleting data:', error.response.data);
         alert(JSON.stringify(error.response.data));
       }
     }
