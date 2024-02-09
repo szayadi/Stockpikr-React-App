@@ -7,5 +7,7 @@ export interface IWatchlistModel {
 export interface Ticker {
   symbol: string; // should be unique
   alertPrice: number;
-  name?: string;
+  currentPrice: number;
+  nearHigh: number;
+  highest: number;
 }

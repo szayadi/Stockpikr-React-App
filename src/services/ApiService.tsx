@@ -52,6 +52,19 @@ export class ApiService {
     return null;
   }
 
+  protected static async putData<T>(url: string, data: any): Promise<T | null> {
+    try {
+      const response = await ApiService.apiService.put<T>(url, data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response != null) {
+        console.error('Error putting data:', error.response.data);
+        alert(JSON.stringify(error.response.data));
+      }
+    }
+    return null;
+  }
+
   protected static async deleteData<T>(url: string): Promise<T | null> {
     try {
       const response = await ApiService.apiService.delete<T>(url);

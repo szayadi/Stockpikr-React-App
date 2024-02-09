@@ -1,5 +1,5 @@
 import { DeleteResult } from '../interfaces/IMongo';
-import { IWatchlistModel } from '../interfaces/IWatchlistModel';
+import { IWatchlistModel, Ticker } from '../interfaces/IWatchlistModel';
 import { ApiService } from './ApiService';
 
 export class WatchlistApiService extends ApiService {
@@ -35,6 +35,15 @@ export class WatchlistApiService extends ApiService {
 
   public static async createWatchlist(wl: Omit<IWatchlistModel, 'watchlistID'>): Promise<string | null> {
     const response = await super.postData<string>(`${this.endpoint}`, wl);
+    return response;
+  }
+
+  public static async addStockToWatchlist(
+    tickers: Omit<Ticker, 'nearHigh' | 'highest' | 'currentPrice'>[],
+    watchlistID: string,
+    userID: string = ''
+  ): Promise<string | null> {
+    const response = await super.putData<string>(`${this.endpoint}/${watchlistID}?userId=${userID}`, tickers);
     return response;
   }
 
