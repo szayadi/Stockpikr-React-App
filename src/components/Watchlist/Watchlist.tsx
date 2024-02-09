@@ -168,7 +168,7 @@ export default function Watchlist() {
           orderBy={orderBy}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={watchlists ? watchlists[wlKey].length : 0}
+          rowCount={watchlists && watchlists[wlKey] ? watchlists[wlKey].length : 0}
         />
         <TableBody>
           {watchlists &&
