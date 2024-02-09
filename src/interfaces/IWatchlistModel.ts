@@ -11,3 +11,5 @@ export interface Ticker {
   nearHigh: number;
   highest: number;
 }
+
+export type Watchlists = { [key: string]: Ticker[] };

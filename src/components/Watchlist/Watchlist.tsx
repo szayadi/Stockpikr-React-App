@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
-import { Ticker } from '../../interfaces/IWatchlistModel';
+import { Ticker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
@@ -29,18 +29,23 @@ export default function Watchlist() {
   // watchlists state props
   const [wlKey, setWlKey] = useState('');
   const [wlKeys, setWlKeys] = useState<string[]>([]);
-  const [watchlists, setWatchlists] = useState<{ [key: string]: any[] }>();
+  const [watchlists, setWatchlists] = useState<Watchlists>({});
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
 
   // table props
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof Ticker>('symbol');
-  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isSelected = (symbol: string) => selected.indexOf(symbol) !== -1;
+
+  const refreshWatchlist = (watchlists: Watchlists)=> {
+    setWatchlists(watchlists);
+    setWlKeys(Object.keys(watchlists));
+  }
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Ticker) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -61,7 +66,7 @@ export default function Watchlist() {
 
   const queryWatchlists = async () => {
     const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
-    let tempWls: { [key: string]: any[] } = {};
+    let tempWls: Watchlists = {};
     wls.forEach((wl, i) => {
       if (i === 0) setWlKey(wl.watchlistName);
       if (!tempWls[wl.watchlistName]) {
@@ -69,8 +74,7 @@ export default function Watchlist() {
       }
       tempWls[wl.watchlistName] = wl.tickers;
     });
-    setWlKeys(Object.keys(tempWls));
-    setWatchlists(tempWls);
+    refreshWatchlist(tempWls);
   };
 
   useEffect(() => {
@@ -89,28 +93,19 @@ export default function Watchlist() {
           throw Error('Watchlist Id is empty after creating');
         }
         watchlists[watchlistName] = [];
-        setWatchlists(watchlists);
-        setWlKeys(Object.keys(watchlists));
+        refreshWatchlist(watchlists);
         setWlKey(watchlistName);
-        // queryWatchlists();
-        setWlKey(name);
       } catch (error) {
         alert(JSON.stringify(serializeError(error)));
       }
     }
   };
 
-  // const handleOpenDeleteWatchlistDialog = () => {
-  //   setDeleteWatchlistDialog(true);
-  // };
-
   const handleCloseDeleteWatchlistDialog = (watchlistName?: string) => {
     if (watchlistName && watchlists) {
       // re-render with deleted watchlist removed from our state so that we dont need to query watchlists again
       delete watchlists[watchlistName];
-      const keys = Object.keys(watchlists);
-      setWatchlists(watchlists);
-      setWlKeys(keys);
+      refreshWatchlist(watchlists);
       setWlKey('');
     }
     setDeleteWatchlistDialog(false);
@@ -120,9 +115,21 @@ export default function Watchlist() {
     setAddStockDialog(true);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, symbol: string) => {
+  const handleDeleteStocks = async () => {
+    const patchResult = await WatchlistApiService.deleteStocksInWatchlist(wlKey, selected);
+    console.log("patch result: ", patchResult)
+    if (patchResult && patchResult.matchedCount > 0 && patchResult.modifiedCount > 0) {
+      const tickers = watchlists[wlKey].filter((ticker) => !selected.includes(ticker.symbol));
+      watchlists[wlKey] = tickers;
+      refreshWatchlist(watchlists);
+    } else {
+      // TODO: handle delete stocks error here
+    }
+  };
+
+  const handleSelectStock = (event: React.MouseEvent<unknown>, symbol: string) => {
     const selectedIndex = selected.indexOf(symbol);
-    let newSelected: readonly string[] = [];
+    let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, symbol);
@@ -131,10 +138,7 @@ export default function Watchlist() {
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
   };
@@ -160,7 +164,7 @@ export default function Watchlist() {
           </Button>
         </ButtonGroup>
       </Box>
-      <EnhancedTableToolbar numSelected={selected.length} />
+      <EnhancedTableToolbar numSelected={selected.length} handleDeleteStocks={handleDeleteStocks} />
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <WatchlistTableHeadWithCheckbox
           numSelected={selected.length}
@@ -184,7 +188,7 @@ export default function Watchlist() {
                   // onClick={() => {
                   //   navigate('/quote');
                   // }}
-                  onClick={(event) => handleClick(event, row.symbol)}
+                  onClick={(event) => handleSelectStock(event, row.symbol)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}

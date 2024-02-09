@@ -17,14 +17,15 @@ import * as React from 'react';
 import { useState } from 'react';
 import { userID } from '../../helper/constants';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
+import { Ticker, Watchlists } from '../../interfaces/IWatchlistModel';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
   watchlistName: string;
   isAddStockDialog: boolean;
   setAddStockDialog: (value: boolean) => void;
-  watchlists: { [key: string]: any[] } | undefined;
-  setWatchlists: (watchlists: { [key: string]: any[] }) => void;
+  watchlists: Watchlists | undefined;
+  setWatchlists: (watchlists: Watchlists) => void;
 }
 
 const AddStockDialog: React.FC<AddStockDialogProps> = ({
@@ -62,7 +63,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
     console.log('response: ', res);
     let tempWl = watchlists;
     if (!tempWl) throw "Watchlists are not defined. There's a bug on the website";
-    tempWl[watchlistName] = tempWl[watchlistName].concat(tickers);
+    tempWl[watchlistName] = tempWl[watchlistName].concat(tickers as any);
     setWatchlists(tempWl);
     setAddStockDialog(false);
   };

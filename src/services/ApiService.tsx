@@ -78,4 +78,17 @@ export class ApiService {
     }
     return null;
   }
+
+  protected static async patchData<T>(url: string, data: any): Promise<T | null> {
+    try {
+      const response = await ApiService.apiService.patch<T>(url, data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response != null) {
+        console.error('Error patching data:', error.response.data);
+        alert(JSON.stringify(error.response.data));
+      }
+    }
+    return null;
+  }
 }

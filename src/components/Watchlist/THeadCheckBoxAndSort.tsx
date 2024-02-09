@@ -13,7 +13,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { alpha, createTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import { Ticker } from '../../interfaces/IWatchlistModel';
 
@@ -21,6 +21,7 @@ type Order = 'asc' | 'desc';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  handleDeleteStocks: () => void;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -181,7 +182,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           pr: { xs: 1, sm: 1 },
           display: 'flex',
           justifyItems: 'space-between',
-          flexDirection: 'row',
+          flexDirection: 'row'
         }}
       >
         {numSelected > 0 ? (
@@ -195,7 +196,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={props.handleDeleteStocks}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
