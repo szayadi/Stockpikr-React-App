@@ -1,6 +1,17 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, ButtonGroup, Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Checkbox,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
@@ -29,6 +40,7 @@ export default function Watchlist() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const isSelected = (symbol: string) => selected.indexOf(symbol) !== -1;
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Ticker) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -108,6 +120,25 @@ export default function Watchlist() {
     setAddStockDialog(true);
   };
 
+  const handleClick = (event: React.MouseEvent<unknown>, symbol: string) => {
+    const selectedIndex = selected.indexOf(symbol);
+    let newSelected: readonly string[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, symbol);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+  };
+
   return (
     <TableContainer
       component={Paper}
@@ -143,24 +174,42 @@ export default function Watchlist() {
           {watchlists &&
             Object.keys(watchlists).length > 0 &&
             wlKey &&
-            watchlists[wlKey].map((row) => (
-              // TODO: set unique key for the watchlist tickers
-              <TableRow
-                onClick={() => {
-                  navigate('/quote');
-                }}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell padding="checkbox"></TableCell>
-                <TableCell component="th" scope="row">
-                  {row?.symbol}
-                </TableCell>
-                <TableCell align="right">{row?.currentPrice}</TableCell>
-                <TableCell align="right">{row?.alertPrice}</TableCell>
-                <TableCell align="right">{row?.nearHigh}</TableCell>
-                <TableCell align="right">{row?.highest}</TableCell>
-              </TableRow>
-            ))}
+            watchlists[wlKey].map((row, index) => {
+              const isItemSelected = isSelected(row.symbol);
+              const labelId = `enhanced-table-checkbox-${index}`;
+              return (
+                // TODO: set unique key for the watchlist tickers
+                <TableRow
+                  key={index}
+                  // onClick={() => {
+                  //   navigate('/quote');
+                  // }}
+                  onClick={(event) => handleClick(event, row.symbol)}
+                  role="checkbox"
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  selected={isItemSelected}
+                  sx={{ cursor: 'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={isItemSelected}
+                      inputProps={{
+                        'aria-labelledby': labelId
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row.symbol}
+                  </TableCell>
+                  <TableCell align="right">{row.currentPrice}</TableCell>
+                  <TableCell align="right">{row.alertPrice}</TableCell>
+                  <TableCell align="right">{row.nearHigh}</TableCell>
+                  <TableCell align="right">{row.highest}</TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
       <AddStockDialog
