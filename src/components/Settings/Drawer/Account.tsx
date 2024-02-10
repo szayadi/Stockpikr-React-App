@@ -1,6 +1,7 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Avatar, Box, Button, Divider, Paper, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { UserApiService } from '../../../services/UserApiService';
 import { AccountForm, IAccountField, accountFields } from './AccountForm';
 
 export const Account: React.FC = () => {
@@ -9,9 +10,26 @@ export const Account: React.FC = () => {
     // Placeholder values
     firstName: 'John',
     lastName: 'Doe',
-    address: '123 Main St',
-    phoneNumber: '555-1234'
+    email: 'john.doe@gmail.com',
+    phoneNumber: '555-1234',
+    profilePic: ''
   });
+
+  React.useEffect(() => {
+    const queryUserInfo = async () => {
+      const user = await UserApiService.fetchUserDetails();
+      if (user) {
+        setAccountValues({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          profilePic: user.profilePic
+        });
+      }
+    };
+    queryUserInfo();
+  }, []);
 
   const handleFormSubmit = (values: { [key: string]: string }) => {
     setAccountValues(values);
@@ -25,7 +43,7 @@ export const Account: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto', borderRadius: 8 }}>
       <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
-        <Avatar sx={{ bgcolor: 'f4f', width: 100, height: 100 }}>JD</Avatar>
+        <Avatar sx={{ bgcolor: 'f4f', width: 100, height: 100 }} src={accountValues.profilePic}></Avatar>
         <Typography variant="h5" mt={2}>
           {accountValues.firstName} {accountValues.lastName}
         </Typography>

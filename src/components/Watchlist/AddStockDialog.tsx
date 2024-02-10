@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   Button,
   Dialog,
@@ -9,21 +8,32 @@ import {
   FormControl,
   FormControlLabel,
   Radio,
-  RadioGroup,
+  RadioGroup, // Added Select import
   TextField,
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import * as React from 'react';
 import { useState } from 'react';
+import { userID } from '../../helper/constants';
+import { WatchlistApiService } from '../../services/WatchlistApiService';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
   watchlistName: string;
   isAddStockDialog: boolean;
   setAddStockDialog: (value: boolean) => void;
+  watchlists: { [key: string]: any[] } | undefined;
+  setWatchlists: (watchlists: { [key: string]: any[] }) => void;
 }
 
-const AddStockDialog: React.FC<AddStockDialogProps> = ({ isAddStockDialog, setAddStockDialog }) => {
+const AddStockDialog: React.FC<AddStockDialogProps> = ({
+  watchlists,
+  setWatchlists,
+  watchlistName,
+  isAddStockDialog,
+  setAddStockDialog
+}) => {
   const [addStockId, setAddStockId] = useState('');
   const [addStockPrice, setAddStockPrice] = useState('');
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
@@ -45,15 +55,24 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({ isAddStockDialog, setAd
     setAddStockDialog(false);
   };
 
-  const onConfirmAddStockDialog = () => {
-    //console.log({ addStockId, addStockPrice, stockTrackingDays });
+  const onConfirmAddStockDialog = async () => {
+    console.log({ addStockId, addStockPrice, stockTrackingDays });
+    const tickers = [{ symbol: addStockId, alertPrice: Number(addStockPrice) }];
+    const res = await WatchlistApiService.addStockToWatchlist(tickers, watchlistName, userID);
+    let tempWl = watchlists;
+    if (!tempWl) throw "Watchlists are not defined. There's a bug on the website";
+    tempWl[watchlistName] = tempWl[watchlistName].concat(tickers);
+    setWatchlists(tempWl);
+    setAddStockDialog(false);
   };
 
   return (
     <Dialog open={isAddStockDialog} onClose={() => setAddStockDialog(false)} fullScreen={fullScreen}>
       <DialogTitle>Add a new stock</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a new stock, please enter the stock's unique Id</DialogContentText>
+        <DialogContentText>
+          To add a new stock, please select a watchlist and enter the stock's Ticker and Buy Price
+        </DialogContentText>
         <TextField
           error={!isAddStockIdValid()}
           autoFocus

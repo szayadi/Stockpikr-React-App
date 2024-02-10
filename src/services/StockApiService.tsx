@@ -38,7 +38,7 @@ export class StockApiService extends BaseApiService {
     if (input.length === 0) {
       return [];
     }
-    const url = `${this.endpoint}quote/${input}`;
+    const url = `/api/lateststockinfo/quotes/${input}`;
     const response = await StockApiService.fetchData<IStockQuote[]>(url);
     if (response) {
       return response;

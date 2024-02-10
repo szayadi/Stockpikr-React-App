@@ -4,57 +4,83 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Checkbox,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Ticker } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
+import { EnhancedTableToolbar, WatchlistTableHeadWithCheckbox } from './THeadCheckBoxAndSort';
 
-export interface TempWatchListData {
+type Order = 'asc' | 'desc';
+
+export interface WatchListData {
   symbol: string;
   currentPrice: number;
   alertPrice: number;
   nearHigh: number;
   highest: number;
 }
-function createData(symbol: string, currentPrice: number, alertPrice: number, nearHigh: number, highest: number) {
-  return { symbol, currentPrice, alertPrice, nearHigh, highest };
-}
 
 const userID = '000000000000000000001'; // FIXME: change to actual user id when the user feature is completed
 // const defaultStockSymbol = 'APPLE'; // FIXME:
 
 export default function Watchlist() {
+  // watchLists state props
   const [wlKey, setWlKey] = useState('');
   const [wlKeys, setWlKeys] = useState<string[]>([]);
-  const [watchLists, setWatchLists] = useState<{ [key: string]: TempWatchListData[] }>();
+  const [watchLists, setwatchLists] = useState<{ [key: string]: WatchListData[] }>();
   const [isAddStockDialog, setAddStockDialog] = useState(false);
-  const [isDeleteWatchListDialog, setDeleteWatchlistDialog] = useState(false);
-  const navigate = useNavigate();
+  const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
+
+  // table props
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Ticker>('symbol');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const isSelected = (symbol: string) => selected.indexOf(symbol) !== -1;
+
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Ticker) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelected = watchLists ? watchLists[wlKey].map((n) => n.symbol) : [];
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
   const throwError = useAsyncError();
 
+  const querywatchLists = async () => {
+    const wls = await WatchlistApiService.fetchWatchListsByUserId(userID);
+    const tempWls: { [key: string]: any[] } = {};
+    wls.forEach((wl, i) => {
+      if (i === 0) setWlKey(wl.name);
+      if (!tempWls[wl.name]) {
+        tempWls[wl.name] = [];
+      }
+      tempWls[wl.name] = wl.tickers;
+    });
+    setWlKeys(Object.keys(tempWls));
+    setwatchLists(tempWls);
+  };
+
   useEffect(() => {
-    const queryWatchLists = async () => {
-      const wls = await WatchlistApiService.fetchWatchListsByUserId(userID);
-      const tempWls: { [key: string]: TempWatchListData[] } = {};
-      wls.forEach((wl, i) => {
-        if (i === 0) setWlKey(wl.name);
-        tempWls[wl.name] = [createData(wl.name, 0, 0, 0, 0)]; // FIXME: the watch list query should also get list of stocks as well
-      });
-      setWatchLists(tempWls);
-      setWlKeys(Object.keys(tempWls));
-    };
-    queryWatchLists().catch((error) => {
+    querywatchLists().catch((error) => {
       throwError(error);
     });
   }, []);
@@ -70,10 +96,11 @@ export default function Watchlist() {
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        watchLists[value] = [createData(name, 0, 0, 0, 0)];
-        setWatchLists(watchLists);
+        watchLists[name] = [];
+        setwatchLists(watchLists);
         setWlKeys(Object.keys(watchLists));
-        setWlKey(value);
+        setWlKey(name);
+        setWlKey(name);
       } catch (error) {
         //console.error(JSON.stringify(serializeError(error)));
       }
@@ -89,7 +116,7 @@ export default function Watchlist() {
       // re-render with deleted watch list removed from our state so that we don't need to query watch lists again
       delete watchLists[name];
       const keys = Object.keys(watchLists);
-      setWatchLists(watchLists);
+      setwatchLists(watchLists);
       setWlKeys(keys);
       setWlKey('');
     }
@@ -98,6 +125,22 @@ export default function Watchlist() {
 
   const handleClickAddStock = () => {
     setAddStockDialog(true);
+  };
+
+  const handleClick = (event: React.MouseEvent<unknown>, symbol: string) => {
+    const selectedIndex = selected.indexOf(symbol);
+    let newSelected: readonly string[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, symbol);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+    }
+    setSelected(newSelected);
   };
 
   return (
@@ -121,43 +164,68 @@ export default function Watchlist() {
           </Button>
         </ButtonGroup>
       </Box>
+      <EnhancedTableToolbar numSelected={selected.length} />
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Symbol</TableCell>
-            <TableCell align="right">Current Price</TableCell>
-            <TableCell align="right">Alert Price</TableCell>
-            <TableCell align="right">Near High</TableCell>
-            <TableCell align="right">Highest</TableCell>
-          </TableRow>
-        </TableHead>
+        <WatchlistTableHeadWithCheckbox
+          numSelected={selected.length}
+          order={order}
+          orderBy={orderBy}
+          onSelectAllClick={handleSelectAllClick}
+          onRequestSort={handleRequestSort}
+          rowCount={watchLists && watchLists[wlKey] ? watchLists[wlKey].length : 0}
+        />
         <TableBody>
           {watchLists &&
             Object.keys(watchLists).length > 0 &&
             wlKey &&
-            watchLists[wlKey].map((row) => (
-              <TableRow
-                key={row.symbol}
-                onClick={() => {
-                  navigate('/quote');
-                }}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.symbol}
-                </TableCell>
-                <TableCell align="right">{row.currentPrice}</TableCell>
-                <TableCell align="right">{row.alertPrice}</TableCell>
-                <TableCell align="right">{row.nearHigh}</TableCell>
-                <TableCell align="right">{row.highest}</TableCell>
-              </TableRow>
-            ))}
+            watchLists[wlKey].map((row, index) => {
+              const isItemSelected = isSelected(row.symbol);
+              const labelId = `enhanced-table-checkbox-${index}`;
+              return (
+                // TODO: set unique key for the watchlist tickers
+                <TableRow
+                  key={index}
+                  // onClick={() => {
+                  //   navigate('/quote');
+                  // }}
+                  onClick={(event) => handleClick(event, row.symbol)}
+                  role="checkbox"
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  selected={isItemSelected}
+                  sx={{ cursor: 'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={isItemSelected}
+                      inputProps={{
+                        'aria-labelledby': labelId
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row.symbol}
+                  </TableCell>
+                  <TableCell align="right">{row.currentPrice}</TableCell>
+                  <TableCell align="right">{row.alertPrice}</TableCell>
+                  <TableCell align="right">{row.nearHigh}</TableCell>
+                  <TableCell align="right">{row.highest}</TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
-      <AddStockDialog watchlistName={wlKey} isAddStockDialog={isAddStockDialog} setAddStockDialog={setAddStockDialog} />
+      <AddStockDialog
+        watchlistName={wlKey}
+        watchlists={watchLists}
+        setWatchlists={setwatchLists}
+        isAddStockDialog={isAddStockDialog}
+        setAddStockDialog={setAddStockDialog}
+      />
       <DeleteWatchListDialog
         watchListName={wlKey}
-        isDeleteWatchListDialog={isDeleteWatchListDialog}
+        isDeleteWatchListDialog={isDeleteWatchlistDialog}
         handleCloseDeleteWatchListDialog={handleCloseDeleteWatchlistDialog}
       />
     </TableContainer>

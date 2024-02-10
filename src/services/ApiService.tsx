@@ -54,6 +54,19 @@ export class BaseApiService {
     }
   }
 
+  protected static async putData<T>(url: string, data: any): Promise<T | null> {
+    try {
+      const response = await BaseApiService.apiService.put<T>(url, data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response != null) {
+        throw new Error(BaseApiService.getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    }
+  }
+
   protected static async deleteData<T>(url: string): Promise<T | null> {
     try {
       const response = await BaseApiService.apiService.delete<T>(url);
