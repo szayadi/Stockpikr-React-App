@@ -3,7 +3,7 @@ interface ErrorMessage {
 }
 
 export const getErrorResponse = (res: unknown): string => {
-  if (res == null) {
+  if (!res) {
     return '';
   }
 

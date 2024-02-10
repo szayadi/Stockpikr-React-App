@@ -39,9 +39,11 @@ const SearchBar: React.FC = () => {
     if (options.length === 0) {
       return options;
     }
-    return options.filter(
-      (stock) => stock.name.toLowerCase().includes(inputValue) || stock.symbol.toLowerCase().includes(inputValue)
+    const inputLower = inputValue.toLowerCase();
+    const filterOptions = options.filter(
+      (stock) => stock.name.toLowerCase().includes(inputLower) || stock.symbol.toLowerCase().includes(inputLower)
     );
+    return filterOptions;
   };
 
   const handleOnChangeAutoComplete = (e: React.SyntheticEvent<Element, Event>, value: IStockData | null) => {
@@ -53,9 +55,9 @@ const SearchBar: React.FC = () => {
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    await StockApiService.fetchStockSearch(value)
+    StockApiService.fetchStockSearch(value)
       .then((response): void => {
-        if (response == null || getErrorResponse(response)) {
+        if (!response || getErrorResponse(response)) {
           return;
         }
         setSearchOptions(response);
