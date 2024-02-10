@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { Watchlists } from '../../interfaces/IWatchlistModel';
 import { StockApiService } from '../../services/StockApiService';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
-import WatchlistSearchBar from './WatchlistSearchBar';
+import WatchlistTickersSearchBar from './WatchlistTickersSearchBar';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
@@ -88,7 +88,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
           To add a new stock, please select a watchlist and enter the stock's Ticker and Buy Price
         </DialogContentText>
         <DialogContentText style={{ marginTop: '10px', marginBottom: '10px' }}>Stock Symbol</DialogContentText>
-        <WatchlistSearchBar setAddStockSymbol={setAddStockSymbol} />
+        <WatchlistTickersSearchBar setAddStockSymbol={setAddStockSymbol} />
       </DialogContent>
       <DialogContent>
         <DialogContentText>At what price would you like to buy the stock?</DialogContentText>

@@ -11,7 +11,7 @@ interface WatchlistSearchBarProps {
   setAddStockSymbol: (symbol: string) => void;
 }
 
-const WatchlistSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddStockSymbol }) => {
+const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddStockSymbol }) => {
   const [searchOptions, setSearchOptions] = useState<IStockQuote[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -118,4 +118,4 @@ const WatchlistSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddStockSymb
   );
 };
 
-export default WatchlistSearchBar;
+export default WatchlistTickersSearchBar;
