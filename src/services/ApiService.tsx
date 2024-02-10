@@ -32,7 +32,7 @@ export class ApiService {
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         //console.error('Error fetching data:', error.response.data);
-        alert(JSON.stringify(error.response.data));
+        throw JSON.stringify(error.response.data);
       }
     }
     return null;
@@ -46,7 +46,7 @@ export class ApiService {
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         //console.error('Error posting data:', error.response.data);
-        alert(JSON.stringify(error.response.data));
+        throw JSON.stringify(error.response.data);
       }
     }
     return null;
@@ -59,7 +59,7 @@ export class ApiService {
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         console.error('Error putting data:', error.response.data);
-        alert(JSON.stringify(error.response.data));
+        throw JSON.stringify(error.response.data);
       }
     }
     return null;
@@ -73,7 +73,7 @@ export class ApiService {
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         //console.error('Error deleting data:', error.response.data);
-        alert(JSON.stringify(error.response.data));
+        throw JSON.stringify(error.response.data);
       }
     }
     return null;
@@ -86,7 +86,7 @@ export class ApiService {
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         console.error('Error patching data:', error.response.data);
-        alert(JSON.stringify(error.response.data));
+        throw JSON.stringify(error.response.data);
       }
     }
     return null;

@@ -42,10 +42,10 @@ export default function Watchlist() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const isSelected = (symbol: string) => selected.indexOf(symbol) !== -1;
 
-  const refreshWatchlist = (watchlists: Watchlists)=> {
+  const refreshWatchlist = (watchlists: Watchlists) => {
     setWatchlists(watchlists);
     setWlKeys(Object.keys(watchlists));
-  }
+  };
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof WatchlistTicker) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -96,7 +96,7 @@ export default function Watchlist() {
         refreshWatchlist(watchlists);
         setWlKey(watchlistName);
       } catch (error) {
-        alert(JSON.stringify(serializeError(error)));
+        throw JSON.stringify(serializeError(error));
       }
     }
   };
@@ -117,7 +117,7 @@ export default function Watchlist() {
 
   const handleDeleteStocks = async () => {
     const patchResult = await WatchlistApiService.deleteStocksInWatchlist(wlKey, selected);
-    console.log("patch result: ", patchResult)
+    console.log('patch result: ', patchResult);
     if (patchResult && patchResult.matchedCount > 0 && patchResult.modifiedCount > 0) {
       const tickers = watchlists[wlKey].filter((ticker) => !selected.includes(ticker.symbol));
       watchlists[wlKey] = tickers;

@@ -59,7 +59,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
 
   const onConfirmAddStockDialog = async () => {
     if (!addStockSymbol) {
-      alert('Stock symbol cannot be empty');
+      throw 'Stock symbol cannot be empty';
     }
     if (!watchlists) {
       throw 'Watchlists are empty';
@@ -67,8 +67,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
     const tickers = [{ symbol: addStockSymbol, alertPrice: Number(addStockPrice) }];
     const searchResult = await StockApiService.fetchDetailedStock(tickers[0].symbol);
     if (!searchResult) {
-      alert(`Could not find stock with symbol ${tickers[0].symbol} in the database!`);
-      return;
+      throw `Could not find stock with symbol ${tickers[0].symbol} in the database!`;
     }
     // TODO: handle status code
     const res = await WatchlistApiService.addStockToWatchlist(tickers, watchlistName);
