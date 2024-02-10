@@ -48,9 +48,8 @@ export class WatchlistApiService extends ApiService {
   }
 
   public static async addStockToWatchlist(
-    tickers: Omit<Ticker, 'nearHigh' | 'highest' | 'currentPrice'>[],
-    watchlistID: string,
-    userID: string = ''
+    tickers: Omit<Ticker, 'nearHigh' | 'highest' | 'currentPrice' | 'exchange' | 'name'>[],
+    watchlistID: string
   ): Promise<string | null> {
     const response = await super.putData<string>(this.addUserIdToEndpoint(`${this.endpoint}/${watchlistID}`), tickers);
     return response;
@@ -63,7 +62,10 @@ export class WatchlistApiService extends ApiService {
     return response;
   }
 
-  public static async deleteStocksInWatchlist(watchlistName: string, tickerSymbols: string[]): Promise<PatchResult | null> {
+  public static async deleteStocksInWatchlist(
+    watchlistName: string,
+    tickerSymbols: string[]
+  ): Promise<PatchResult | null> {
     const response = await super.patchData<PatchResult>(
       this.addUserIdToEndpoint(`${this.endpoint}/tickers/${watchlistName}`),
       tickerSymbols

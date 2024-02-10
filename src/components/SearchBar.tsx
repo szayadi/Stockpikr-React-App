@@ -4,11 +4,11 @@ import TextField from '@mui/material/TextField';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getErrorResponse } from '../helper/errorResponse';
-import IStockData from '../interfaces/IStockData';
+import {IStockQuote} from '../interfaces/IStockQuote';
 import { StockApiService } from '../services/StockApiService';
 
 const SearchBar: React.FC = () => {
-  const [searchOptions, setSearchOptions] = useState<IStockData[]>([]);
+  const [searchOptions, setSearchOptions] = useState<IStockQuote[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const SearchBar: React.FC = () => {
     setSearchOptions([]);
   };
 
-  const filterOptions = (options: IStockData[], { inputValue }: { inputValue: string }) => {
+  const filterOptions = (options: IStockQuote[], { inputValue }: { inputValue: string }) => {
     if (options.length === 0) {
       return options;
     }
@@ -44,7 +44,7 @@ const SearchBar: React.FC = () => {
     return filterOptions;
   };
 
-  const handleOnChangeAutoComplete = (e: React.SyntheticEvent<Element, Event>, value: IStockData | null) => {
+  const handleOnChangeAutoComplete = (e: React.SyntheticEvent<Element, Event>, value: IStockQuote | null) => {
     if (!value) {
       return;
     }
@@ -53,7 +53,7 @@ const SearchBar: React.FC = () => {
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    StockApiService.fetchStockSearch(value).then((response): void => {
+    StockApiService.fetchDetailedStockSearch(value).then((response): void => {
       if (!response || getErrorResponse(response)) {
         return;
       }
@@ -100,7 +100,7 @@ const SearchBar: React.FC = () => {
             >
               <strong style={{ width: '150px', textAlign: 'left' }}>{option.symbol}</strong>
               <span style={{ flex: 1, marginLeft: '10px', marginRight: '10px' }}>{option.name}</span>
-              <em style={{ width: '150px', textAlign: 'right' }}>{option.exchangeShortName}</em>
+              <em style={{ width: '150px', textAlign: 'right' }}>{option.exchange}</em>
             </li>
           )}
           sx={{

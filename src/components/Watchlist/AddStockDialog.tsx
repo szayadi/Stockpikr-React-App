@@ -15,9 +15,10 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { useState } from 'react';
-import { userID } from '../../helper/constants';
+import { Watchlists } from '../../interfaces/IWatchlistModel';
+import { StockApiService } from '../../services/StockApiService';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
-import { Ticker, Watchlists } from '../../interfaces/IWatchlistModel';
+import WatchlistSearchBar from './WatchlistSearchBar';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
@@ -35,7 +36,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   isAddStockDialog,
   setAddStockDialog
 }) => {
-  const [addStockId, setAddStockId] = useState('');
+  const [addStockSymbol, setAddStockSymbol] = useState('');
   const [addStockPrice, setAddStockPrice] = useState('');
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
   const theme = useTheme();
@@ -46,25 +47,36 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   };
 
   const isAddStockIdValid = () => {
-    return addStockId !== '';
+    return addStockSymbol !== '';
   };
 
   const onCancelAddStockDialog = () => {
-    setAddStockId('');
+    setAddStockSymbol('');
     setAddStockPrice('');
     setStockTrackingDays(90);
     setAddStockDialog(false);
   };
 
   const onConfirmAddStockDialog = async () => {
-    console.log({ addStockId, addStockPrice, stockTrackingDays });
-    const tickers = [{ symbol: addStockId, alertPrice: Number(addStockPrice) }];
-    const res = await WatchlistApiService.addStockToWatchlist(tickers, watchlistName, userID);
-    console.log('response: ', res);
-    let tempWl = watchlists;
-    if (!tempWl) throw "Watchlists are not defined. There's a bug on the website";
-    tempWl[watchlistName] = tempWl[watchlistName].concat(tickers as any);
-    setWatchlists(tempWl);
+    if (!addStockSymbol) {
+      alert('Stock symbol cannot be empty');
+    }
+    if (!watchlists) {
+      throw 'Watchlists are empty';
+    }
+    const tickers = [{ symbol: addStockSymbol, alertPrice: Number(addStockPrice) }];
+    const searchResult = await StockApiService.fetchDetailedStock(tickers[0].symbol);
+    if (!searchResult) {
+      alert(`Could not find stock with symbol ${tickers[0].symbol} in the database!`);
+      return;
+    }
+    // TODO: handle status code
+    const res = await WatchlistApiService.addStockToWatchlist(tickers, watchlistName);
+    const tickerIndex = watchlists[watchlistName].findIndex((t) => t.symbol === tickers[0].symbol);
+    if (tickerIndex === -1) watchlists[watchlistName] = watchlists[watchlistName].concat(tickers as any);
+    else watchlists[watchlistName][tickerIndex].alertPrice = tickers[0].alertPrice;
+
+    setWatchlists(watchlists);
     setAddStockDialog(false);
   };
 
@@ -75,19 +87,8 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
         <DialogContentText>
           To add a new stock, please select a watchlist and enter the stock's Ticker and Buy Price
         </DialogContentText>
-        <TextField
-          error={!isAddStockIdValid()}
-          autoFocus
-          required
-          margin="dense"
-          id="stock-id"
-          label="Stock Id"
-          type="text"
-          fullWidth
-          variant="standard"
-          helperText={!isAddStockIdValid() ? 'Stock Id cannot be empty' : ''}
-          onChange={(e) => setAddStockId(e.target.value)}
-        />
+        <DialogContentText style={{ marginTop: '10px', marginBottom: '10px' }}>Stock Symbol</DialogContentText>
+        <WatchlistSearchBar setAddStockSymbol={setAddStockSymbol} />
       </DialogContent>
       <DialogContent>
         <DialogContentText>At what price would you like to buy the stock?</DialogContentText>

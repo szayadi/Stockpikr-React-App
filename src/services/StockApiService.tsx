@@ -55,6 +55,29 @@ export class StockApiService {
     }
     return [];
   }
+
+  public static async fetchDetailedStockSearch(input: string): Promise<IStockQuote[]> {
+    if (input.trim().length === 0) {
+      return [];
+    }
+    // TODO: add pagination
+    const searchQueryLimit = 10;
+    const url = `/api/lateststockinfo/search/${input}?limit=${searchQueryLimit}`;
+    const response = await StockApiService.fetchData<IStockQuote[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+
+  public static async fetchDetailedStock(symbol: string): Promise<IStockQuote | null> {
+    if (symbol.trim().length === 0) {
+      return null;
+    }
+    const url = `/api/lateststockinfo/quote/${symbol}`;
+    return StockApiService.fetchData<IStockQuote>(url);
+  }
+
   public static async fetchCompanyProfile(input: string): Promise<ICompanyProfile[]> {
     if (input.trim().length === 0) {
       return [];
