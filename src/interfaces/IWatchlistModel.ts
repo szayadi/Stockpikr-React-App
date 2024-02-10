@@ -1,10 +1,10 @@
 export interface IWatchlistModel {
   watchlistName: string;
   userID: string;
-  tickers: Ticker[];
+  tickers: WatchlistTicker[];
 }
 
-export interface Ticker {
+export interface WatchlistTicker {
   symbol: string; // should be unique
   name: string;
   exchange: string;
@@ -14,4 +14,4 @@ export interface Ticker {
   highest: number;
 }
 
-export type Watchlists = { [key: string]: Ticker[] };
+export type Watchlists = { [key: string]: WatchlistTicker[] };

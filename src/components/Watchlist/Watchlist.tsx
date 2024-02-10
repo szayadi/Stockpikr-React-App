@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
-import { Ticker, Watchlists } from '../../interfaces/IWatchlistModel';
+import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
@@ -35,7 +35,7 @@ export default function Watchlist() {
 
   // table props
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Ticker>('symbol');
+  const [orderBy, setOrderBy] = useState<keyof WatchlistTicker>('symbol');
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
@@ -47,7 +47,7 @@ export default function Watchlist() {
     setWlKeys(Object.keys(watchlists));
   }
 
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Ticker) => {
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof WatchlistTicker) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);

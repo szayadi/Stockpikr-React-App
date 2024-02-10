@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
-import { Ticker } from '../../interfaces/IWatchlistModel';
+import { WatchlistTicker } from '../../interfaces/IWatchlistModel';
 
 type Order = 'asc' | 'desc';
 
@@ -61,7 +61,7 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Ticker;
+  id: keyof WatchlistTicker;
   label: string;
   numeric: boolean;
 }
@@ -101,7 +101,7 @@ const headCells: readonly HeadCell[] = [
 
 interface EnhancedTableProps {
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Ticker) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof WatchlistTicker) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
@@ -110,7 +110,7 @@ interface EnhancedTableProps {
 
 export function WatchlistTableHeadWithCheckbox(props: EnhancedTableProps) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property: keyof Ticker) => (event: React.MouseEvent<unknown>) => {
+  const createSortHandler = (property: keyof WatchlistTicker) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
 
