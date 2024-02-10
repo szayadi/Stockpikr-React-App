@@ -124,6 +124,7 @@ export default function Watchlist() {
       refreshWatchlist(watchlists);
     } else {
       // TODO: handle delete stocks error here
+      throw 'Cannot delete stocks';
     }
   };
 
