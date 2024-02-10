@@ -54,7 +54,7 @@ const SearchBar: React.FC = () => {
 
   const fetchData = async (value: string): Promise<void> => {
     StockApiService.fetchStockSearch(value).then((response): void => {
-      if (response == null || getErrorResponse(response)) {
+      if (!response || getErrorResponse(response)) {
         return;
       }
       setSearchOptions(response);
