@@ -122,6 +122,8 @@ export default function Watchlist() {
       const tickers = watchlists[wlKey].filter((ticker) => !selected.includes(ticker.symbol));
       watchlists[wlKey] = tickers;
       refreshWatchlist(watchlists);
+      setSelected([]);
+      
     } else {
       // TODO: handle delete stocks error here
       throw 'Cannot delete stocks';

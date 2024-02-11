@@ -2,7 +2,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   Box,
+  Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   TableCell,
   TableHead,
@@ -11,10 +17,12 @@ import {
   ThemeProvider,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
+import { useState } from 'react';
 import { WatchlistTicker } from '../../interfaces/IWatchlistModel';
 
 type Order = 'asc' | 'desc';
@@ -156,6 +164,16 @@ export function WatchlistTableHeadWithCheckbox(props: EnhancedTableProps) {
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
+  const [isDeleteWatchlistTickers, setDeleteWatchlistTickers] = useState(false);
+
+  const onCancelDeleteTickers = () => {
+    setDeleteWatchlistTickers(false);
+  };
+
+  const onConfirmDeleteTickers = () => {
+    props.handleDeleteStocks();
+    setDeleteWatchlistTickers(false);
+  };
 
   const theme = createTheme({
     components: {
@@ -173,6 +191,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       }
     }
   });
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <ThemeProvider theme={theme}>
@@ -196,18 +215,31 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton onClick={props.handleDeleteStocks}>
+            <IconButton onClick={() => setDeleteWatchlistTickers(true)}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
+          <></>
+          // <Tooltip title="Filter list">
+          //   <IconButton>
+          //     <FilterListIcon />
+          //   </IconButton>
+          // </Tooltip>
         )}
       </Toolbar>
+      <Dialog open={isDeleteWatchlistTickers} onClose={onCancelDeleteTickers} fullScreen={fullScreen}>
+        <DialogTitle>{`Delete selected tickers`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete these selected watchlist tickers? Once deleted, they won't be recoverable.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCancelDeleteTickers}>Cancel</Button>
+          <Button onClick={onConfirmDeleteTickers}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 }
