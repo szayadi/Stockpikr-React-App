@@ -34,7 +34,7 @@ export class StockApiService extends BaseApiService {
     }
     return [];
   }
-  public static async fetchStockQuote(input: string[]): Promise<IStockQuote[]> {
+  public static async fetchLatestStockQuote(input: string[]): Promise<IStockQuote[]> {
     if (input.length === 0) {
       return [];
     }

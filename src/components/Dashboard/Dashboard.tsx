@@ -1,6 +1,6 @@
 import { Grid, Paper, styled } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { TickerTape } from 'react-ts-tradingview-widgets';
+import { TickerTape, Timeline } from 'react-ts-tradingview-widgets';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { StockApiService } from '../../services/StockApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
     const fetchData = async (): Promise<void> => {
       // Place holder symbols
       const blueChipSymbols: string[] = ['AAPL', 'MSFT', 'AMZN', 'GOOGL', 'JNJ', 'PG', 'KO', 'JPM', 'DIS', 'INTC'];
-      await StockApiService.fetchStockQuote(blueChipSymbols).then((response) => {
+      await StockApiService.fetchLatestStockQuote(blueChipSymbols).then((response) => {
         if (response == null) {
           return;
         }
@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
       </Grid>
       <Grid item xs={4}>
         <Item elevation={0}>
-          <div style={{ backgroundColor: 'lightgray', height: 400 }}>PlaceHolder</div>
+          <Timeline feedMode="market" market="stock" height="1000" width="100%"></Timeline>
         </Item>
       </Grid>
       <Grid item xs={4}>
