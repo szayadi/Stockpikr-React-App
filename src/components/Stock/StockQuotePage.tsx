@@ -30,7 +30,7 @@ export const StockQuotePage: React.FC = () => {
       return;
     }
     const fetchQuoteData = async () => {
-      await StockApiService.fetchStockQuote([symbolParam]).then((response): void => {
+      StockApiService.fetchStockQuote([symbolParam]).then((response): void => {
         if (response == null) {
           return;
         }
@@ -40,7 +40,7 @@ export const StockQuotePage: React.FC = () => {
     };
 
     const fetchCompanyProfile = async () => {
-      await StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
+      StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
         if (response == null) {
           return;
         }
