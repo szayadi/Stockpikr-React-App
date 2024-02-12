@@ -13,20 +13,20 @@ import { WatchlistApiService } from '../../services/WatchlistApiService';
 
 // Define the prop types for the component
 interface IDeleteWatchListDialog {
-  watchlistName: string;
-  isDeleteWatchlistDialog: boolean;
-  handleCloseDeleteWatchlistDialog: (watchlistName?: string) => void;
+  watchListName: string;
+  isDeleteWatchListDialog: boolean;
+  handleCloseDeleteWatchListDialog: (name?: string) => void;
 }
 
 const DeleteWatchListDialog: React.FC<IDeleteWatchListDialog> = ({
-  watchlistName,
-  isDeleteWatchlistDialog,
-  handleCloseDeleteWatchlistDialog
+  watchListName: watchlistName,
+  isDeleteWatchListDialog: isDeleteWatchlistDialog,
+  handleCloseDeleteWatchListDialog: handleCloseDeleteWatchlistDialog
 }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const onCancelRemoveWatchlist = () => {
+  const onCancelRemoveWatchList = () => {
     handleCloseDeleteWatchlistDialog();
   };
 
@@ -42,14 +42,14 @@ const DeleteWatchListDialog: React.FC<IDeleteWatchListDialog> = ({
 
   return (
     <Dialog open={isDeleteWatchlistDialog} onClose={() => handleCloseDeleteWatchlistDialog()} fullScreen={fullScreen}>
-      <DialogTitle>{`Delete watchlist '${watchlistName}'`}</DialogTitle>
+      <DialogTitle>{`Delete watch list '${watchlistName}'`}</DialogTitle>
       <DialogContent>
         <DialogContentText>
           Are you sure you want to delete this watchlist? Once deleted, it won't be recoverable.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancelRemoveWatchlist}>Cancel</Button>
+        <Button onClick={onCancelRemoveWatchList}>Cancel</Button>
         <Button onClick={onConfirmDeleteWatchlist}>Confirm</Button>
       </DialogActions>
     </Dialog>

@@ -59,7 +59,6 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
     console.log({ addStockId, addStockPrice, stockTrackingDays });
     const tickers = [{ symbol: addStockId, alertPrice: Number(addStockPrice) }];
     const res = await WatchlistApiService.addStockToWatchlist(tickers, watchlistName, userID);
-    console.log('response: ', res);
     let tempWl = watchlists;
     if (!tempWl) throw "Watchlists are not defined. There's a bug on the website";
     tempWl[watchlistName] = tempWl[watchlistName].concat(tickers);

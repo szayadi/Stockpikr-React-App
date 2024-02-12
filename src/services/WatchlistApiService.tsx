@@ -1,8 +1,8 @@
 import { DeleteResult } from '../interfaces/IMongo';
 import { IWatchlistModel, Ticker } from '../interfaces/IWatchlistModel';
-import { ApiService } from './ApiService';
+import { BaseApiService } from './ApiService';
 
-export class WatchlistApiService extends ApiService {
+export class WatchlistApiService extends BaseApiService {
   protected static endpoint = `${this.baseEndpoint}/watchlists`;
   //----------------------------------------------------------------//
   //                           Public
@@ -18,9 +18,9 @@ export class WatchlistApiService extends ApiService {
     return [];
   }
 
-  public static async fetchWatchlistsByUserId(userId: string): Promise<IWatchlistModel[]> {
+  public static async fetchWatchListsByUserId(userId: string): Promise<IWatchlistModel[]> {
     // TODO: add pagination
-    // const searchQueryLimit = 10;
+    //const searchQueryLimit = 10;
     const response = await super.fetchData<IWatchlistModel[]>(`${this.endpoint}/user/${userId}`);
     if (response) {
       return response;

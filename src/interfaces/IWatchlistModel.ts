@@ -1,5 +1,5 @@
 export interface IWatchlistModel {
-  watchlistName: string;
+  name: string;
   userID: string;
   tickers: Ticker[];
 }

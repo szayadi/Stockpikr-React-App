@@ -81,7 +81,7 @@ export default function SignIn() {
             >
               Sign In with Google
             </Button>
-            <Copyright sx={{ mt: 5 }} />
+            <Copyright></Copyright>
           </Box>
         </Grid>
       </Grid>

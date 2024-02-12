@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import LogoImage from '../assets/images/logo+title-light-mode.png';
 import '../index.css';
@@ -48,12 +48,12 @@ function NavigationHeader() {
   };
 
   const handleLogIn = () => {
-    setIsLoggedIn(true)
-  }
+    setIsLoggedIn(true);
+  };
 
   const handleLogOut = () => {
-    setIsLoggedIn(false)
-  }
+    setIsLoggedIn(false);
+  };
 
   return (
     <AppBar position="static" sx={{ backgroundColor: 'var(--navbar-bg-color)', fontFamily: 'Raleway' }}>
@@ -151,19 +151,32 @@ function NavigationHeader() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((s) => (
-                  (s.key === 'logout') ? (
-                    <MenuItem key={s.key} onClick={handleLogOut} style={{ textDecoration: 'none', fontFamily: 'Raleway', fontWeight: 500 }}>
+                {settings.map((s) =>
+                  s.key === 'logout' ? (
+                    <MenuItem
+                      key={s.key}
+                      onClick={handleLogOut}
+                      style={{ textDecoration: 'none', fontFamily: 'Raleway', fontWeight: 500 }}
+                    >
                       {s.title}
                     </MenuItem>
                   ) : (
                     <MenuItem key={s.key} onClick={handleCloseUserMenu}>
-                      <Link style={{ textAlign: 'center', color: 'black', textDecoration: 'none', fontFamily: 'Raleway', fontWeight: 500 }} to={s.key}>
+                      <Link
+                        style={{
+                          textAlign: 'center',
+                          color: 'black',
+                          textDecoration: 'none',
+                          fontFamily: 'Raleway',
+                          fontWeight: 500
+                        }}
+                        to={s.key}
+                      >
                         {s.title}
                       </Link>
                     </MenuItem>
                   )
-                ))}
+                )}
               </Menu>
             </Box>
           ) : (
@@ -186,7 +199,6 @@ function NavigationHeader() {
               Sign In
             </Button>
           )}
-
         </Toolbar>
       </Container>
     </AppBar>

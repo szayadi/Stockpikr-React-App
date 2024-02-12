@@ -13,11 +13,9 @@ import {
   TableRow
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { serializeError } from 'serialize-error';
-import { userID } from '../../helper/constants';
 import { Ticker } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
+import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
@@ -25,11 +23,22 @@ import { EnhancedTableToolbar, WatchlistTableHeadWithCheckbox } from './THeadChe
 
 type Order = 'asc' | 'desc';
 
+export interface WatchListData {
+  symbol: string;
+  currentPrice: number;
+  alertPrice: number;
+  nearHigh: number;
+  highest: number;
+}
+
+const userID = '000000000000000000001'; // FIXME: change to actual user id when the user feature is completed
+// const defaultStockSymbol = 'APPLE'; // FIXME:
+
 export default function Watchlist() {
-  // watchlists state props
+  // watchLists state props
   const [wlKey, setWlKey] = useState('');
   const [wlKeys, setWlKeys] = useState<string[]>([]);
-  const [watchlists, setWatchlists] = useState<{ [key: string]: any[] }>();
+  const [watchLists, setwatchLists] = useState<{ [key: string]: WatchListData[] }>();
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
 
@@ -37,9 +46,6 @@ export default function Watchlist() {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof Ticker>('symbol');
   const [selected, setSelected] = useState<readonly string[]>([]);
-  const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const isSelected = (symbol: string) => selected.indexOf(symbol) !== -1;
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Ticker) => {
@@ -50,52 +56,53 @@ export default function Watchlist() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = watchlists ? watchlists[wlKey].map((n) => n.symbol) : [];
+      const newSelected = watchLists ? watchLists[wlKey].map((n) => n.symbol) : [];
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const navigate = useNavigate();
+  const throwError = useAsyncError();
 
-  const queryWatchlists = async () => {
-    const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
-    let tempWls: { [key: string]: any[] } = {};
+  const querywatchLists = async () => {
+    const wls = await WatchlistApiService.fetchWatchListsByUserId(userID);
+    const tempWls: { [key: string]: any[] } = {};
     wls.forEach((wl, i) => {
-      if (i === 0) setWlKey(wl.watchlistName);
-      if (!tempWls[wl.watchlistName]) {
-        tempWls[wl.watchlistName] = [];
+      if (i === 0) setWlKey(wl.name);
+      if (!tempWls[wl.name]) {
+        tempWls[wl.name] = [];
       }
-      tempWls[wl.watchlistName] = wl.tickers;
+      tempWls[wl.name] = wl.tickers;
     });
     setWlKeys(Object.keys(tempWls));
-    setWatchlists(tempWls);
+    setwatchLists(tempWls);
   };
 
   useEffect(() => {
-    queryWatchlists();
+    querywatchLists().catch((error) => {
+      throwError(error);
+    });
   }, []);
 
-  const handleCreateNewWatchlist = async (watchlistName: string) => {
-    if (watchlistName && watchlists) {
+  const handleCreateNewWatchlist = async (value: string) => {
+    if (value && watchLists) {
       try {
         const name = await WatchlistApiService.createWatchlist({
-          watchlistName,
+          name: value,
           tickers: [],
           userID
         });
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        watchlists[watchlistName] = [];
-        setWatchlists(watchlists);
-        setWlKeys(Object.keys(watchlists));
-        setWlKey(watchlistName);
-        // queryWatchlists();
+        watchLists[name] = [];
+        setwatchLists(watchLists);
+        setWlKeys(Object.keys(watchLists));
+        setWlKey(name);
         setWlKey(name);
       } catch (error) {
-        alert(JSON.stringify(serializeError(error)));
+        //console.error(JSON.stringify(serializeError(error)));
       }
     }
   };
@@ -104,12 +111,12 @@ export default function Watchlist() {
   //   setDeleteWatchlistDialog(true);
   // };
 
-  const handleCloseDeleteWatchlistDialog = (watchlistName?: string) => {
-    if (watchlistName && watchlists) {
-      // re-render with deleted watchlist removed from our state so that we dont need to query watchlists again
-      delete watchlists[watchlistName];
-      const keys = Object.keys(watchlists);
-      setWatchlists(watchlists);
+  const handleCloseDeleteWatchlistDialog = (name?: string) => {
+    if (name && watchLists) {
+      // re-render with deleted watch list removed from our state so that we don't need to query watch lists again
+      delete watchLists[name];
+      const keys = Object.keys(watchLists);
+      setwatchLists(watchLists);
       setWlKeys(keys);
       setWlKey('');
     }
@@ -131,10 +138,7 @@ export default function Watchlist() {
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
   };
@@ -168,13 +172,13 @@ export default function Watchlist() {
           orderBy={orderBy}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={watchlists && watchlists[wlKey] ? watchlists[wlKey].length : 0}
+          rowCount={watchLists && watchLists[wlKey] ? watchLists[wlKey].length : 0}
         />
         <TableBody>
-          {watchlists &&
-            Object.keys(watchlists).length > 0 &&
+          {watchLists &&
+            Object.keys(watchLists).length > 0 &&
             wlKey &&
-            watchlists[wlKey].map((row, index) => {
+            watchLists[wlKey].map((row, index) => {
               const isItemSelected = isSelected(row.symbol);
               const labelId = `enhanced-table-checkbox-${index}`;
               return (
@@ -214,15 +218,15 @@ export default function Watchlist() {
       </Table>
       <AddStockDialog
         watchlistName={wlKey}
-        watchlists={watchlists}
-        setWatchlists={setWatchlists}
+        watchlists={watchLists}
+        setWatchlists={setwatchLists}
         isAddStockDialog={isAddStockDialog}
         setAddStockDialog={setAddStockDialog}
       />
       <DeleteWatchListDialog
-        watchlistName={wlKey}
-        isDeleteWatchlistDialog={isDeleteWatchlistDialog}
-        handleCloseDeleteWatchlistDialog={handleCloseDeleteWatchlistDialog}
+        watchListName={wlKey}
+        isDeleteWatchListDialog={isDeleteWatchlistDialog}
+        handleCloseDeleteWatchListDialog={handleCloseDeleteWatchlistDialog}
       />
     </TableContainer>
   );
