@@ -30,7 +30,7 @@ export class BaseApiService {
 
   protected static async fetchData<T>(url: string): Promise<T | null> {
     try {
-      // Assuming limiter is properly initialized elsewhere
+      // I think we only need to limiter here for now to limit FMP fetch
       const response: AxiosResponse = await BaseApiService.limiter.schedule(() =>
         BaseApiService.apiService.get<T>(url)
       );
