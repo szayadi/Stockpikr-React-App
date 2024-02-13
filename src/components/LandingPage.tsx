@@ -1,21 +1,21 @@
-import { Button, Container, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Box, Button, Container, List, ListItem, ListItemText, Typography } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LogoImage from '../assets/images/logo-title-light-mode.png';
 
 
 const LandingPage: React.FC = () => {
   return (
-    <Container style={{ margin: '50', padding: '50', display: 'flex', flexDirection: "row-reverse", justifyContent: "space-between", alignItems: "center" }}>
+    <Container style={{ margin: '50px auto', padding: '50px', display: 'flex', flexDirection: "row-reverse", justifyContent: "space-between", alignItems: "center", maxWidth: '1200px' }}>
       <Container style={{ display: 'flex', flexDirection: "column", justifyContent: "center", alignItems: "center", padding: '20px', flex: 1 }}>
-        <Typography variant="h1" component="h1" style={{
-          color: '#182b39',
-          fontFamily: "'Raleway', sans-serif",
-          fontSize: '100px',
-          margin: '20px',
-          fontWeight: 300
-        }}>
-          StockPikr
-        </Typography>
+        <Box
+          component="img"
+          sx={{
+            height: '150px',
+            marginRight: '10px',
+          }}
+          alt="StockPikr"
+          src={LogoImage}/>
         <Typography variant="h3" component="h3" style={{
           color: '#182b39',
           margin: '5px',
@@ -79,7 +79,7 @@ const LandingPage: React.FC = () => {
             fontFamily: 'inherit',
             border: '2px black solid'
           }} component={Link} to="/dashboard">
-            Go to Dashboard
+            Access your Dashboard Now
           </Button>
         </div>
       </Container>
