@@ -55,7 +55,7 @@ const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddSt
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    StockApiService.fetchDetailedStockSearch(value).then((response): void => {
+    StockApiService.fetchFmpStockSearch(value).then((response): void => {
       if (!response || getErrorResponse(response)) {
         return;
       }

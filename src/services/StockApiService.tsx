@@ -38,6 +38,20 @@ export class StockApiService extends BaseApiService {
     return [];
   }
 
+  public static async fetchFmpStockSearch(input: string): Promise<IStockQuote[]> {
+    if (input.trim().length === 0) {
+      return [];
+    }
+    // TODO: add pagination
+    const searchQueryLimit = 10;
+    const url = `/api/stockdata/${input}?limit=${searchQueryLimit}`;
+    const response = await StockApiService.fetchData<IStockQuote[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+
   public static async fetchDetailedStock(symbol: string): Promise<IStockQuote | null> {
     if (symbol.trim().length === 0) {
       return null;

@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { Watchlists } from '../../interfaces/IWatchlistModel';
 import { StockApiService } from '../../services/StockApiService';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
+import { useAsyncError } from '../GlobalErrorBoundary';
 import WatchlistTickersSearchBar from './WatchlistTickersSearchBar';
 
 // Define the prop types for the component
@@ -41,6 +42,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const throwError = useAsyncError();
 
   const isAddStockPriceValid = () => {
     return addStockPrice !== '';
@@ -70,7 +72,9 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
       throw `Could not find stock with symbol ${tickers[0].symbol} in the database!`;
     }
     // TODO: handle status code
-    const res = await WatchlistApiService.addStockToWatchlist(tickers, watchlistName);
+    const res = WatchlistApiService.addStockToWatchlist(tickers, watchlistName).catch((error) => {
+      throwError(error);
+    });
     const tickerIndex = watchlists[watchlistName].findIndex((t) => t.symbol === tickers[0].symbol);
     if (tickerIndex === -1) watchlists[watchlistName] = watchlists[watchlistName].concat(tickers as any);
     else watchlists[watchlistName][tickerIndex].alertPrice = tickers[0].alertPrice;

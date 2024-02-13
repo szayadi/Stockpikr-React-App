@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getErrorResponse } from '../helper/errorResponse';
-import {IStockQuote} from '../interfaces/IStockQuote';
+import { IStockQuote } from '../interfaces/IStockQuote';
 import { StockApiService } from '../services/StockApiService';
 import { useAsyncError } from './GlobalErrorBoundary';
 
@@ -55,7 +55,7 @@ const SearchBar: React.FC = () => {
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    StockApiService.fetchDetailedStockSearch(value)
+    StockApiService.fetchFmpStockSearch(value)
       .then((response): void => {
         if (!response || getErrorResponse(response)) {
           return;
