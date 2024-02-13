@@ -10,7 +10,7 @@ export class BaseApiService {
   public static get apiService(): AxiosInstance {
     if (BaseApiService._apiService == null) {
       BaseApiService._apiService = axios.create({
-        baseURL: process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080',
+        baseURL: process.env.REACT_APP_BACKEND_URL || 'http://stockpikr.eastus2.cloudapp.azure.com:8080',
         headers: {
           'Content-Type': 'application/json'
         }
