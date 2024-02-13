@@ -2,7 +2,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   Box,
+  Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   TableCell,
   TableHead,
@@ -11,16 +17,19 @@ import {
   ThemeProvider,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
-import { Ticker } from '../../interfaces/IWatchlistModel';
+import { useState } from 'react';
+import { WatchlistTicker } from '../../interfaces/IWatchlistModel';
 
 type Order = 'asc' | 'desc';
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  handleDeleteStocks: () => void;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -60,7 +69,7 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Ticker;
+  id: keyof WatchlistTicker;
   label: string;
   numeric: boolean;
 }
@@ -100,7 +109,7 @@ const headCells: readonly HeadCell[] = [
 
 interface EnhancedTableProps {
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Ticker) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof WatchlistTicker) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
@@ -109,7 +118,7 @@ interface EnhancedTableProps {
 
 export function WatchlistTableHeadWithCheckbox(props: EnhancedTableProps) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property: keyof Ticker) => (event: React.MouseEvent<unknown>) => {
+  const createSortHandler = (property: keyof WatchlistTicker) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
 
@@ -155,6 +164,16 @@ export function WatchlistTableHeadWithCheckbox(props: EnhancedTableProps) {
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
+  const [isDeleteWatchlistTickers, setDeleteWatchlistTickers] = useState(false);
+
+  const onCancelDeleteTickers = () => {
+    setDeleteWatchlistTickers(false);
+  };
+
+  const onConfirmDeleteTickers = () => {
+    props.handleDeleteStocks();
+    setDeleteWatchlistTickers(false);
+  };
 
   const theme = createTheme({
     components: {
@@ -172,6 +191,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       }
     }
   });
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <ThemeProvider theme={theme}>
@@ -195,18 +215,31 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={() => setDeleteWatchlistTickers(true)}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
+          <></>
+          // <Tooltip title="Filter list">
+          //   <IconButton>
+          //     <FilterListIcon />
+          //   </IconButton>
+          // </Tooltip>
         )}
       </Toolbar>
+      <Dialog open={isDeleteWatchlistTickers} onClose={onCancelDeleteTickers} fullScreen={fullScreen}>
+        <DialogTitle>{`Delete selected tickers`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete these selected watchlist tickers? Once deleted, they won't be recoverable.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCancelDeleteTickers}>Cancel</Button>
+          <Button onClick={onConfirmDeleteTickers}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 }

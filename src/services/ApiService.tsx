@@ -73,10 +73,22 @@ export class BaseApiService {
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        throw new Error(BaseApiService.getErrorMessage(error));
-      } else {
-        throw error;
+        //console.error('Error deleting data:', error.response.data);
+        throw JSON.stringify(error.response.data);
       }
+    }
+    return null;
+  }
+
+  protected static async patchData<T>(url: string, data: any): Promise<T | null> {
+    try {
+      const response = await BaseApiService.apiService.patch<T>(url, data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response != null) {
+        console.error('Error patching data:', error.response.data);
+        throw new Error(BaseApiService.getErrorMessage(error));
+      } else throw error;
     }
   }
 

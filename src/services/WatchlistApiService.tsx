@@ -1,5 +1,6 @@
-import { DeleteResult } from '../interfaces/IMongo';
-import { IWatchlistModel, Ticker } from '../interfaces/IWatchlistModel';
+import { userID } from '../helper/constants';
+import { DeleteResult, PatchResult } from '../interfaces/IMongo';
+import { IWatchlistModel, WatchlistTicker } from '../interfaces/IWatchlistModel';
 import { BaseApiService } from './ApiService';
 
 export class WatchlistApiService extends BaseApiService {
@@ -18,10 +19,16 @@ export class WatchlistApiService extends BaseApiService {
     return [];
   }
 
-  public static async fetchWatchListsByUserId(userId: string): Promise<IWatchlistModel[]> {
+  private static addUserIdToEndpoint(endpoint: string) {
+    return `${endpoint}?userId=${userID}`;
+  }
+
+  public static async fetchWatchlistsByUserId(userId: string): Promise<IWatchlistModel[]> {
     // TODO: add pagination
-    //const searchQueryLimit = 10;
-    const response = await super.fetchData<IWatchlistModel[]>(`${this.endpoint}/user/${userId}`);
+    // const searchQueryLimit = 10;
+    const response = await super.fetchData<IWatchlistModel[]>(
+      this.addUserIdToEndpoint(`${this.endpoint}/user/${userId}`)
+    );
     if (response) {
       return response;
     }
@@ -29,26 +36,40 @@ export class WatchlistApiService extends BaseApiService {
   }
 
   public static async fetchWatchlist(watchlistName: string): Promise<IWatchlistModel | null> {
-    const response = await super.fetchData<IWatchlistModel>(`${this.endpoint}/${watchlistName}`);
+    const response = await super.fetchData<IWatchlistModel>(
+      this.addUserIdToEndpoint(`${this.endpoint}/${watchlistName}`)
+    );
     return response;
   }
 
-  public static async createWatchlist(wl: Omit<IWatchlistModel, 'watchlistID'>): Promise<string | null> {
-    const response = await super.postData<string>(`${this.endpoint}`, wl);
+  public static async createWatchlist(wl: IWatchlistModel): Promise<string | null> {
+    const response = await super.postData<string>(this.addUserIdToEndpoint(`${this.endpoint}`), wl);
     return response;
   }
 
   public static async addStockToWatchlist(
-    tickers: Omit<Ticker, 'nearHigh' | 'highest' | 'currentPrice'>[],
-    watchlistID: string,
-    userID: string = ''
+    tickers: Omit<WatchlistTicker, 'nearHigh' | 'highest' | 'currentPrice' | 'exchange' | 'name'>[],
+    watchlistID: string
   ): Promise<string | null> {
-    const response = await super.putData<string>(`${this.endpoint}/${watchlistID}?userId=${userID}`, tickers);
+    const response = await super.putData<string>(this.addUserIdToEndpoint(`${this.endpoint}/${watchlistID}`), tickers);
     return response;
   }
 
   public static async deleteWatchlist(watchlistName: string): Promise<DeleteResult | null> {
-    const response = await super.deleteData<DeleteResult>(`${this.endpoint}/${watchlistName}`);
+    const response = await super.deleteData<DeleteResult>(
+      this.addUserIdToEndpoint(`${this.endpoint}/${watchlistName}`)
+    );
+    return response;
+  }
+
+  public static async deleteStocksInWatchlist(
+    watchlistName: string,
+    tickerSymbols: string[]
+  ): Promise<PatchResult | null> {
+    const response = await super.patchData<PatchResult>(
+      this.addUserIdToEndpoint(`${this.endpoint}/tickers/${watchlistName}`),
+      tickerSymbols
+    );
     return response;
   }
 }
