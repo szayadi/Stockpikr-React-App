@@ -18,7 +18,6 @@ export const Account: React.FC = () => {
   React.useEffect(() => {
     const queryUserInfo = async () => {
       const user = await UserApiService.fetchUserDetails();
-      console.log(user);
       if (user) {
         setAccountValues({
           firstName: user.firstName,

@@ -1,9 +1,9 @@
 import { userID } from '../helper/constants';
 import { DeleteResult, PatchResult } from '../interfaces/IMongo';
 import { IWatchlistModel, WatchlistTicker } from '../interfaces/IWatchlistModel';
-import { ApiService } from './ApiService';
+import { BaseApiService } from './ApiService';
 
-export class WatchlistApiService extends ApiService {
+export class WatchlistApiService extends BaseApiService {
   protected static endpoint = `${this.baseEndpoint}/watchlists`;
   //----------------------------------------------------------------//
   //                           Public

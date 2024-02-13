@@ -1,5 +1,5 @@
 export interface IWatchlistModel {
-  watchlistName: string;
+  watchlistName: string; // if we want to fix this, we need to change the field in the backend as well
   userID: string;
   tickers: WatchlistTicker[];
 }

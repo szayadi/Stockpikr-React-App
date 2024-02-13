@@ -1,75 +1,76 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
-// base class
-export class ApiService {
+export class BaseApiService {
   //----------------------------------------------------------------//
   //                           Properties
   //----------------------------------------------------------------//
 
-  protected static baseEndpoint = '/api';
+  protected static readonly baseEndpoint = '/api';
   private static _apiService: AxiosInstance | null = null;
   public static get apiService(): AxiosInstance {
-    if (ApiService._apiService == null) {
-      ApiService._apiService = axios.create({
+    if (BaseApiService._apiService == null) {
+      BaseApiService._apiService = axios.create({
         baseURL: process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080',
         headers: {
           'Content-Type': 'application/json'
         }
       });
     }
-    return ApiService._apiService;
+    return BaseApiService._apiService;
   }
 
   //----------------------------------------------------------------//
-  //                           Private
+  //                           Protected
   //----------------------------------------------------------------//
 
   protected static async fetchData<T>(url: string): Promise<T | null> {
     try {
-      const response = await ApiService.apiService.get<T>(url);
-      return response.data;
-      // TODO: handle status code error
+      const response = await BaseApiService.apiService.get<T>(url);
+      const data = response.data;
+      if (typeof data === 'object' && data != null && 'Error Message' in data) {
+        const error = data['Error Message'] as string;
+        throw new Error(error);
+      }
+      return data;
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        //console.error('Error fetching data:', error.response.data);
-        throw JSON.stringify(error.response.data);
+        throw new Error(BaseApiService.getErrorMessage(error));
+      } else {
+        throw error;
       }
     }
-    return null;
   }
 
-  protected static async postData<T>(url: string, data: any): Promise<T | null> {
+  protected static async postData<T>(url: string, data: unknown): Promise<T | null> {
     try {
-      const response = await ApiService.apiService.post<T>(url, data);
+      const response = await BaseApiService.apiService.post<T>(url, data);
       return response.data;
-      // TODO: handle status code error
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        //console.error('Error posting data:', error.response.data);
-        throw JSON.stringify(error.response.data);
+        throw new Error(BaseApiService.getErrorMessage(error));
+      } else {
+        throw error;
       }
     }
-    return null;
   }
 
   protected static async putData<T>(url: string, data: any): Promise<T | null> {
     try {
-      const response = await ApiService.apiService.put<T>(url, data);
+      const response = await BaseApiService.apiService.put<T>(url, data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        console.error('Error putting data:', error.response.data);
-        throw JSON.stringify(error.response.data);
+        throw new Error(BaseApiService.getErrorMessage(error));
+      } else {
+        throw error;
       }
     }
-    return null;
   }
 
   protected static async deleteData<T>(url: string): Promise<T | null> {
     try {
-      const response = await ApiService.apiService.delete<T>(url);
+      const response = await BaseApiService.apiService.delete<T>(url);
       return response.data;
-      // TODO: handle status code error
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         //console.error('Error deleting data:', error.response.data);
@@ -81,14 +82,21 @@ export class ApiService {
 
   protected static async patchData<T>(url: string, data: any): Promise<T | null> {
     try {
-      const response = await ApiService.apiService.patch<T>(url, data);
+      const response = await BaseApiService.apiService.patch<T>(url, data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
         console.error('Error patching data:', error.response.data);
-        throw JSON.stringify(error.response.data);
-      }
+        throw new Error(BaseApiService.getErrorMessage(error));
+      } else throw error;
     }
-    return null;
+  }
+
+  //----------------------------------------------------------------//
+  //                           Private
+  //----------------------------------------------------------------//
+
+  private static getErrorMessage(error: AxiosError): string {
+    return error.code + ': ' + error.message;
   }
 }

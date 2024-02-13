@@ -6,49 +6,55 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { FundamentalData, SymbolInfo, TechnicalAnalysis } from 'react-ts-tradingview-widgets';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
-import { StockApiService } from '../../services/StockApiService';
-import CompanyOverviewCard from './Components/CompanyOverviewCard';
-import StockCard from './Components/StockCard';
+import { useAsyncError } from '../GlobalErrorBoundary';
 import TradingViewChart from './Components/TradingViewChart';
 
 export const StockQuotePage: React.FC = () => {
+  const [symbolParam, setSymbolParam] = useState<string | null>(null);
   const [quote, setQuote] = useState<IStockQuote | null>(null);
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
+  const throwError = useAsyncError();
 
   useEffect(() => {
     const url = window.location.href;
     const hashIndex = url.indexOf('#');
     const hash = hashIndex !== -1 ? url.slice(hashIndex + 1) : '';
     const searchParams = new URLSearchParams(hash);
-    const symbolParam = searchParams.get('/quote?symbol');
-    if (symbolParam == null) {
+    setSymbolParam(searchParams.get('/quote?symbol'));
+    if (!symbolParam) {
       return;
     }
+    //might need later
 
-    const fetchQuoteData = async () => {
-      StockApiService.fetchStockQuote([symbolParam]).then((response): void => {
-        if (response == null) {
-          return;
-        }
-        const stock = response[0] || response || null;
-        setQuote(stock);
-      });
-    };
+    // const fetchQuoteData = async () => {
+    //   await StockApiService.fetchLatestStockQuote([symbolParam]).then((response): void => {
+    //     if (!response) {
+    //       return;
+    //     }
+    //     const stock = response[0] || response || null;
+    //     setQuote(stock);
+    //   });
+    // };
 
-    const fetchCompanyProfile = async () => {
-      StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
-        if (response == null) {
-          return;
-        }
-        const company = response[0] || null;
-        setCompanyProfile(company);
-      });
-    };
-    fetchQuoteData();
-    fetchCompanyProfile();
+    // const fetchCompanyProfile = async () => {
+    //   StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
+    //     if (!response) {
+    //       return;
+    //     }
+    //     const company = response[0] || null;
+    //     setCompanyProfile(company);
+    //   });
+    // };
+    // fetchQuoteData().catch((error) => {
+    //   throwError(error);
+    // });
+    // fetchCompanyProfile().catch((error) => {
+    //   throwError(error);
+    // });
   }, []);
 
   const handleAddToWatchlist = () => {
@@ -72,7 +78,7 @@ export const StockQuotePage: React.FC = () => {
     );
   }
 
-  if (!quote || !companyProfile) {
+  if (!symbolParam) {
     return <div></div>;
   }
 
@@ -95,21 +101,24 @@ export const StockQuotePage: React.FC = () => {
         </Grid>
         <Grid xs={4}>
           <Item elevation={0}>
-            <StockCard stock={quote} />
+            <SymbolInfo symbol={symbolParam} autosize></SymbolInfo>
+            <FundamentalData symbol={symbolParam} height={760} width="100%"></FundamentalData>
           </Item>
         </Grid>
         <Grid xs={8}>
           <Item elevation={0}>
-            <TradingViewChart symbol={quote.symbol} />
+            <TradingViewChart symbol={symbolParam || ''} />
           </Item>
         </Grid>
         <Grid xs={4}>
           <Item elevation={0}>
-            <CompanyOverviewCard companyProfile={companyProfile} />
+            <TechnicalAnalysis symbol={symbolParam || ''} width="100%"></TechnicalAnalysis>
           </Item>
         </Grid>
         <Grid xs={8}>
-          <Item elevation={0}>xs=8</Item>
+          <Item elevation={0}>
+            <div style={{ backgroundColor: 'lightgray', height: 400 }}>PlaceHolder</div>
+          </Item>
         </Grid>
       </Grid>
     </Box>

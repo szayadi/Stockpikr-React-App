@@ -13,11 +13,11 @@ import {
   TableRow
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
 import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
+import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
@@ -25,11 +25,19 @@ import { EnhancedTableToolbar, WatchlistTableHeadWithCheckbox } from './THeadChe
 
 type Order = 'asc' | 'desc';
 
+export interface WatchListData {
+  symbol: string;
+  currentPrice: number;
+  alertPrice: number;
+  nearHigh: number;
+  highest: number;
+}
+
 export default function Watchlist() {
-  // watchlists state props
+  // watchLists state props
   const [wlKey, setWlKey] = useState('');
   const [wlKeys, setWlKeys] = useState<string[]>([]);
-  const [watchlists, setWatchlists] = useState<Watchlists>({});
+  const [watchLists, setWatchLists] = useState<Watchlists>({});
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
 
@@ -43,7 +51,7 @@ export default function Watchlist() {
   const isSelected = (symbol: string) => selected.indexOf(symbol) !== -1;
 
   const refreshWatchlist = (watchlists: Watchlists) => {
-    setWatchlists(watchlists);
+    setWatchLists(watchlists);
     setWlKeys(Object.keys(watchlists));
   };
 
@@ -55,16 +63,16 @@ export default function Watchlist() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = watchlists ? watchlists[wlKey].map((n) => n.symbol) : [];
+      const newSelected = watchLists ? watchLists[wlKey].map((n) => n.symbol) : [];
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const navigate = useNavigate();
+  const throwError = useAsyncError();
 
-  const queryWatchlists = async () => {
+  const queryWatchLists = async () => {
     const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
     let tempWls: Watchlists = {};
     wls.forEach((wl, i) => {
@@ -78,34 +86,36 @@ export default function Watchlist() {
   };
 
   useEffect(() => {
-    queryWatchlists();
+    queryWatchLists().catch((error) => {
+      throwError(error);
+    });
   }, []);
 
-  const handleCreateNewWatchlist = async (watchlistName: string) => {
-    if (watchlistName && watchlists) {
+  const handleCreateNewWatchlist = async (value: string) => {
+    if (value && watchLists) {
       try {
         const name = await WatchlistApiService.createWatchlist({
-          watchlistName,
+          watchlistName: value,
           tickers: [],
           userID
         });
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        watchlists[watchlistName] = [];
-        refreshWatchlist(watchlists);
-        setWlKey(watchlistName);
+        watchLists[name] = [];
+        refreshWatchlist(watchLists);
+        setWlKey(name);
       } catch (error) {
         throw JSON.stringify(serializeError(error));
       }
     }
   };
 
-  const handleCloseDeleteWatchlistDialog = (watchlistName?: string) => {
-    if (watchlistName && watchlists) {
+  const handleCloseDeleteWatchlistDialog = (name?: string) => {
+    if (name && watchLists) {
       // re-render with deleted watchlist removed from our state so that we dont need to query watchlists again
-      delete watchlists[watchlistName];
-      refreshWatchlist(watchlists);
+      delete watchLists[name];
+      refreshWatchlist(watchLists);
       setWlKey('');
     }
     setDeleteWatchlistDialog(false);
@@ -119,11 +129,10 @@ export default function Watchlist() {
     const patchResult = await WatchlistApiService.deleteStocksInWatchlist(wlKey, selected);
     console.log('patch result: ', patchResult);
     if (patchResult && patchResult.matchedCount > 0 && patchResult.modifiedCount > 0) {
-      const tickers = watchlists[wlKey].filter((ticker) => !selected.includes(ticker.symbol));
-      watchlists[wlKey] = tickers;
-      refreshWatchlist(watchlists);
+      const tickers = watchLists[wlKey].filter((ticker) => !selected.includes(ticker.symbol));
+      watchLists[wlKey] = tickers;
+      refreshWatchlist(watchLists);
       setSelected([]);
-      
     } else {
       // TODO: handle delete stocks error here
       throw 'Cannot delete stocks';
@@ -175,13 +184,13 @@ export default function Watchlist() {
           orderBy={orderBy}
           onSelectAllClick={handleSelectAllClick}
           onRequestSort={handleRequestSort}
-          rowCount={watchlists && watchlists[wlKey] ? watchlists[wlKey].length : 0}
+          rowCount={watchLists && watchLists[wlKey] ? watchLists[wlKey].length : 0}
         />
         <TableBody>
-          {watchlists &&
-            Object.keys(watchlists).length > 0 &&
+          {watchLists &&
+            Object.keys(watchLists).length > 0 &&
             wlKey &&
-            watchlists[wlKey].map((row, index) => {
+            watchLists[wlKey].map((row, index) => {
               const isItemSelected = isSelected(row.symbol);
               const labelId = `enhanced-table-checkbox-${index}`;
               return (
@@ -221,15 +230,15 @@ export default function Watchlist() {
       </Table>
       <AddStockDialog
         watchlistName={wlKey}
-        watchlists={watchlists}
-        setWatchlists={setWatchlists}
+        watchlists={watchLists}
+        setWatchlists={setWatchLists}
         isAddStockDialog={isAddStockDialog}
         setAddStockDialog={setAddStockDialog}
       />
       <DeleteWatchListDialog
-        watchlistName={wlKey}
-        isDeleteWatchlistDialog={isDeleteWatchlistDialog}
-        handleCloseDeleteWatchlistDialog={handleCloseDeleteWatchlistDialog}
+        watchListName={wlKey}
+        isDeleteWatchListDialog={isDeleteWatchlistDialog}
+        handleCloseDeleteWatchListDialog={handleCloseDeleteWatchlistDialog}
       />
     </TableContainer>
   );
