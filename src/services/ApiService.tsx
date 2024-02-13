@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import Bottleneck from 'bottleneck';
 
 export class BaseApiService {
   //----------------------------------------------------------------//
@@ -18,6 +19,10 @@ export class BaseApiService {
     }
     return BaseApiService._apiService;
   }
+  private static limiter = new Bottleneck({
+    maxConcurrent: 1, // Maximum number of requests to make concurrently
+    minTime: 1000 // Minimum time to wait between each request (in milliseconds)
+  });
 
   //----------------------------------------------------------------//
   //                           Protected
@@ -25,7 +30,10 @@ export class BaseApiService {
 
   protected static async fetchData<T>(url: string): Promise<T | null> {
     try {
-      const response = await BaseApiService.apiService.get<T>(url);
+      // I think we only need to limiter here for now to limit FMP fetch
+      const response: AxiosResponse = await BaseApiService.limiter.schedule(() =>
+        BaseApiService.apiService.get<T>(url)
+      );
       const data = response.data;
       if (typeof data === 'object' && data != null && 'Error Message' in data) {
         const error = data['Error Message'] as string;
@@ -73,7 +81,6 @@ export class BaseApiService {
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response != null) {
-        //console.error('Error deleting data:', error.response.data);
         throw JSON.stringify(error.response.data);
       }
     }

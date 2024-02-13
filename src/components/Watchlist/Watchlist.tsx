@@ -62,8 +62,12 @@ export default function Watchlist() {
   };
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = watchLists ? watchLists[wlKey].map((n) => n.symbol) : [];
+    if (event.target.checked || !watchLists) {
+      if (watchLists[wlKey] == null) {
+        setSelected([]);
+        return;
+      }
+      const newSelected = watchLists[wlKey].map((n) => n.symbol);
       setSelected(newSelected);
       return;
     }
@@ -74,15 +78,17 @@ export default function Watchlist() {
 
   const queryWatchLists = async () => {
     const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
-    let tempWls: Watchlists = {};
-    wls.forEach((wl, i) => {
-      if (i === 0) setWlKey(wl.watchlistName);
-      if (!tempWls[wl.watchlistName]) {
-        tempWls[wl.watchlistName] = [];
-      }
-      tempWls[wl.watchlistName] = wl.tickers;
-    });
-    refreshWatchlist(tempWls);
+    if (Array.isArray(wls)) {
+      let tempWls: Watchlists = {};
+      wls.forEach((wl, i) => {
+        if (i === 0) setWlKey(wl.watchlistName);
+        if (!tempWls[wl.watchlistName]) {
+          tempWls[wl.watchlistName] = [];
+        }
+        tempWls[wl.watchlistName] = wl.tickers;
+      });
+      refreshWatchlist(tempWls);
+    }
   };
 
   useEffect(() => {
