@@ -60,26 +60,28 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   };
 
   const onConfirmAddStockDialog = async () => {
-    if (!addStockSymbol) {
-      throw 'Stock symbol cannot be empty';
-    }
-    if (!watchlists) {
-      throw 'Watchlists are empty';
-    }
-    const tickers = [{ symbol: addStockSymbol, alertPrice: Number(addStockPrice) }];
-    const searchResult = await StockApiService.fetchDetailedStock(tickers[0].symbol);
-    if (!searchResult) {
-      throw `Could not find stock with symbol ${tickers[0].symbol} in the database!`;
-    }
-    // TODO: handle status code
-    const res = WatchlistApiService.addStockToWatchlist(tickers, watchlistName).catch((error) => {
+    try {
+      if (!addStockSymbol) {
+        throw 'Stock symbol cannot be empty';
+      }
+      if (!watchlists) {
+        throw 'Watchlists are empty';
+      }
+      const tickers = [{ symbol: addStockSymbol, alertPrice: Number(addStockPrice) }];
+      const searchResult = await StockApiService.fetchDetailedStock(tickers[0].symbol);
+      if (!searchResult) {
+        throw `Could not find stock with symbol ${tickers[0].symbol} in the database!`;
+      }
+      // TODO: handle status code
+      await WatchlistApiService.addStockToWatchlist(tickers, watchlistName);
+      // after adding, we query the watchlist again and update its data to get the detailed stock info
+      const watchlist = await WatchlistApiService.fetchWatchlist(watchlistName);
+      if (!watchlist) throw `Cannot find the watchlist ${watchlistName} data after adding new stocks`;
+      watchlists[watchlistName] = watchlist.tickers;
+      setWatchlists(watchlists);
+    } catch (error) {
       throwError(error);
-    });
-    const tickerIndex = watchlists[watchlistName].findIndex((t) => t.symbol === tickers[0].symbol);
-    if (tickerIndex === -1) watchlists[watchlistName] = watchlists[watchlistName].concat(tickers as any);
-    else watchlists[watchlistName][tickerIndex].alertPrice = tickers[0].alertPrice;
-
-    setWatchlists(watchlists);
+    }
     setAddStockDialog(false);
   };
 
