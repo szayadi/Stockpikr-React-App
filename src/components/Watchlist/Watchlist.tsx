@@ -225,10 +225,10 @@ export default function Watchlist() {
                   <TableCell component="th" scope="row">
                     {row.symbol}
                   </TableCell>
-                  <TableCell align="right">{row.currentPrice}</TableCell>
                   <TableCell align="right">{row.alertPrice}</TableCell>
-                  <TableCell align="right">{row.nearHigh}</TableCell>
-                  <TableCell align="right">{row.highest}</TableCell>
+                  <TableCell align="right">{row.price}</TableCell>
+                  <TableCell align="right">{row.dayHigh}</TableCell>
+                  <TableCell align="right">{row.yearHigh}</TableCell>
                 </TableRow>
               );
             })}

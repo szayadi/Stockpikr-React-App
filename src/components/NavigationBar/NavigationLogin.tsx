@@ -1,14 +1,14 @@
 import '../../index.css';
-import NavigationSignin from './NavigationSignin';
 import NavigationAccount from './NavigationAccount';
+import NavigationSignin from './NavigationSignin';
 
 function NavigationLogin() {
   return (
     <>
-      {localStorage.getItem("isLoggedIn") == "true" ? (
-        <NavigationAccount/>
-      ): (
-        <NavigationSignin/>
+      {localStorage.getItem('isLoggedIn') == 'true' || process.env.REACT_APP_NODE_ENV !== 'production' ? (
+        <NavigationAccount />
+      ) : (
+        <NavigationSignin />
       )}
     </>
   );

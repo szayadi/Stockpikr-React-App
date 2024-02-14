@@ -88,22 +88,22 @@ const headCells: readonly HeadCell[] = [
     label: 'Alert Price'
   },
   {
-    id: 'currentPrice',
+    id: 'price',
     numeric: true,
     disablePadding: false,
     label: 'Current Price'
   },
   {
-    id: 'nearHigh',
+    id: 'dayHigh',
     numeric: true,
     disablePadding: false,
-    label: 'Near High'
+    label: 'Day High'
   },
   {
-    id: 'highest',
+    id: 'yearHigh',
     numeric: true,
     disablePadding: false,
-    label: 'Highest'
+    label: 'Year High'
   }
 ];
 
