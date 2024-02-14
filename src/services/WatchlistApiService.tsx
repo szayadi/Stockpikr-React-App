@@ -1,6 +1,6 @@
 import { userID } from '../helper/constants';
 import { DeleteResult, PatchResult } from '../interfaces/IMongo';
-import { IWatchlistModel, WatchlistTicker } from '../interfaces/IWatchlistModel';
+import { IWatchlistModel, MinimalWatchlistTicker } from '../interfaces/IWatchlistModel';
 import { BaseApiService } from './ApiService';
 
 export class WatchlistApiService extends BaseApiService {
@@ -48,7 +48,7 @@ export class WatchlistApiService extends BaseApiService {
   }
 
   public static async addStockToWatchlist(
-    tickers: Omit<WatchlistTicker, 'nearHigh' | 'highest' | 'currentPrice' | 'exchange' | 'name'>[],
+    tickers: MinimalWatchlistTicker[],
     watchlistID: string
   ): Promise<string | null> {
     const response = await super.putData<string>(this.addUserIdToEndpoint(`${this.endpoint}/${watchlistID}`), tickers);
