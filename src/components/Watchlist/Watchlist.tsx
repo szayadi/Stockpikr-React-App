@@ -12,7 +12,7 @@ import {
   TableContainer,
   TableRow
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
 import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
@@ -45,9 +45,9 @@ export default function Watchlist() {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof WatchlistTicker>('symbol');
   const [selected, setSelected] = useState<string[]>([]);
-  const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  // const [page, setPage] = useState(0);
+  // const [dense, setDense] = useState(false);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
   const isSelected = (symbol: string) => selected.indexOf(symbol) !== -1;
 
   const refreshWatchlist = (watchlists: Watchlists) => {
@@ -73,6 +73,47 @@ export default function Watchlist() {
     }
     setSelected([]);
   };
+
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setPage(newPage);
+  // };
+
+  // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
+
+  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDense(event.target.checked);
+  // };
+
+  function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function getComparator<Key extends keyof any>(
+    order: Order,
+    orderBy: Key
+  ): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
+    return order === 'desc'
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - wlKeys.length) : 0;
+
+  const visibleWatchLists = useMemo(
+    () =>
+      watchLists[wlKey] ? watchLists[wlKey].sort(getComparator(order, orderBy)) : [],
+    [order, orderBy, wlKey, watchLists[wlKey]]
+  );
 
   const throwError = useAsyncError();
 
@@ -197,7 +238,7 @@ export default function Watchlist() {
           {watchLists &&
             Object.keys(watchLists).length > 0 &&
             wlKey &&
-            watchLists[wlKey].map((row, index) => {
+            visibleWatchLists.map((row, index) => {
               const isItemSelected = isSelected(row.symbol);
               const labelId = `enhanced-table-checkbox-${index}`;
               return (
@@ -230,7 +271,7 @@ export default function Watchlist() {
                   <TableCell align="right">{row.alertPrice}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">{row.previousClose}</TableCell>
-                  <TableCell align='right'>{`${row.changesPercentage}%`}</TableCell>
+                  <TableCell align="right">{`${row.changesPercentage}%`}</TableCell>
                   <TableCell align="right">{row.dayHigh}</TableCell>
                   <TableCell align="right">{row.dayLow}</TableCell>
                   <TableCell align="right">{row.yearHigh}</TableCell>
@@ -238,6 +279,15 @@ export default function Watchlist() {
                 </TableRow>
               );
             })}
+          {/* {emptyRows > 0 && (
+            <TableRow
+              style={{
+                height: (dense ? 33 : 53) * emptyRows
+              }}
+            >
+              <TableCell colSpan={6} />
+            </TableRow>
+          )} */}
         </TableBody>
       </Table>
       <AddStockDialog
