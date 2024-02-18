@@ -174,10 +174,10 @@ export default function Watchlist() {
           setWlKey={setWlKey}
         />
         <ButtonGroup variant="text" aria-label="text button group">
-          <Button>
+          <Button disabled={wlKeys.length === 0}>
             <AddIcon onClick={handleClickAddStock} fontSize="medium" />
           </Button>
-          <Button>
+          <Button disabled={wlKeys.length === 0}>
             {' '}
             <DeleteIcon onClick={() => setDeleteWatchlistDialog(true)} fontSize="medium" />
           </Button>
