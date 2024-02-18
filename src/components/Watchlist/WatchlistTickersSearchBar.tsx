@@ -1,4 +1,4 @@
-import { ClickAwayListener } from '@mui/material';
+import { Box, ClickAwayListener, DialogContent, DialogContentText } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import React, { useRef, useState } from 'react';
@@ -14,6 +14,7 @@ interface WatchlistSearchBarProps {
 const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddStockSymbol }) => {
   const [searchOptions, setSearchOptions] = useState<IStockQuote[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
+  const [stockPrice, setStockPrice] = useState<number>(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleOnChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,15 +53,15 @@ const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddSt
       return;
     }
     setAddStockSymbol(value.symbol);
+    setStockPrice(value.price);
   };
 
   const fetchData = async (value: string): Promise<void> => {
-    StockApiService.fetchDetailedStockSearch(value).then((response): void => {
-      if (!response || getErrorResponse(response)) {
-        return;
-      }
-      setSearchOptions(response);
-    });
+    const response = await StockApiService.fetchDetailedStockSearch(value);
+    if (!response || getErrorResponse(response)) {
+      return;
+    }
+    setSearchOptions(response);
   };
 
   const handleEnterPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -75,46 +76,51 @@ const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddSt
   };
 
   return (
-    <ClickAwayListener onClickAway={handleClose}>
-      <Autocomplete
-        options={searchOptions}
-        onChange={handleOnSearchOptionChange}
-        getOptionLabel={(option) => option.symbol}
-        isOptionEqualToValue={(option, value) => option.symbol === value.symbol}
-        filterOptions={filterOptions}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            onKeyDown={handleEnterPress}
-            placeholder="Search by symbol or name"
-            style={{ width: '75%' }}
-            onChange={handleOnChangeTextField}
-          />
-        )}
-        renderOption={(props, option) => (
-          <li
-            {...props}
-            style={{
-              display: 'flex',
-              fontSize: '15px',
-              alignItems: 'center'
-            }}
-          >
-            <strong style={{ width: '120px', textAlign: 'left' }}>{option.symbol}</strong>
-            <span style={{ flex: 1, marginLeft: '10px', marginRight: '10px' }}>{option.name}</span>
-            <em style={{ width: '120px', textAlign: 'right' }}>{option.exchange}</em>
-          </li>
-        )}
-        sx={{
-          backgroundColor: 'white',
-          width: '700px',
-          borderRadius: 3,
-          '& li': {
-            width: 'auto'
-          }
-        }}
-      />
-    </ClickAwayListener>
+    <Box>
+      <ClickAwayListener onClickAway={handleClose}>
+        <Autocomplete
+          options={searchOptions}
+          onChange={handleOnSearchOptionChange}
+          getOptionLabel={(option) => option.symbol}
+          isOptionEqualToValue={(option, value) => option.symbol === value.symbol}
+          filterOptions={filterOptions}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              onKeyDown={handleEnterPress}
+              placeholder="Search by symbol or name"
+              style={{ width: '75%' }}
+              onChange={handleOnChangeTextField}
+            />
+          )}
+          renderOption={(props, option) => (
+            <li
+              {...props}
+              style={{
+                display: 'flex',
+                fontSize: '15px',
+                alignItems: 'center'
+              }}
+            >
+              <strong style={{ width: '120px', textAlign: 'left' }}>{option.symbol}</strong>
+              <span style={{ flex: 1, marginLeft: '10px', marginRight: '10px' }}>{option.name}</span>
+              <em style={{ width: '120px', textAlign: 'right' }}>{option.exchange}</em>
+            </li>
+          )}
+          sx={{
+            backgroundColor: 'white',
+            width: '700px',
+            borderRadius: 3,
+            '& li': {
+              width: 'auto'
+            }
+          }}
+        />
+      </ClickAwayListener>
+      <DialogContent>
+        {stockPrice !== 0 && <DialogContentText>{`Current stock price: $${stockPrice}`}</DialogContentText>}
+      </DialogContent>
+    </Box>
   );
 };
 
