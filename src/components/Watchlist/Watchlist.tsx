@@ -93,7 +93,7 @@ export default function Watchlist() {
 
   useEffect(() => {
     queryWatchLists().catch((error) => {
-      throwError(error);
+      // throwError(error);
     });
   }, []);
 
@@ -108,9 +108,9 @@ export default function Watchlist() {
         if (!name) {
           throw Error('Watchlist Id is empty after creating');
         }
-        watchLists[name] = [];
+        watchLists[value] = [];
         refreshWatchlist(watchLists);
-        setWlKey(name);
+        setWlKey(value);
       } catch (error) {
         throw JSON.stringify(serializeError(error));
       }
@@ -169,6 +169,7 @@ export default function Watchlist() {
       <Box display="flex" flexDirection="row">
         <AutocompleteComponent
           watchListKeys={wlKeys}
+          watchListKey={wlKey}
           handleAppendNewKey={handleCreateNewWatchlist}
           setWlKey={setWlKey}
         />
