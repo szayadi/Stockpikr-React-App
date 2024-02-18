@@ -82,6 +82,12 @@ const headCells: readonly HeadCell[] = [
     label: 'Symbol'
   },
   {
+    id: 'exchange',
+    numeric: true,
+    disablePadding: false,
+    label: 'Exchange'
+  },
+  {
     id: 'alertPrice',
     numeric: true,
     disablePadding: false,
@@ -94,13 +100,37 @@ const headCells: readonly HeadCell[] = [
     label: 'Current Price'
   },
   {
+    id: 'previousClose',
+    numeric: true,
+    disablePadding: false,
+    label: 'Previous Close Price'
+  },
+  {
+    id: 'changesPercentage',
+    numeric: true,
+    disablePadding: false,
+    label: 'Change Percentage'
+  },
+  {
     id: 'dayHigh',
     numeric: true,
     disablePadding: false,
     label: 'Day High'
   },
   {
+    id: 'dayLow',
+    numeric: true,
+    disablePadding: false,
+    label: 'Day Low'
+  },
+  {
     id: 'yearHigh',
+    numeric: true,
+    disablePadding: false,
+    label: 'Year High'
+  },
+  {
+    id: 'yearLow',
     numeric: true,
     disablePadding: false,
     label: 'Year High'

@@ -226,10 +226,15 @@ export default function Watchlist() {
                   <TableCell component="th" scope="row">
                     {row.symbol}
                   </TableCell>
+                  <TableCell align="right">{row.exchange}</TableCell>
                   <TableCell align="right">{row.alertPrice}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
+                  <TableCell align="right">{row.previousClose}</TableCell>
+                  <TableCell align='right'>{`${row.changesPercentage}%`}</TableCell>
                   <TableCell align="right">{row.dayHigh}</TableCell>
+                  <TableCell align="right">{row.dayLow}</TableCell>
                   <TableCell align="right">{row.yearHigh}</TableCell>
+                  <TableCell align="right">{row.yearLow}</TableCell>
                 </TableRow>
               );
             })}
