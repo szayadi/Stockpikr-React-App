@@ -3,11 +3,11 @@ const calcPriceDifference = (firstPrice: number, secondPrice: number): number =>
   return firstPrice / secondPrice - 1;
 };
 
-const displayPriceDiffPercentage = (priceDiff: number): string => {
-  return `${(priceDiff * 100).toFixed(4).replace(/\.?0+$/, '')}%`;
+const displayPriceDiffPercentage = (priceDiff: number): number => {
+  return Number((priceDiff * 100).toFixed(4).replace(/\.?0+$/, ''));
 };
 
-export const calPriceDifferentPercentage = (firstPrice: number, secondPrice: number): string => {
+export const calPriceDifferentPercentage = (firstPrice: number, secondPrice: number): number => {
   const priceDiff = calcPriceDifference(firstPrice, secondPrice);
   return displayPriceDiffPercentage(priceDiff);
 };

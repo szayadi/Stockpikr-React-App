@@ -63,7 +63,7 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Current Price'
   },
-  { id: 'currentVsAlertPricePercentage', numeric: false, disablePadding: false, label: 'Current - Alert (%)' },
+  { id: 'currentVsAlertPricePercentage', numeric: true, disablePadding: false, label: 'Current - Alert (%)' },
   {
     id: 'previousClose',
     numeric: true,
@@ -96,7 +96,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'yearHighVsCurrentPercentage',
-    numeric: false,
+    numeric: true,
     disablePadding: false,
     label: 'Year High - Current Price (%)'
   },
@@ -108,7 +108,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'nearLowVsCurrentPercentage',
-    numeric: false,
+    numeric: true,
     disablePadding: false,
     label: 'Near Low - Current Price (%)'
   },
@@ -120,7 +120,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'yearLowVsCurrentPercentage',
-    numeric: false,
+    numeric: true,
     disablePadding: false,
     label: 'Year Low - Current Price (%)'
   }

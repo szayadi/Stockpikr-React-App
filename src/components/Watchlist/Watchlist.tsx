@@ -15,7 +15,6 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
-import { calPriceDifferentPercentage } from '../../helper/utils';
 import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
@@ -270,17 +269,17 @@ export default function Watchlist() {
                   <TableCell align="right">{row.exchange}</TableCell>
                   <TableCell align="right">{row.alertPrice}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
-                  <TableCell align="right">{calPriceDifferentPercentage(row.price, row.alertPrice)}</TableCell>
+                  <TableCell align="right">{`${row.currentVsAlertPricePercentage}%`}</TableCell>
                   <TableCell align="right">{row.previousClose}</TableCell>
                   <TableCell align="right">{`${row.changesPercentage}%`}</TableCell>
                   <TableCell align="right">{row.dayHigh}</TableCell>
-                  <TableCell align="right">{calPriceDifferentPercentage(row.dayHigh, row.price)}</TableCell>
+                  <TableCell align="right">{`${row.nearHighVsCurrentPercentage}%`}</TableCell>
                   <TableCell align="right">{row.yearHigh}</TableCell>
-                  <TableCell align="right">{calPriceDifferentPercentage(row.yearHigh, row.price)}</TableCell>
+                  <TableCell align="right">{`${row.yearHighVsCurrentPercentage}%`}</TableCell>
                   <TableCell align="right">{row.dayLow}</TableCell>
-                  <TableCell align="right">{calPriceDifferentPercentage(row.dayLow, row.price)}</TableCell>
+                  <TableCell align="right">{`${row.nearLowVsCurrentPercentage}%`}</TableCell>
                   <TableCell align="right">{row.yearLow}</TableCell>
-                  <TableCell align="right">{calPriceDifferentPercentage(row.yearLow, row.price)}</TableCell>
+                  <TableCell align="right">{`${row.yearLowVsCurrentPercentage}%`}</TableCell>
                 </TableRow>
               );
             })}
