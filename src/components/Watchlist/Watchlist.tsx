@@ -15,6 +15,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
+import { calPriceDifferentPercentage } from '../../helper/utils';
 import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
@@ -110,8 +111,7 @@ export default function Watchlist() {
   // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - wlKeys.length) : 0;
 
   const visibleWatchLists = useMemo(
-    () =>
-      watchLists[wlKey] ? watchLists[wlKey].sort(getComparator(order, orderBy)) : [],
+    () => (watchLists[wlKey] ? watchLists[wlKey].sort(getComparator(order, orderBy)) : []),
     [order, orderBy, wlKey, watchLists[wlKey]]
   );
 
@@ -270,12 +270,17 @@ export default function Watchlist() {
                   <TableCell align="right">{row.exchange}</TableCell>
                   <TableCell align="right">{row.alertPrice}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
+                  <TableCell align="right">{calPriceDifferentPercentage(row.price, row.alertPrice)}</TableCell>
                   <TableCell align="right">{row.previousClose}</TableCell>
                   <TableCell align="right">{`${row.changesPercentage}%`}</TableCell>
                   <TableCell align="right">{row.dayHigh}</TableCell>
-                  <TableCell align="right">{row.dayLow}</TableCell>
+                  <TableCell align="right">{calPriceDifferentPercentage(row.dayHigh, row.price)}</TableCell>
                   <TableCell align="right">{row.yearHigh}</TableCell>
+                  <TableCell align="right">{calPriceDifferentPercentage(row.yearHigh, row.price)}</TableCell>
+                  <TableCell align="right">{row.dayLow}</TableCell>
+                  <TableCell align="right">{calPriceDifferentPercentage(row.dayLow, row.price)}</TableCell>
                   <TableCell align="right">{row.yearLow}</TableCell>
+                  <TableCell align="right">{calPriceDifferentPercentage(row.yearLow, row.price)}</TableCell>
                 </TableRow>
               );
             })}

@@ -63,6 +63,7 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Current Price'
   },
+  { id: 'currentVsAlertPricePercentage', numeric: false, disablePadding: false, label: 'Current - Alert (%)' },
   {
     id: 'previousClose',
     numeric: true,
@@ -82,10 +83,10 @@ const headCells: readonly HeadCell[] = [
     label: 'Day High'
   },
   {
-    id: 'dayLow',
-    numeric: true,
+    id: 'nearHighVsCurrentPercentage',
+    numeric: false,
     disablePadding: false,
-    label: 'Day Low'
+    label: 'Near High - Current Price (%)'
   },
   {
     id: 'yearHigh',
@@ -94,10 +95,34 @@ const headCells: readonly HeadCell[] = [
     label: 'Year High'
   },
   {
+    id: 'yearHighVsCurrentPercentage',
+    numeric: false,
+    disablePadding: false,
+    label: 'Year High - Current Price (%)'
+  },
+  {
+    id: 'dayLow',
+    numeric: true,
+    disablePadding: false,
+    label: 'Day Low'
+  },
+  {
+    id: 'nearLowVsCurrentPercentage',
+    numeric: false,
+    disablePadding: false,
+    label: 'Near Low - Current Price (%)'
+  },
+  {
     id: 'yearLow',
     numeric: true,
     disablePadding: false,
     label: 'Year High'
+  },
+  {
+    id: 'yearLowVsCurrentPercentage',
+    numeric: false,
+    disablePadding: false,
+    label: 'Year Low - Current Price (%)'
   }
 ];
 
