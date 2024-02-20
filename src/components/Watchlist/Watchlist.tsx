@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
 import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';

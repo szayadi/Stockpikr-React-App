@@ -6,14 +6,10 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FundamentalData, SymbolInfo, TechnicalAnalysis } from 'react-ts-tradingview-widgets';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
-import { StockApiService } from '../../services/StockApiService';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addStock } from '../../store/slices/watchlistSlice';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import TradingViewChart from './Components/TradingViewChart';
 
@@ -21,10 +17,6 @@ export const StockQuotePage: React.FC = () => {
   const [symbolParam, setSymbolParam] = useState<string | null>(null);
   const [quote, setQuote] = useState<IStockQuote | null>(null);
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
-  const [disableWatchlistBtn, setDisableWatchlistBtn] = useState(false);
-  const watchlist = useAppSelector((state) => state.watchlist.value);
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const throwError = useAsyncError();
 
   useEffect(() => {
@@ -48,27 +40,25 @@ export const StockQuotePage: React.FC = () => {
     //   });
     // };
 
-    const fetchCompanyProfile = async () => {
-      StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
-        if (response == null) {
-          return;
-        }
-        const company = response[0] || null;
-        setCompanyProfile(company);
-      });
-    };
-    fetchQuoteData();
-    fetchCompanyProfile();
-    // setDisableWatchlistBtn(
-    //   !!quote && !watchlist.some((quoteInArray: IStockQuote) => quoteInArray.symbol === quote?.symbol)
-    // );
-  }, [navigate]);
+    // const fetchCompanyProfile = async () => {
+    //   StockApiService.fetchCompanyProfile(symbolParam).then((response): void => {
+    //     if (!response) {
+    //       return;
+    //     }
+    //     const company = response[0] || null;
+    //     setCompanyProfile(company);
+    //   });
+    // };
+    // fetchQuoteData().catch((error) => {
+    //   throwError(error);
+    // });
+    // fetchCompanyProfile().catch((error) => {
+    //   throwError(error);
+    // });
+  }, []);
 
   const handleAddToWatchlist = () => {
-    if (quote && !watchlist.some((quoteInArray) => quoteInArray.symbol === quote?.symbol)) {
-      dispatch(addStock(quote));
-      setDisableWatchlistBtn(true);
-    }
+    //console.log('Added to watchlist');
   };
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -103,7 +93,6 @@ export const StockQuotePage: React.FC = () => {
               variant="contained"
               onClick={handleAddToWatchlist}
               size="large"
-              disabled={disableWatchlistBtn}
               startIcon={<AddCircleOutlineOutlinedIcon />}
             >
               Add To Watchlist
