@@ -8,64 +8,92 @@ import {
   FormControl,
   FormControlLabel,
   Radio,
-  RadioGroup,
+  RadioGroup, // Added Select import
   TextField,
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import * as React from 'react';
 import { useState } from 'react';
+import { Watchlists } from '../../interfaces/IWatchlistModel';
+import { StockApiService } from '../../services/StockApiService';
+import { WatchlistApiService } from '../../services/WatchlistApiService';
+import { useAsyncError } from '../GlobalErrorBoundary';
+import WatchlistTickersSearchBar from './WatchlistTickersSearchBar';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
   watchlistName: string;
   isAddStockDialog: boolean;
   setAddStockDialog: (value: boolean) => void;
+  watchlists: Watchlists | undefined;
+  setWatchlists: (watchlists: Watchlists) => void;
 }
 
-const AddStockDialog: React.FC<AddStockDialogProps> = ({ isAddStockDialog, setAddStockDialog }) => {
-  const [addStockId, setAddStockId] = useState('');
+const AddStockDialog: React.FC<AddStockDialogProps> = ({
+  watchlists,
+  setWatchlists,
+  watchlistName,
+  isAddStockDialog,
+  setAddStockDialog
+}) => {
+  const [addStockSymbol, setAddStockSymbol] = useState('');
   const [addStockPrice, setAddStockPrice] = useState('');
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const throwError = useAsyncError();
 
   const isAddStockPriceValid = () => {
     return addStockPrice !== '';
   };
 
   const isAddStockIdValid = () => {
-    return addStockId !== '';
+    return addStockSymbol !== '';
   };
 
   const onCancelAddStockDialog = () => {
-    setAddStockId('');
+    setAddStockSymbol('');
     setAddStockPrice('');
     setStockTrackingDays(90);
     setAddStockDialog(false);
   };
 
-  const onConfirmAddStockDialog = () => {
-    //console.log({ addStockId, addStockPrice, stockTrackingDays });
+  const onConfirmAddStockDialog = async () => {
+    try {
+      if (!addStockSymbol) {
+        throw 'Stock symbol cannot be empty';
+      }
+      if (!watchlists) {
+        throw 'Watchlists are empty';
+      }
+      const tickers = [{ symbol: addStockSymbol, alertPrice: Number(addStockPrice) }];
+      const searchResult = await StockApiService.fetchDetailedStock(tickers[0].symbol);
+      if (!searchResult) {
+        throw `Could not find stock with symbol ${tickers[0].symbol} in the database!`;
+      }
+      // TODO: handle status code
+      await WatchlistApiService.addStockToWatchlist(tickers, watchlistName);
+      // after adding, we query the watchlist again and update its data to get the detailed stock info
+      const watchlist = await WatchlistApiService.fetchWatchlist(watchlistName);
+      if (!watchlist) throw `Cannot find the watchlist ${watchlistName} data after adding new stocks`;
+      watchlists[watchlistName] = watchlist.tickers;
+      setWatchlists(watchlists);
+    } catch (error) {
+      throwError(error);
+    }
+    setAddStockDialog(false);
   };
 
   return (
     <Dialog open={isAddStockDialog} onClose={() => setAddStockDialog(false)} fullScreen={fullScreen}>
       <DialogTitle>Add a new stock</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a new stock, please enter the stock's unique Id</DialogContentText>
-        <TextField
-          error={!isAddStockIdValid()}
-          autoFocus
-          required
-          margin="dense"
-          id="stock-id"
-          label="Stock Id"
-          type="text"
-          fullWidth
-          variant="standard"
-          helperText={!isAddStockIdValid() ? 'Stock Id cannot be empty' : ''}
-          onChange={(e) => setAddStockId(e.target.value)}
-        />
+        <DialogContentText>
+          To add a new stock, please select a watchlist and enter the stock's Ticker and Buy Price
+        </DialogContentText>
+        <DialogContentText style={{ marginTop: '10px', marginBottom: '10px' }}>Stock Symbol</DialogContentText>
+        <WatchlistTickersSearchBar setAddStockSymbol={setAddStockSymbol} />
       </DialogContent>
       <DialogContent>
         <DialogContentText>At what price would you like to buy the stock?</DialogContentText>

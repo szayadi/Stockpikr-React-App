@@ -1,42 +1,10 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
 import { ICompanyProfile } from '../interfaces/ICompanyProfile';
 import IStockData from '../interfaces/IStockData';
 import { IStockQuote } from '../interfaces/IStockQuote';
+import { BaseApiService } from './ApiService';
 
-export class StockApiService {
-  //----------------------------------------------------------------//
-  //                           Properties
-  //----------------------------------------------------------------//
-
-  private static _apiService: AxiosInstance | null = null;
-  public static get apiService(): AxiosInstance {
-    if (StockApiService._apiService == null) {
-      StockApiService._apiService = axios.create({
-        baseURL: process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    }
-    return StockApiService._apiService;
-  }
-
-  //----------------------------------------------------------------//
-  //                           Private
-  //----------------------------------------------------------------//
-
-  private static async fetchData<T>(url: string): Promise<T | null> {
-    try {
-      const response = await StockApiService.apiService.get<T>(url);
-      return response.data;
-    } catch (error) {
-      if (error instanceof AxiosError && error.response != null) {
-        console.error('Error fetching company search results:', error.response.data);
-        return error.response.data;
-      }
-    }
-    return null;
-  }
+export class StockApiService extends BaseApiService {
+  protected static endpoint = `${this.baseEndpoint}/stockdata/`;
 
   //----------------------------------------------------------------//
   //                           Public
@@ -48,29 +16,52 @@ export class StockApiService {
     }
     // TODO: add pagination
     const searchQueryLimit = 10;
-    const url = `/api/stockdata/${input}?limit=${searchQueryLimit}`;
+    const url = `${this.endpoint}${input}?limit=${searchQueryLimit}`;
     const response = await StockApiService.fetchData<IStockData[]>(url);
     if (response) {
       return response;
     }
     return [];
   }
+
+  public static async fetchDetailedStockSearch(input: string): Promise<IStockQuote[]> {
+    if (input.trim().length === 0) {
+      return [];
+    }
+    // TODO: add pagination
+    const searchQueryLimit = 10;
+    const url = `/api/lateststockinfo/search/${input.toUpperCase()}?limit=${searchQueryLimit}`;
+    const response = await StockApiService.fetchData<IStockQuote[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+
+  public static async fetchDetailedStock(symbol: string): Promise<IStockQuote | null> {
+    if (symbol.trim().length === 0) {
+      return null;
+    }
+    const url = `/api/lateststockinfo/quote/${symbol}`;
+    return StockApiService.fetchData<IStockQuote>(url);
+  }
+
   public static async fetchCompanyProfile(input: string): Promise<ICompanyProfile[]> {
     if (input.trim().length === 0) {
       return [];
     }
-    const url = `/api/stockdata/profile/${input}`;
+    const url = `${this.endpoint}profile/${input}`;
     const response = await StockApiService.fetchData<ICompanyProfile[]>(url);
     if (response) {
       return response;
     }
     return [];
   }
-  public static async fetchStockQuote(input: string[]): Promise<IStockQuote[]> {
+  public static async fetchLatestStockQuote(input: string[]): Promise<IStockQuote[]> {
     if (input.length === 0) {
       return [];
     }
-    const url = `/api/stockdata/quote/${input}`;
+    const url = `/api/lateststockinfo/quotes/${input}`;
     const response = await StockApiService.fetchData<IStockQuote[]>(url);
     if (response) {
       return response;

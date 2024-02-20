@@ -1,4 +1,6 @@
+import {IAccountValues} from './IAccountValues';
+
 export interface ISubmitProp {
   initialValues: { [key: string]: string };
-  onSubmit: (values: { [key: string]: string }) => void;
+  onSubmit: (values: IAccountValues) => void;
 }

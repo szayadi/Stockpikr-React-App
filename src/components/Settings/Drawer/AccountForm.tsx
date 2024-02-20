@@ -1,6 +1,8 @@
 import { Box, Button, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ISubmitProp } from '../../../interfaces/ISubmitProp';
+import { IAccountValues } from '../../../interfaces/IAccountValues';
+
 
 export interface IAccountField {
   label: string;
@@ -11,22 +13,39 @@ export interface IAccountField {
 export const accountFields: IAccountField[] = [
   { label: 'First Name', name: 'firstName', type: 'text' },
   { label: 'Last Name', name: 'lastName', type: 'text' },
-  { label: 'Address', name: 'address', type: 'text' },
-  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
+  { label: 'Email ID', name: 'email', type: 'text' },
+  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+  { label: 'Profile Picture', name: 'profilePic', type: 'text' }
 ];
 
 export const AccountForm: React.FC<ISubmitProp> = ({ initialValues, onSubmit }) => {
-  const [accountValues, setAccountValues] = useState<{ [key: string]: string }>(initialValues);
+  const [accountValues, setAccountValues] = useState<IAccountValues>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    profilePic: ''
+  });
 
   useEffect(() => {
-    setAccountValues(initialValues);
+    const convertedValues: IAccountValues = {
+      firstName: initialValues.firstName || '',
+      lastName: initialValues.lastName || '',
+      email: initialValues.email || '',
+      phoneNumber: initialValues.phoneNumber || '',
+      profilePic: initialValues.profilePic || ''
+    };
+
+    setAccountValues(convertedValues);
   }, [initialValues]);
 
+  
   const accountFields: IAccountField[] = [
     { label: 'First Name', name: 'firstName', type: 'text' },
     { label: 'Last Name', name: 'lastName', type: 'text' },
-    { label: 'Address', name: 'address', type: 'text' },
-    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
+    { label: 'Email ID', name: 'email', type: 'text' },
+    { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
+    { label: 'Profile Picture', name: 'profilePic', type: 'text' }
   ];
 
   const handleFormSubmit = (e: React.FormEvent) => {

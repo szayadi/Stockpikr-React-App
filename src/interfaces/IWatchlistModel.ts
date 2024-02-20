@@ -1,11 +1,16 @@
+import { IStockQuote } from './IStockQuote';
+
 export interface IWatchlistModel {
-  watchlistName: string;
+  watchlistName: string; // if we want to fix this, we need to change the field in the backend as well
   userID: string;
-  tickers: Ticker[];
+  tickers: WatchlistTicker[];
 }
 
-export interface Ticker {
-  symbol: string; // should be unique
+export type MinimalWatchlistTicker = {
+  symbol: string;
   alertPrice: number;
-  name?: string;
-}
+};
+
+export type WatchlistTicker = MinimalWatchlistTicker & IStockQuote;
+
+export type Watchlists = { [key: string]: WatchlistTicker[] };

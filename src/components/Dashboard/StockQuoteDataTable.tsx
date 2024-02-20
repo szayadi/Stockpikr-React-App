@@ -13,7 +13,19 @@ const getRowId = (row: IStockQuote) => row.symbol;
 
 const StockQuoteDataTable: React.FC<DataTableProps> = ({ data }) => {
   const columns: GridColDef[] = [
-    { field: 'symbol', headerName: 'Symbol', flex: 1 },
+    {
+      field: 'symbol',
+      headerName: 'Symbol',
+      flex: 1,
+      renderCell: (params) => {
+        const symbol = params.row.symbol;
+        return (
+          <a style={{ color: 'black' }} href={`#/quote?symbol=${symbol}`}>
+            {symbol}
+          </a>
+        );
+      }
+    },
     { field: 'name', headerName: 'Name', flex: 1 },
     {
       field: 'price',

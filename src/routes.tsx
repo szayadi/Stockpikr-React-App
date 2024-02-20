@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard/Dashboard';
 import LandingPage from './components/LandingPage';
+import Positions from './components/Positions/Positions';
 import Settings from './components/Settings/Settings';
 import SignIn from './components/SignIn';
 import { StockQuotePage } from './components/Stock/StockQuotePage';
@@ -12,6 +13,7 @@ const routes = () => (
     <Route path="/" element={<LandingPage />} />
     <Route path="/watchlist" element={<Watchlist />} />
     <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/positions" element={<Positions />} />
     <Route path="/settings" element={<Settings />} />
     <Route path="/signin" element={<SignIn />} />
     <Route path="/swaggerDocs" element={<SwaggerDocs />} />
