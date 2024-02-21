@@ -5,7 +5,7 @@ import * as React from 'react';
 import { numberFormatter, percentageFormatter } from '../../helper/numberFormatter';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 
-interface DataTableProps {
+export interface DataTableProps {
   data: IStockQuote[];
 }
 
@@ -135,15 +135,9 @@ const StockQuoteDataTable: React.FC<DataTableProps> = ({ data }) => {
       <DataGrid
         rows={data}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 20 }
-          }
-        }}
         sx={{
           margin: '0px 40px'
         }}
-        pageSizeOptions={[20, 40, 80, 100]}
         getRowId={getRowId}
         checkboxSelection
       />

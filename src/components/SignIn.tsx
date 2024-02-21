@@ -1,90 +1,43 @@
 import GoogleIcon from '@mui/icons-material/Google';
-import {
-  Avatar,
-  Box,
-  Button,
-  CssBaseline,
-  Grid,
-  Link,
-  Paper,
-  ThemeProvider,
-  Typography,
-  TypographyProps,
-  createTheme
-} from '@mui/material';
-
-function Copyright(props: TypographyProps<'span', { component?: 'span' }>) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        Stockpikr
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+import { Box, Button, Card, Stack } from '@mui/material';
+import LogoImage from '../assets/images/logo-title-light-mode.png';
 
 export default function SignIn() {
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get('email'),
-  //     password: data.get('password')
-  //   });
-  // };
-
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: '100vh' }}>
-        <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
+    <Stack
+      alignItems="center"
+      justifyContent="center"
+      sx={{
+        backgroundColor: (t) => (t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]),
+        minHeight: '100vh'
+      }}
+    >
+      <Card
+        sx={{
+          p: 5,
+          width: 1,
+          maxWidth: 420
+        }}
+      >
+        <Box
+          component="img"
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: (t) => (t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900]),
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            height: '100px'
           }}
+          alt="StockPikr"
+          src={LogoImage}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <GoogleIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              To keep your data safe, we only use Google OAuth
-            </Typography>
-
-            <Button
-              href={`${process.env.REACT_APP_GOOGLE_OAUTH_URL}`}
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In with Google
-            </Button>
-            <Copyright></Copyright>
-          </Box>
-        </Grid>
-      </Grid>
-    </ThemeProvider>
+        <Button
+          fullWidth
+          size="large"
+          color="inherit"
+          variant="outlined"
+          href={`${process.env.REACT_APP_GOOGLE_OAUTH_URL}`}
+          startIcon={<GoogleIcon />}
+        >
+          Sign In with Google
+        </Button>
+      </Card>
+    </Stack>
   );
 }

@@ -1,5 +1,6 @@
 import { ICompanyProfile } from '../interfaces/ICompanyProfile';
 import IStockData from '../interfaces/IStockData';
+import { IStockPriceChange } from '../interfaces/IStockPriceChange';
 import { IStockQuote } from '../interfaces/IStockQuote';
 import { BaseApiService } from './ApiService';
 
@@ -63,6 +64,33 @@ export class StockApiService extends BaseApiService {
     }
     const url = `/api/lateststockinfo/quotes/${input}`;
     const response = await StockApiService.fetchData<IStockQuote[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+  public static async fetchMarketGainers(): Promise<IStockPriceChange[]> {
+    const url = `${this.endpoint}market/gainers`;
+    // const url = 'https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=ROPW99YXmJVjIG1KKbbVXPP6R2hoBhP2';
+    const response = await StockApiService.fetchData<IStockPriceChange[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+  public static async fetchMarketLosers(): Promise<IStockPriceChange[]> {
+    const url = `${this.endpoint}market/losers`;
+    //const url = 'https://financialmodelingprep.com/api/v3/stock_market/losers?apikey=ROPW99YXmJVjIG1KKbbVXPP6R2hoBhP2';
+    const response = await StockApiService.fetchData<IStockPriceChange[]>(url);
+    if (response) {
+      return response;
+    }
+    return [];
+  }
+  public static async fetchMarketActives(): Promise<IStockPriceChange[]> {
+    const url = `${this.endpoint}market/actives`;
+    //const url = 'https://financialmodelingprep.com/api/v3/stock_market/actives?apikey=ROPW99YXmJVjIG1KKbbVXPP6R2hoBhP2';
+    const response = await StockApiService.fetchData<IStockPriceChange[]>(url);
     if (response) {
       return response;
     }

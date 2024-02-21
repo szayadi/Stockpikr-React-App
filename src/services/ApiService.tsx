@@ -13,7 +13,8 @@ export class BaseApiService {
       BaseApiService._apiService = axios.create({
         baseURL: process.env.REACT_APP_BACKEND_URL || 'http://stockpikr.eastus2.cloudapp.azure.com:8080',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
         }
       });
     }
