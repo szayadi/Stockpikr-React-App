@@ -8,7 +8,7 @@ import {
   Typography
 } from '@mui/material';
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../index.css';
 import { UserApiService } from '../../services/UserApiService';
 
@@ -23,7 +23,6 @@ const settings = [
 ];
 
 function NavigationAccount() {
-  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [userInfo, setUserInfo] = React.useState<{ [key: string]: string }>({
