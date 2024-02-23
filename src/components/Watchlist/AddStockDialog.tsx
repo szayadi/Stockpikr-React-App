@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { useState } from 'react';
-import { Watchlists } from '../../interfaces/IWatchlistModel';
+import { MinimalWatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { StockApiService } from '../../services/StockApiService';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
@@ -67,13 +67,13 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
       if (!watchlists) {
         throw 'Watchlists are empty';
       }
-      const tickers = [{ symbol: addStockSymbol, alertPrice: Number(addStockPrice) }];
-      const searchResult = await StockApiService.fetchDetailedStock(tickers[0].symbol);
+      const ticker: MinimalWatchlistTicker = { symbol: addStockSymbol, alertPrice: Number(addStockPrice) };
+      const searchResult = await StockApiService.fetchDetailedStock(ticker.symbol);
       if (!searchResult) {
-        throw `Could not find stock with symbol ${tickers[0].symbol} in the database!`;
+        throw `Could not find stock with symbol ${ticker.symbol} in the database!`;
       }
       // TODO: handle status code
-      await WatchlistApiService.addStockToWatchlist(tickers, watchlistName);
+      await WatchlistApiService.addStockToWatchlist(ticker, watchlistName);
       // after adding, we query the watchlist again and update its data to get the detailed stock info
       const watchlist = await WatchlistApiService.fetchWatchlist(watchlistName);
       if (!watchlist) throw `Cannot find the watchlist ${watchlistName} data after adding new stocks`;
