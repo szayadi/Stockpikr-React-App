@@ -263,9 +263,11 @@ export default function Watchlist() {
                       }}
                     />
                   </TableCell>
-                  <TableCell component="th" scope="row">
-                    {row.symbol}
-                  </TableCell>
+                  <a style={{ color: 'black' }} href={`#/quote?symbol=${row.symbol}`}>
+                    <TableCell component="th" scope="row">
+                      {row.symbol}
+                    </TableCell>
+                  </a>
                   <TableCell align="right">{row.exchange}</TableCell>
                   <TableCell align="right">{row.alertPrice}</TableCell>
                   <TableCell align="right">{row.price}</TableCell>
