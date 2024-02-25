@@ -5,6 +5,7 @@ import {
   Button,
   ButtonGroup,
   Checkbox,
+  DialogContentText,
   Paper,
   Table,
   TableBody,
@@ -22,6 +23,7 @@ import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
 import { EnhancedTableToolbar, WatchlistTableHeadWithCheckbox } from './THeadCheckBoxAndSort';
+import WatchlistTickersSearchBar from './WatchlistTickersSearchBar';
 
 type Order = 'asc' | 'desc';
 
@@ -40,6 +42,9 @@ export default function Watchlist() {
   const [watchLists, setWatchLists] = useState<Watchlists>({});
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
+
+  // add watchlist tickers
+  const [addStockSymbol, setAddStockSymbol] = useState('');
 
   // table props
   const [order, setOrder] = useState<Order>('asc');
@@ -193,22 +198,32 @@ export default function Watchlist() {
       component={Paper}
       sx={{ width: '95%', backgroundColor: 'white', borderRadius: '10px', margin: '20px' }}
     >
-      <Box display="flex" flexDirection="row">
-        <AutocompleteComponent
-          watchListKeys={wlKeys}
-          watchListKey={wlKey}
-          handleAppendNewKey={handleCreateNewWatchlist}
-          setWlKey={setWlKey}
-        />
-        <ButtonGroup variant="text" aria-label="text button group">
-          <Button disabled={wlKeys.length === 0}>
-            <AddIcon onClick={handleClickAddStock} fontSize="medium" />
-          </Button>
-          <Button disabled={wlKeys.length === 0}>
-            {' '}
-            <DeleteIcon onClick={() => setDeleteWatchlistDialog(true)} fontSize="medium" />
-          </Button>
-        </ButtonGroup>
+      <Box display="flex" flexDirection="column" paddingLeft="10px" paddingTop="10px">
+        <Box display="flex" flexDirection="row">
+          <AutocompleteComponent
+            watchListKeys={wlKeys}
+            watchListKey={wlKey}
+            handleAppendNewKey={handleCreateNewWatchlist}
+            setWlKey={setWlKey}
+          />
+          <ButtonGroup variant="text" aria-label="text button group">
+            <Button disabled={wlKeys.length === 0}>
+              {' '}
+              <DeleteIcon onClick={() => setDeleteWatchlistDialog(true)} fontSize="medium" />
+            </Button>
+          </ButtonGroup>
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="flex-start" paddingTop="50px">
+          <DialogContentText paddingRight="50px">Search and add your favorite stocks</DialogContentText>
+          <Box display="flex" flexDirection="row" paddingTop="10px">
+            <WatchlistTickersSearchBar setAddStockSymbol={setAddStockSymbol} />
+            <ButtonGroup variant="text" aria-label="text button group">
+              <Button disabled={wlKeys.length === 0 || !addStockSymbol}>
+                <AddIcon onClick={handleClickAddStock} fontSize="medium" />
+              </Button>
+            </ButtonGroup>
+          </Box>
+        </Box>
       </Box>
       <EnhancedTableToolbar numSelected={selected.length} handleDeleteStocks={handleDeleteStocks} />
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -275,6 +290,7 @@ export default function Watchlist() {
         </TableBody>
       </Table>
       <AddStockDialog
+        addStockSymbol={addStockSymbol}
         watchlistName={wlKey}
         watchlists={watchLists}
         setWatchlists={setWatchLists}

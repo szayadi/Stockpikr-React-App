@@ -15,14 +15,16 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { useState } from 'react';
+import { getErrorResponse } from '../../helper/errorResponse';
+import { IStockQuote } from '../../interfaces/IStockQuote';
 import { MinimalWatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { StockApiService } from '../../services/StockApiService';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
-import WatchlistTickersSearchBar from './WatchlistTickersSearchBar';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
+  addStockSymbol: string;
   watchlistName: string;
   isAddStockDialog: boolean;
   setAddStockDialog: (value: boolean) => void;
@@ -31,18 +33,31 @@ interface AddStockDialogProps {
 }
 
 const AddStockDialog: React.FC<AddStockDialogProps> = ({
+  addStockSymbol,
   watchlists,
   setWatchlists,
   watchlistName,
   isAddStockDialog,
   setAddStockDialog
 }) => {
-  const [addStockSymbol, setAddStockSymbol] = useState('');
   const [addStockPrice, setAddStockPrice] = useState('');
+  const [stockInfo, setStockInfo] = useState<IStockQuote>();
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const throwError = useAsyncError();
+
+  const fetchStockData = async (symbol: string): Promise<void> => {
+    const response = await StockApiService.fetchDetailedStock(symbol);
+    if (!response || getErrorResponse(response)) {
+      return;
+    }
+    setStockInfo(response);
+  };
+
+  React.useEffect(() => {
+    fetchStockData(addStockSymbol);
+  }, [addStockSymbol]);
 
   const isAddStockPriceValid = () => {
     return addStockPrice !== '';
@@ -53,7 +68,6 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   };
 
   const onCancelAddStockDialog = () => {
-    setAddStockSymbol('');
     setAddStockPrice('');
     setStockTrackingDays(90);
     setAddStockDialog(false);
@@ -89,11 +103,9 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
     <Dialog open={isAddStockDialog} onClose={() => setAddStockDialog(false)} fullScreen={fullScreen}>
       <DialogTitle>Add a new stock</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          To add a new stock, please select a watchlist and enter the stock's Ticker and Buy Price
-        </DialogContentText>
-        <DialogContentText style={{ marginTop: '10px', marginBottom: '10px' }}>Stock Symbol</DialogContentText>
-        <WatchlistTickersSearchBar setAddStockSymbol={setAddStockSymbol} />
+        <DialogContentText>{`Stock symbol: ${addStockSymbol}`}</DialogContentText>
+        <DialogContentText>{`Stock company name: ${stockInfo?.name}`}</DialogContentText>
+        <DialogContentText>{`Current stock price: $${stockInfo?.price}`}</DialogContentText>
       </DialogContent>
       <DialogContent>
         <DialogContentText>At what price would you like to buy the stock?</DialogContentText>

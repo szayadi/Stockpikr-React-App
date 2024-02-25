@@ -1,7 +1,7 @@
 import { Box, ClickAwayListener, DialogContent, DialogContentText } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { StockApiService } from '../../services/StockApiService';
@@ -14,7 +14,6 @@ interface WatchlistSearchBarProps {
 const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddStockSymbol }) => {
   const [searchOptions, setSearchOptions] = useState<IStockQuote[]>([]);
   const [inputSearch, setInputSearch] = useState<string>('');
-  const [stockPrice, setStockPrice] = useState<number>(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleOnChangeTextField = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +52,6 @@ const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddSt
       return;
     }
     setAddStockSymbol(value.symbol);
-    setStockPrice(value.price);
   };
 
   const fetchData = async (value: string): Promise<void> => {
@@ -76,7 +74,7 @@ const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddSt
   };
 
   return (
-    <Box>
+    <Fragment>
       <ClickAwayListener onClickAway={handleClose}>
         <Autocomplete
           options={searchOptions}
@@ -89,7 +87,6 @@ const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddSt
               {...params}
               onKeyDown={handleEnterPress}
               placeholder="Search by symbol or name"
-              style={{ width: '75%' }}
               onChange={handleOnChangeTextField}
             />
           )}
@@ -107,20 +104,10 @@ const WatchlistTickersSearchBar: React.FC<WatchlistSearchBarProps> = ({ setAddSt
               <em style={{ width: '120px', textAlign: 'right' }}>{option.exchange}</em>
             </li>
           )}
-          sx={{
-            backgroundColor: 'white',
-            width: '700px',
-            borderRadius: 3,
-            '& li': {
-              width: 'auto'
-            }
-          }}
+          sx={{ width: 300 }}
         />
       </ClickAwayListener>
-      <DialogContent>
-        {stockPrice !== 0 && <DialogContentText>{`Current stock price: $${stockPrice}`}</DialogContentText>}
-      </DialogContent>
-    </Box>
+    </Fragment>
   );
 };
 
