@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { TickerTape, Timeline } from 'react-ts-tradingview-widgets';
 import { IStockPriceChange } from '../../interfaces/IStockPriceChange';
@@ -66,26 +66,28 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <Grid container sx={{ marginTop: '50px' }}>
-      <Grid item xs={12}>
-        <TickerTape></TickerTape>
+    <Box sx={{ margin: '20px' }}>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
+          <TickerTape></TickerTape>
+        </Grid>
+        <Grid item xs={8}>
+          <StockDataTable data={stockQuote} title="My Positions" />
+        </Grid>
+        <Grid item xs={4}>
+          <Timeline feedMode="market" market="stock" height="900" width="100%"></Timeline>
+        </Grid>
+        <Grid item xs={4}>
+          <StockPriceChangeDataTable data={gainers} title="Market Most Gainers"></StockPriceChangeDataTable>
+        </Grid>
+        <Grid item xs={4}>
+          <StockPriceChangeDataTable data={losers} title="Market Most Losers"></StockPriceChangeDataTable>
+        </Grid>
+        <Grid item xs={4}>
+          <StockPriceChangeDataTable data={actives} title="Market Most Actives"></StockPriceChangeDataTable>
+        </Grid>
       </Grid>
-      <Grid item xs={8}>
-        <StockDataTable data={stockQuote} />
-      </Grid>
-      <Grid item xs={4}>
-        <Timeline feedMode="market" market="stock" height="1000" width="100%"></Timeline>
-      </Grid>
-      <Grid item xs={4}>
-        <StockPriceChangeDataTable data={gainers} title="Market Most Gainers"></StockPriceChangeDataTable>
-      </Grid>
-      <Grid item xs={4}>
-        <StockPriceChangeDataTable data={losers} title="Market Most Losers"></StockPriceChangeDataTable>
-      </Grid>
-      <Grid item xs={4}>
-        <StockPriceChangeDataTable data={actives} title="Market Most Actives"></StockPriceChangeDataTable>
-      </Grid>
-    </Grid>
+    </Box>
   );
 };
 

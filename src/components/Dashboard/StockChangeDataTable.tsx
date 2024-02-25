@@ -1,10 +1,11 @@
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import * as React from 'react';
 import { numberFormatter, percentageFormatter } from '../../helper/numberFormatter';
 import { IStockPriceChange } from '../../interfaces/IStockPriceChange';
+import ExportToExcelButton from '../ExportToExcel';
 
 const getRowId = (row: IStockPriceChange) => row.symbol;
 
@@ -54,22 +55,34 @@ const StockPriceChangeDataTable: React.FC<DataTableProps> = ({ data, title }) =>
   ];
 
   return (
-    <div style={{ height: 635, width: '100%' }}>
-      <Typography variant="h5" mt={2} sx={{ marginBottom: '20px', color: 'black' }}>
-        {title}
-      </Typography>
-      <DataGrid
-        rows={data}
-        columns={columns}
-        sx={{
-          margin: '0px 40px'
-        }}
-        getRowId={getRowId}
-        showColumnVerticalBorder
-        showCellVerticalBorder
-        checkboxSelection
-      />
-    </div>
+    <Box sx={{ height: 650, width: '100%' }}>
+      <Grid container direction="column" style={{ height: '100%' }}>
+        <Grid item>
+          <Grid container justifyContent="center" alignItems="center" style={{ height: '10%' }}>
+            <Grid item>
+              <Typography variant="h5" sx={{ marginBottom: '20px', color: 'black' }}>
+                {title}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <ExportToExcelButton data={data} title={title} />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item style={{ height: '90%', width: '100%' }}>
+          <div style={{ width: '100%', maxWidth: '100%', height: '100%' }}>
+            <DataGrid
+              rows={data}
+              columns={columns}
+              getRowId={getRowId}
+              showColumnVerticalBorder
+              showCellVerticalBorder
+              checkboxSelection
+            />
+          </div>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
