@@ -74,19 +74,6 @@ export default function Watchlist() {
     setSelected([]);
   };
 
-  // const handleChangePage = (event: unknown, newPage: number) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
-
-  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDense(event.target.checked);
-  // };
-
   function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -285,15 +272,6 @@ export default function Watchlist() {
                 </TableRow>
               );
             })}
-          {/* {emptyRows > 0 && (
-            <TableRow
-              style={{
-                height: (dense ? 33 : 53) * emptyRows
-              }}
-            >
-              <TableCell colSpan={6} />
-            </TableRow>
-          )} */}
         </TableBody>
       </Table>
       <AddStockDialog
