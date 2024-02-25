@@ -140,6 +140,8 @@ const StockQuoteDataTable: React.FC<DataTableProps> = ({ data }) => {
         }}
         getRowId={getRowId}
         checkboxSelection
+        showColumnVerticalBorder
+        showCellVerticalBorder
       />
     </div>
   );

@@ -55,7 +55,7 @@ const StockPriceChangeDataTable: React.FC<DataTableProps> = ({ data, title }) =>
 
   return (
     <div style={{ height: 635, width: '100%' }}>
-      <Typography variant="h5" mt={2} sx={{ marginBottom: '20px' }}>
+      <Typography variant="h5" mt={2} sx={{ marginBottom: '20px', color: 'black' }}>
         {title}
       </Typography>
       <DataGrid
@@ -65,6 +65,8 @@ const StockPriceChangeDataTable: React.FC<DataTableProps> = ({ data, title }) =>
           margin: '0px 40px'
         }}
         getRowId={getRowId}
+        showColumnVerticalBorder
+        showCellVerticalBorder
         checkboxSelection
       />
     </div>
