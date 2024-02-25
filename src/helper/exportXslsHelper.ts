@@ -1,4 +1,4 @@
-import XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 
 const exportToExcel = <T>(rows: T[], fileName: string) => {
   const worksheet = XLSX.utils.json_to_sheet(rows);
