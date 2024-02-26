@@ -11,12 +11,13 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableRow
+  TableRow,
+  TextField
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
-import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
+import { AlertData, MinimalWatchlistTicker, WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from './AddStockDialog';
@@ -45,6 +46,20 @@ export default function Watchlist() {
 
   // add watchlist tickers
   const [addStockSymbol, setAddStockSymbol] = useState('');
+  const [alertData, setAlertData] = useState<AlertData>({});
+  useEffect(() => {
+    if (watchLists[wlKey]) {
+      let alertData: AlertData = {};
+      watchLists[wlKey].forEach((ticker) => {
+        alertData[ticker.symbol] = ticker.alertPrice;
+      });
+      setAlertData(alertData);
+    }
+  }, [watchLists[wlKey]]);
+
+  const isAlertPriceValid = (alertPrice: number) => {
+    return alertPrice < 0 || !alertPrice;
+  };
 
   // table props
   const [order, setOrder] = useState<Order>('asc');
@@ -177,6 +192,15 @@ export default function Watchlist() {
     }
   };
 
+  const handleEditStocks = async () => {
+    const tickers: MinimalWatchlistTicker[] = Object.entries(alertData).map((data) => ({
+      symbol: data[0],
+      alertPrice: data[1]
+    }));
+    await WatchlistApiService.editStockAlertPrices(tickers, wlKey);
+    setSelected([]);
+  };
+
   const handleSelectStock = (event: React.MouseEvent<unknown>, symbol: string) => {
     const selectedIndex = selected.indexOf(symbol);
     let newSelected: string[] = [];
@@ -225,7 +249,11 @@ export default function Watchlist() {
           </Box>
         </Box>
       </Box>
-      <EnhancedTableToolbar numSelected={selected.length} handleDeleteStocks={handleDeleteStocks} />
+      <EnhancedTableToolbar
+        numSelected={selected.length}
+        handleDeleteStocks={handleDeleteStocks}
+        handleEditStocks={handleEditStocks}
+      />
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <WatchlistTableHeadWithCheckbox
           numSelected={selected.length}
@@ -243,12 +271,8 @@ export default function Watchlist() {
               const isItemSelected = isSelected(row.symbol);
               const labelId = `enhanced-table-checkbox-${index}`;
               return (
-                // TODO: set unique key for the watchlist tickers
                 <TableRow
                   key={index}
-                  // onClick={() => {
-                  //   navigate('/quote');
-                  // }}
                   onClick={(event) => handleSelectStock(event, row.symbol)}
                   role="checkbox"
                   aria-checked={isItemSelected}
@@ -271,7 +295,28 @@ export default function Watchlist() {
                     </TableCell>
                   </a>
                   <TableCell align="right">{row.exchange}</TableCell>
-                  <TableCell align="right">{row.alertPrice}</TableCell>
+                  <TextField
+                    defaultValue={row.alertPrice}
+                    error={isAlertPriceValid(alertData[row.symbol])}
+                    autoFocus
+                    required
+                    margin="dense"
+                    id="alert-price"
+                    inputProps={{ min: 0, style: { textAlign: 'inherit' } }} // the change is here
+                    type="number"
+                    fullWidth
+                    variant="standard"
+                    helperText={
+                      isAlertPriceValid(alertData[row.symbol])
+                        ? 'Stock alert price cannot be empty, 0, or negative'
+                        : ''
+                    }
+                    onChange={(e) => {
+                      alertData[row.symbol] = +e.target.value;
+                      setAlertData(alertData);
+                    }}
+                  />
+                  {/* <TableCell align="right">{row.alertPrice}</TableCell> */}
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">{`${row.currentVsAlertPricePercentage}%`}</TableCell>
                   <TableCell align="right">{row.previousClose}</TableCell>

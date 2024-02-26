@@ -116,7 +116,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
           margin="dense"
           id="stock-price"
           label="Buy price"
-          type="text"
+          type="number"
           fullWidth
           variant="standard"
           helperText={!isAddStockPriceValid() ? 'Stock price cannot be empty' : ''}

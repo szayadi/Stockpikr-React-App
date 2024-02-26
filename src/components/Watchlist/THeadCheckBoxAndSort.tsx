@@ -1,4 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
   Button,
@@ -29,6 +30,7 @@ type Order = 'asc' | 'desc';
 interface EnhancedTableToolbarProps {
   numSelected: number;
   handleDeleteStocks: () => void;
+  handleEditStocks: () => void;
 }
 
 interface HeadCell {
@@ -184,6 +186,7 @@ export function WatchlistTableHeadWithCheckbox(props: EnhancedTableProps) {
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
   const [isDeleteWatchlistTickers, setDeleteWatchlistTickers] = useState(false);
+  const [isEditWatchlistTickers, setEditWatchlistTickers] = useState(false);
 
   const onCancelDeleteTickers = () => {
     setDeleteWatchlistTickers(false);
@@ -192,6 +195,15 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const onConfirmDeleteTickers = () => {
     props.handleDeleteStocks();
     setDeleteWatchlistTickers(false);
+  };
+
+  const onCancelEditTickers = () => {
+    setEditWatchlistTickers(false);
+  };
+
+  const onConfirmEditTickers = () => {
+    props.handleEditStocks();
+    setEditWatchlistTickers(false);
   };
 
   const theme = createTheme({
@@ -233,11 +245,18 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           </Typography>
         )}
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton onClick={() => setDeleteWatchlistTickers(true)}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          <Box>
+            <Tooltip title="Edit">
+              <IconButton onClick={() => setEditWatchlistTickers(true)}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton onClick={() => setDeleteWatchlistTickers(true)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         ) : (
           <></>
           // <Tooltip title="Filter list">
@@ -257,6 +276,18 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         <DialogActions>
           <Button onClick={onCancelDeleteTickers}>Cancel</Button>
           <Button onClick={onConfirmDeleteTickers}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={isEditWatchlistTickers} onClose={onCancelEditTickers} fullScreen={fullScreen}>
+        <DialogTitle>{`Edit selected tickers`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to edit these selected watchlist ticker alert prices?.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCancelEditTickers}>Cancel</Button>
+          <Button onClick={onConfirmEditTickers}>Confirm</Button>
         </DialogActions>
       </Dialog>
     </ThemeProvider>

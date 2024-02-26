@@ -17,7 +17,9 @@ export type CustomTickerData = {
   yearHighVsCurrentPercentage: number;
   nearLowVsCurrentPercentage: number;
   yearLowVsCurrentPercentage: number;
-}
+};
+
+export type AlertData = { [symbol: string]: number };
 
 export type WatchlistTicker = MinimalWatchlistTicker & IStockQuote & CustomTickerData;
 
