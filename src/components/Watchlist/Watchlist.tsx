@@ -10,17 +10,13 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableRow,
-  useTheme
+  TableRow
 } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
 import { WatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
-import { useAppSelector } from '../../store/hooks';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from './AddStockDialog';
 import AutocompleteComponent from './Autocomplete';
@@ -44,17 +40,6 @@ export default function Watchlist() {
   const [watchLists, setWatchLists] = useState<Watchlists>({});
   const [isAddStockDialog, setAddStockDialog] = useState(false);
   const [isDeleteWatchlistDialog, setDeleteWatchlistDialog] = useState(false);
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  //const navigate = useNavigate();
-
-  const watchlist = useAppSelector((state) => state.watchlist.value);
-  console.log('Watchlist:', watchlist);
-
-  useEffect(() => {
-    console.log(watchlist);
-  }, [watchlist]);
 
   // table props
   const [order, setOrder] = useState<Order>('asc');

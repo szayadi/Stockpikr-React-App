@@ -3,7 +3,7 @@ import watchlistSlice from './slices/watchlistSlice';
 
 export const store = configureStore({
   reducer: {
-    watchlist: watchlistSlice
+    watchlists: watchlistSlice
   }
 });
 

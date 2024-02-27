@@ -9,10 +9,13 @@ export class UserApiService extends BaseApiService {
   //----------------------------------------------------------------//
 
   public static async fetchUserDetails(): Promise<IUserInfo | null> {
-    const response = await super.fetchData<IUserInfo>(`${this.endpoint}/temp`);
-    return response;
+    try {
+      return await super.fetchData<IUserInfo>(`${this.endpoint}/temp`);
+    } catch (ex) {
+      return null;
+    }
   }
-  
+
   public static async logout(): Promise<void> {
     const throwError = useAsyncError();
     try {

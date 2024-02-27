@@ -51,7 +51,6 @@ const SearchBar: React.FC = () => {
       return;
     }
     navigate('/quote?symbol=' + value.symbol);
-    //window.location.reload();
   };
 
   const fetchData = async (value: string): Promise<void> => {
@@ -71,7 +70,6 @@ const SearchBar: React.FC = () => {
     if (event.key === 'Enter') {
       if (searchOptions.find((options) => options.symbol.toLocaleLowerCase() === inputSearch.toLocaleLowerCase())) {
         navigate('/quote?symbol=' + inputSearch);
-        //window.location.reload();
       } else {
         event.preventDefault(); // api does not accept stock name for quotes, so we force the user to select from the drop down if it does not match
       }
