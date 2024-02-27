@@ -48,6 +48,14 @@ export class WatchlistApiService extends BaseApiService {
   }
 
   public static async addStockToWatchlist(
+    ticker: MinimalWatchlistTicker,
+    watchlistID: string
+  ): Promise<string | null> {
+    const response = await super.putData<string>(this.addUserIdToEndpoint(`${this.endpoint}/watchlist/${watchlistID}`), ticker);
+    return response;
+  }
+
+  public static async editStockAlertPrices(
     tickers: MinimalWatchlistTicker[],
     watchlistID: string
   ): Promise<string | null> {

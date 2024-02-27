@@ -11,13 +11,14 @@ import * as React from 'react';
 // Define the prop types for the component
 interface MyComponentProps {
   watchListKeys: string[];
+  watchListKey: string;
   handleAppendNewKey: (key: string) => void;
   setWlKey: (key: string) => void;
 }
 
 const filter = createFilterOptions<WatchlistId>();
 
-const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchListKeys, handleAppendNewKey, setWlKey }) => {
+const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchListKeys, watchListKey, handleAppendNewKey, setWlKey }) => {
   const [value, setValue] = React.useState<string | null>(null);
   const [open, toggleOpen] = React.useState(false);
 
@@ -96,7 +97,9 @@ const AutocompleteComponent: React.FC<MyComponentProps> = ({ watchListKeys, hand
         renderOption={(props, option) => <li {...props}>{option.id}</li>}
         sx={{ width: 300 }}
         freeSolo
-        renderInput={(params) => <TextField {...params} label={watchListKeys.length > 0 ? watchListKeys[0] : ''} />}
+        renderInput={(params) => (
+          <TextField {...params} label={watchListKey} />
+        )}
       />
       <Dialog open={open} onClose={handleClose}>
         <form onSubmit={handleSubmit}>
