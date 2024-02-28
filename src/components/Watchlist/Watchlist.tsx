@@ -47,15 +47,6 @@ export default function Watchlist() {
   // add watchlist tickers
   const [addStockSymbol, setAddStockSymbol] = useState('');
   const [alertData, setAlertData] = useState<AlertData>({});
-  useEffect(() => {
-    if (watchLists[wlKey]) {
-      let alertData: AlertData = {};
-      watchLists[wlKey].forEach((ticker) => {
-        alertData[ticker.symbol] = ticker.alertPrice;
-      });
-      setAlertData(alertData);
-    }
-  }, [watchLists[wlKey]]);
 
   const isAlertPriceValid = (alertPrice: number) => {
     return alertPrice < 0 || !alertPrice;
@@ -116,10 +107,24 @@ export default function Watchlist() {
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - wlKeys.length) : 0;
 
-  const visibleWatchLists = useMemo(
-    () => (watchLists[wlKey] ? watchLists[wlKey].sort(getComparator(order, orderBy)) : []),
-    [order, orderBy, wlKey, watchLists[wlKey]]
-  );
+  const [visibleTickers, setVisibleTickers] = useState<WatchlistTicker[]>([]);
+  useEffect(() => {
+    if (watchLists[wlKey]) {
+      setVisibleTickers(watchLists[wlKey].sort(getComparator(order, orderBy)));
+    } else {
+      setVisibleTickers([]);
+    }
+  }, [order, orderBy, watchLists[wlKey]]);
+
+  useEffect(() => {
+    if (watchLists[wlKey]) {
+      let newAlertData: AlertData = alertData;
+      watchLists[wlKey].forEach((ticker) => {
+        newAlertData[ticker.symbol] = ticker.alertPrice;
+      });
+      setAlertData(newAlertData);
+    }
+  }, [watchLists[wlKey]]);
 
   const throwError = useAsyncError();
 
@@ -185,6 +190,11 @@ export default function Watchlist() {
       const tickers = watchLists[wlKey].filter((ticker) => !selected.includes(ticker.symbol));
       watchLists[wlKey] = tickers;
       refreshWatchlist(watchLists);
+      let newAlertData = alertData;
+      for (const ticker of tickers) {
+        delete newAlertData[ticker.symbol];
+      }
+      setAlertData(newAlertData);
       setSelected([]);
     } else {
       // TODO: handle delete stocks error here
@@ -267,7 +277,7 @@ export default function Watchlist() {
           {watchLists &&
             Object.keys(watchLists).length > 0 &&
             wlKey &&
-            visibleWatchLists.map((row, index) => {
+            visibleTickers.map((row, index) => {
               const isItemSelected = isSelected(row.symbol);
               const labelId = `enhanced-table-checkbox-${index}`;
               return (
@@ -295,27 +305,31 @@ export default function Watchlist() {
                     </TableCell>
                   </a>
                   <TableCell align="right">{row.exchange}</TableCell>
-                  <TextField
-                    defaultValue={row.alertPrice}
-                    error={isAlertPriceValid(alertData[row.symbol])}
-                    autoFocus
-                    required
-                    margin="dense"
-                    id="alert-price"
-                    inputProps={{ min: 0, style: { textAlign: 'inherit' } }} // the change is here
-                    type="number"
-                    fullWidth
-                    variant="standard"
-                    helperText={
-                      isAlertPriceValid(alertData[row.symbol])
-                        ? 'Stock alert price cannot be empty, 0, or negative'
-                        : ''
-                    }
-                    onChange={(e) => {
-                      alertData[row.symbol] = +e.target.value;
-                      setAlertData(alertData);
-                    }}
-                  />
+                  <TableCell align="right">
+                    <TextField
+                      value={alertData[row.symbol]}
+                      error={isAlertPriceValid(alertData[row.symbol])}
+                      autoFocus
+                      required
+                      margin="dense"
+                      id={row.symbol}
+                      inputProps={{ min: 0, style: { textAlign: 'inherit' } }} // the change is here
+                      type="number"
+                      fullWidth
+                      variant="standard"
+                      helperText={
+                        isAlertPriceValid(alertData[row.symbol])
+                          ? 'Stock alert price cannot be empty, 0, or negative'
+                          : ''
+                      }
+                      onChange={(e) => {
+                        alertData[row.symbol] = +e.target.value;
+                        setAlertData(alertData);
+                        // workaround to trigger re-render when changing the alert price
+                        setSelected([]);
+                      }}
+                    />
+                  </TableCell>
                   {/* <TableCell align="right">{row.alertPrice}</TableCell> */}
                   <TableCell align="right">{row.price}</TableCell>
                   <TableCell align="right">{`${row.currentVsAlertPricePercentage}%`}</TableCell>
