@@ -18,6 +18,17 @@ export class UserApiService extends BaseApiService {
     }
   }
 
+  public static async isUserLoggedIn(): Promise<boolean> {
+    try {
+      const response = await super.fetchData<boolean>(`${this.baseEndpoint}/login/active`);
+      console.log(response);
+      return response == true;
+    } catch (error) {
+      console.log("error fetching user's logged in state: ", error);
+      return false;
+    }
+  }
+
   public static async logout(): Promise<void> {
     const throwError = useAsyncError();
     try {

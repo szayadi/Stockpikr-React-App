@@ -1,13 +1,8 @@
-import {
-  AppBar,
-  Container,
-  Toolbar
-} from '@mui/material';
-import * as React from 'react';
+import { AppBar, Container, Toolbar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LogoImage from '../../assets/images/logo-title-light-mode.png';
-import NavigationLogin from './NavigationLogin';
 import SearchBar from '../SearchBar';
+import NavigationLogin from './NavigationLogin';
 
 import '../../index.css';
 
@@ -23,7 +18,6 @@ function NavigationHeader() {
           <SearchBar></SearchBar>
 
           <NavigationLogin />
-
         </Toolbar>
       </Container>
     </AppBar>

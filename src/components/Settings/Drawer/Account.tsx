@@ -1,4 +1,4 @@
-import { Avatar, Box, Divider, Paper, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Paper, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { IAccountValues } from '../../../interfaces/IAccountValues';
 import { UserApiService } from '../../../services/UserApiService';
@@ -13,8 +13,7 @@ export const accountFields: IAccountField[] = [
   { label: 'First Name', name: 'firstName', type: 'text' },
   { label: 'Last Name', name: 'lastName', type: 'text' },
   { label: 'Email ID', name: 'email', type: 'text' },
-  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' },
-  { label: 'Profile Picture', name: 'profilePic', type: 'text' }
+  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
 ];
 
 export const Account: React.FC = () => {
@@ -55,15 +54,9 @@ export const Account: React.FC = () => {
 
       <Box display="grid" gap={2}>
         {accountFields.map(({ label, name, type }: IAccountField) => (
-          <TextField
-            key={name}
-            fullWidth
-            variant="outlined"
-            type={type}
-            label={label}
-            value={accountValues[name]}
-            name={name}
-          />
+          <Typography key={name} variant="body1">
+            {label}: {accountValues[name]}
+          </Typography>
         ))}
       </Box>
     </Paper>
