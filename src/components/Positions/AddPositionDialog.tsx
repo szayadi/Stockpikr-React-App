@@ -173,7 +173,7 @@ const AddPositionDialog: React.FC<AddPositionDialogProps> = ({
                 />
             </DialogContent>
             <DialogContent>
-                <DialogContentText>When did you make your purchase?</DialogContentText>
+                <DialogContentText style={{ marginBottom: 2 }}>When did you make your purchase?</DialogContentText>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     label="Purchase Date"
