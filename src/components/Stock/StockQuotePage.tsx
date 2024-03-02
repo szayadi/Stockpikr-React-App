@@ -69,7 +69,7 @@ export const StockQuotePage: React.FC = () => {
     // fetchCompanyProfile().catch((error) => {
     //   throwError(error);
     // });
-  }, [location]);
+  }, []);
 
   const queryWatchLists = async () => {
     const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
@@ -119,7 +119,7 @@ export const StockQuotePage: React.FC = () => {
         addStockSymbol={symbolParam}
         watchlists={watchlists}
         setWatchlists={setWatchlists}
-        isAddStockDialog={isAddStockDialog}
+        isAddStockDialog={true}
         setAddStockDialog={setAddStockDialog}
       />
       <Grid container spacing={2}>

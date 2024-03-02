@@ -58,6 +58,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   };
 
   React.useEffect(() => {
+    console.log('hellow');
     fetchStockData(addStockSymbol);
   }, [addStockSymbol]);
 
