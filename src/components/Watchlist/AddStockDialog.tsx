@@ -8,7 +8,7 @@ import {
   FormControl,
   FormControlLabel,
   Radio,
-  RadioGroup,
+  RadioGroup, // Added Select import
   TextField,
   useMediaQuery,
   useTheme
@@ -20,19 +20,17 @@ import { IStockQuote } from '../../interfaces/IStockQuote';
 import { MinimalWatchlistTicker, Watchlists } from '../../interfaces/IWatchlistModel';
 import { StockApiService } from '../../services/StockApiService';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
-import { addWatchlistRedux } from '../../store/slices/watchlistSlice';
 import { useAsyncError } from '../GlobalErrorBoundary';
+import { WatchlistTabSelector } from './WatchlistTabSelector';
 
 // Define the prop types for the component
 interface AddStockDialogProps {
   addStockSymbol: string;
-  watchlistName: string;
+  watchlistName?: string;
   isAddStockDialog: boolean;
   setAddStockDialog: (value: boolean) => void;
-  watchlists?: Watchlists | undefined;
-  setWatchlists?: (watchlists: Watchlists) => void;
-  isOnStockPage?: boolean;
-  stockSymbol?: string;
+  watchlists: Watchlists | undefined;
+  setWatchlists: (watchlists: Watchlists) => void;
 }
 
 const AddStockDialog: React.FC<AddStockDialogProps> = ({
@@ -41,13 +39,12 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   setWatchlists,
   watchlistName,
   isAddStockDialog,
-  setAddStockDialog,
-  isOnStockPage,
-  stockSymbol
+  setAddStockDialog
 }) => {
   const [addStockPrice, setAddStockPrice] = useState('');
   const [stockInfo, setStockInfo] = useState<IStockQuote>();
   const [stockTrackingDays, setStockTrackingDays] = useState(90);
+  const [wlKey, setWlKey] = useState('');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const throwError = useAsyncError();
@@ -68,10 +65,6 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
     return addStockPrice !== '';
   };
 
-  const isAddWatchlistNameValid = () => {
-    return wlName !== '';
-  };
-
   const isAddStockIdValid = () => {
     return addStockSymbol !== '';
   };
@@ -87,8 +80,11 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
       if (!addStockSymbol) {
         throw 'Stock symbol cannot be empty';
       }
-      if (!isOnStockPage && (!watchlists || !setWatchlists)) {
+      if (!watchlists) {
         throw 'Watchlists are empty';
+      }
+      if (!watchlistName && !wlKey) {
+        throw 'Select a watchlist';
       }
       const ticker: MinimalWatchlistTicker = { symbol: addStockSymbol, alertPrice: Number(addStockPrice) };
       const searchResult = await StockApiService.fetchDetailedStock(ticker.symbol);
@@ -96,25 +92,16 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
         throw `Could not find stock with symbol ${ticker.symbol} in the database!`;
       }
       // TODO: handle status code
-      await WatchlistApiService.addStockToWatchlist(ticker, watchlistName);
+      await WatchlistApiService.addStockToWatchlist(ticker, watchlistName ?? wlKey);
       // after adding, we query the watchlist again and update its data to get the detailed stock info
-      const watchlist = await WatchlistApiService.fetchWatchlist(wlName);
-      if (!watchlist) throw `Cannot find the watchlist ${wlName} data after adding new stocks`;
-      if (watchlists && setWatchlists) {
-        watchlists[wlName] = watchlist.tickers;
-        setWatchlists(watchlists);
-      }
-      dispatch(addWatchlistRedux(watchlist));
+      const watchlist = await WatchlistApiService.fetchWatchlist(watchlistName ?? wlKey);
+      if (!watchlist) throw `Cannot find the watchlist ${watchlistName ?? wlKey} data after adding new stocks`;
+      watchlists[watchlistName ?? wlKey] = watchlist.tickers;
+      setWatchlists(watchlists);
     } catch (error) {
       throwError(error);
     }
     setAddStockDialog(false);
-  };
-
-  const handleBtnDisabled = () => {
-    return isOnStockPage
-      ? !isAddStockPriceValid() || !isAddWatchlistNameValid()
-      : !isAddStockIdValid() || !isAddStockPriceValid();
   };
 
   return (
@@ -125,6 +112,15 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
         <DialogContentText>{`Stock company name: ${stockInfo?.name}`}</DialogContentText>
         <DialogContentText>{`Current stock price: $${stockInfo?.price}`}</DialogContentText>
       </DialogContent>
+      {watchlistName && (
+        <WatchlistTabSelector
+          showDeleteIcon={false}
+          watchLists={watchlists!}
+          setWatchLists={setWatchlists}
+          selectedWatchList={wlKey}
+          setSelectedWatchList={setWlKey}
+        />
+      )}
       <DialogContent>
         <DialogContentText>At what price would you like to buy the stock?</DialogContentText>
         <TextField
@@ -141,24 +137,6 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
           onChange={(e) => setAddStockPrice(e.target.value)}
         />
       </DialogContent>
-      {isOnStockPage && (
-        <DialogContent>
-          <DialogContentText>Enter your watchlist name</DialogContentText>
-          <TextField
-            error={!isAddWatchlistNameValid()}
-            autoFocus
-            required
-            margin="dense"
-            id="watchlist-name"
-            label="Watchlist name"
-            type="text"
-            fullWidth
-            variant="standard"
-            helperText={!isAddStockPriceValid() ? 'Watchlist name cannot be empty' : ''}
-            onChange={(e) => setWlName(e.target.value)}
-          />
-        </DialogContent>
-      )}
       <DialogContent>
         <DialogContentText>
           How many days? (90 days or 180 days) would you like to track the stock? (For near-term tracking)
@@ -179,7 +157,7 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancelAddStockDialog}>Cancel</Button>
-        <Button onClick={onConfirmAddStockDialog} disabled={handleBtnDisabled()}>
+        <Button onClick={onConfirmAddStockDialog} disabled={!isAddStockIdValid() || !isAddStockPriceValid()}>
           Confirm
         </Button>
       </DialogActions>

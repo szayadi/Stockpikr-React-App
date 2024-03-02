@@ -13,9 +13,8 @@ import { userID } from '../../helper/constants';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
+import { Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setWatchlistsRedux } from '../../store/slices/watchlistSlice';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from '../Watchlist/AddStockDialog';
 import TradingViewChart from './Components/TradingViewChart';
@@ -26,10 +25,9 @@ export const StockQuotePage: React.FC = () => {
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [isAddStockDialog, setAddStockDialog] = useState(false);
+  const [watchlists, setWatchlists] = useState<Watchlists>();
   const location = useLocation();
   const throwError = useAsyncError();
-  const watchlists = useAppSelector((state) => state.watchlists.value);
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const url = window.location.href;
@@ -37,7 +35,9 @@ export const StockQuotePage: React.FC = () => {
     const hash = hashIndex !== -1 ? url.slice(hashIndex + 1) : '';
     const searchParams = new URLSearchParams(hash);
     setSymbolParam(searchParams.get('/quote?symbol'));
-    fetchWatchlists();
+    queryWatchLists().catch((error) => {
+      // throwError(error);
+    });
 
     if (!symbolParam) {
       return;
@@ -71,37 +71,25 @@ export const StockQuotePage: React.FC = () => {
     // });
   }, [location]);
 
-  const fetchWatchlists = async () => {
-    const res = await WatchlistApiService.fetchWatchlistsByUserId(userID);
-    console.log(res[0].tickers[0].symbol);
-    dispatch(setWatchlistsRedux(res));
-    setIsInWatchlist(isTickerInWatchlists());
+  const queryWatchLists = async () => {
+    const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
+    if (Array.isArray(wls)) {
+      let tempWls: Watchlists = {};
+      wls.forEach((wl, i) => {
+        if (!tempWls[wl.watchlistName]) {
+          tempWls[wl.watchlistName] = [];
+        }
+        tempWls[wl.watchlistName] = wl.tickers;
+        if (wl.tickers.some((ticker) => ticker.symbol === symbolParam)) {
+          setIsInWatchlist(true);
+        }
+      });
+      setWatchlists(tempWls);
+    }
   };
 
   const handleAddToWatchlist = () => {
     setAddStockDialog(true);
-  };
-
-  const isTickerInWatchlists = () => {
-    return (
-      !!symbolParam &&
-      !watchlists.some((watchlist) => {
-        console.log(watchlist.watchlistName);
-        watchlist.tickers.some((ticker) => ticker.symbol === symbolParam);
-      })
-    );
-  };
-
-  // may need later
-  const isTickerInGivenWatchlist = (givenWatchlist: string) => {
-    return (
-      !!symbolParam &&
-      !watchlists.some(
-        (watchlist) =>
-          watchlist.watchlistName === givenWatchlist &&
-          watchlist.tickers.some((ticker) => ticker.symbol === symbolParam)
-      )
-    );
   };
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -128,10 +116,11 @@ export const StockQuotePage: React.FC = () => {
   return (
     <Box sx={{ flexGrow: 1, margin: '20px' }}>
       <AddStockDialog
+        addStockSymbol={symbolParam}
+        watchlists={watchlists}
+        setWatchlists={setWatchlists}
         isAddStockDialog={isAddStockDialog}
         setAddStockDialog={setAddStockDialog}
-        isOnStockPage={true}
-        stockSymbol={symbolParam}
       />
       <Grid container spacing={2}>
         <Grid xs={12} display="flex" justifyContent="right" alignItems="right">
