@@ -1,12 +1,22 @@
-import EditIcon from '@mui/icons-material/Edit';
-import { Avatar, Box, Button, Divider, Paper, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Paper, Typography } from '@mui/material';
 import React, { useState } from 'react';
+import { IAccountValues } from '../../../interfaces/IAccountValues';
 import { UserApiService } from '../../../services/UserApiService';
-import { AccountForm, IAccountField, accountFields } from './AccountForm';
-import {IAccountValues} from '../../../interfaces/IAccountValues';
+
+export interface IAccountField {
+  label: string;
+  name: string;
+  type: string;
+}
+
+export const accountFields: IAccountField[] = [
+  { label: 'First Name', name: 'firstName', type: 'text' },
+  { label: 'Last Name', name: 'lastName', type: 'text' },
+  { label: 'Email ID', name: 'email', type: 'text' },
+  { label: 'Phone Number', name: 'phoneNumber', type: 'tel' }
+];
 
 export const Account: React.FC = () => {
-  const [isEditing, setIsEditing] = useState(false);
   const [accountValues, setAccountValues] = useState<IAccountValues>({
     firstName: '',
     lastName: '',
@@ -31,15 +41,6 @@ export const Account: React.FC = () => {
     queryUserInfo();
   }, []);
 
-  const handleFormSubmit = (values: IAccountValues) => {
-    setAccountValues(values);
-    setIsEditing(false);
-  };
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
   return (
     <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto', borderRadius: 8 }}>
       <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
@@ -51,30 +52,13 @@ export const Account: React.FC = () => {
 
       <Divider sx={{ marginBottom: 2 }} />
 
-      {isEditing ? (
-        <AccountForm initialValues={accountValues as IAccountValues} onSubmit={handleFormSubmit} />
-      ) : (
-        <Box display="grid" gap={2}>
-          {accountFields.map(({ label, name, type }: IAccountField) => (
-            <TextField
-              key={name}
-              fullWidth
-              variant="outlined"
-              type={type}
-              label={label}
-              value={accountValues[name]}
-              name={name}
-              disabled={!isEditing}
-            />
-          ))}
-
-          <Box display="flex" justifyContent="flex-end" mt={3}>
-            <Button variant="outlined" startIcon={<EditIcon />} onClick={handleEditClick}>
-              Edit
-            </Button>
-          </Box>
-        </Box>
-      )}
+      <Box display="grid" gap={2}>
+        {accountFields.map(({ label, name, type }: IAccountField) => (
+          <Typography key={name} variant="body1">
+            {label}: {accountValues[name]}
+          </Typography>
+        ))}
+      </Box>
     </Paper>
   );
 };

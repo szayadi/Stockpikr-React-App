@@ -1,5 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
   Button,
@@ -30,41 +30,7 @@ type Order = 'asc' | 'desc';
 interface EnhancedTableToolbarProps {
   numSelected: number;
   handleDeleteStocks: () => void;
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
+  handleEditStocks: () => void;
 }
 
 interface HeadCell {
@@ -82,6 +48,12 @@ const headCells: readonly HeadCell[] = [
     label: 'Symbol'
   },
   {
+    id: 'exchange',
+    numeric: true,
+    disablePadding: false,
+    label: 'Exchange'
+  },
+  {
     id: 'alertPrice',
     numeric: true,
     disablePadding: false,
@@ -93,6 +65,19 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Current Price'
   },
+  { id: 'currentVsAlertPricePercentage', numeric: true, disablePadding: false, label: 'Current - Alert (%)' },
+  {
+    id: 'previousClose',
+    numeric: true,
+    disablePadding: false,
+    label: 'Previous Close Price'
+  },
+  {
+    id: 'changesPercentage',
+    numeric: true,
+    disablePadding: false,
+    label: 'Change Percentage'
+  },
   {
     id: 'dayHigh',
     numeric: true,
@@ -100,10 +85,46 @@ const headCells: readonly HeadCell[] = [
     label: 'Day High'
   },
   {
+    id: 'nearHighVsCurrentPercentage',
+    numeric: false,
+    disablePadding: false,
+    label: 'Near High - Current Price (%)'
+  },
+  {
     id: 'yearHigh',
     numeric: true,
     disablePadding: false,
     label: 'Year High'
+  },
+  {
+    id: 'yearHighVsCurrentPercentage',
+    numeric: true,
+    disablePadding: false,
+    label: 'Year High - Current Price (%)'
+  },
+  {
+    id: 'dayLow',
+    numeric: true,
+    disablePadding: false,
+    label: 'Day Low'
+  },
+  {
+    id: 'nearLowVsCurrentPercentage',
+    numeric: true,
+    disablePadding: false,
+    label: 'Near Low - Current Price (%)'
+  },
+  {
+    id: 'yearLow',
+    numeric: true,
+    disablePadding: false,
+    label: 'Year High'
+  },
+  {
+    id: 'yearLowVsCurrentPercentage',
+    numeric: true,
+    disablePadding: false,
+    label: 'Year Low - Current Price (%)'
   }
 ];
 
@@ -165,6 +186,7 @@ export function WatchlistTableHeadWithCheckbox(props: EnhancedTableProps) {
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
   const [isDeleteWatchlistTickers, setDeleteWatchlistTickers] = useState(false);
+  const [isEditWatchlistTickers, setEditWatchlistTickers] = useState(false);
 
   const onCancelDeleteTickers = () => {
     setDeleteWatchlistTickers(false);
@@ -173,6 +195,15 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const onConfirmDeleteTickers = () => {
     props.handleDeleteStocks();
     setDeleteWatchlistTickers(false);
+  };
+
+  const onCancelEditTickers = () => {
+    setEditWatchlistTickers(false);
+  };
+
+  const onConfirmEditTickers = () => {
+    props.handleEditStocks();
+    setEditWatchlistTickers(false);
   };
 
   const theme = createTheme({
@@ -214,11 +245,18 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           </Typography>
         )}
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton onClick={() => setDeleteWatchlistTickers(true)}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          <Box>
+            <Tooltip title="Edit">
+              <IconButton onClick={() => setEditWatchlistTickers(true)}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton onClick={() => setDeleteWatchlistTickers(true)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         ) : (
           <></>
           // <Tooltip title="Filter list">
@@ -238,6 +276,18 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         <DialogActions>
           <Button onClick={onCancelDeleteTickers}>Cancel</Button>
           <Button onClick={onConfirmDeleteTickers}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={isEditWatchlistTickers} onClose={onCancelEditTickers} fullScreen={fullScreen}>
+        <DialogTitle>{`Edit selected tickers`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to edit these selected watchlist ticker alert prices?.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCancelEditTickers}>Cancel</Button>
+          <Button onClick={onConfirmEditTickers}>Confirm</Button>
         </DialogActions>
       </Dialog>
     </ThemeProvider>

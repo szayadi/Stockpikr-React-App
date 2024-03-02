@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import '../../index';
 
 const drawerWidth = 240;
-const drawingContents = ['Account', 'Notifications', 'Security', 'Appearance', 'Help'];
+const drawingContents = ['Account', 'Help'];
 const defaultSettingView = 'Account';
 
 const componentMapping: Record<string, React.ComponentType<any>> = {
