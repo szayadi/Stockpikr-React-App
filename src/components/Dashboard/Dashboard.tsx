@@ -1,12 +1,11 @@
 import { Box, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { TickerTape, Timeline } from 'react-ts-tradingview-widgets';
+import { MarketData, TickerTape, Timeline } from 'react-ts-tradingview-widgets';
 import { IStockPriceChange } from '../../interfaces/IStockPriceChange';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { StockApiService } from '../../services/StockApiService';
 import { useAsyncError } from '../GlobalErrorBoundary';
 import StockPriceChangeDataTable from './StockChangeDataTable';
-import StockDataTable from './StockQuoteDataTable';
 
 const Dashboard: React.FC = () => {
   const [stockQuote, setStockData] = useState<IStockQuote[]>([]);
@@ -71,10 +70,10 @@ const Dashboard: React.FC = () => {
         <Grid item xs={12}>
           <TickerTape></TickerTape>
         </Grid>
-        <Grid item xs={8}>
-          <StockDataTable data={stockQuote} title="My Positions" />
+        <Grid item xs={6}>
+          <MarketData colorTheme="light" width="100%" height="900"></MarketData>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <Timeline feedMode="market" market="stock" height="900" width="100%"></Timeline>
         </Grid>
         <Grid item xs={4}>
