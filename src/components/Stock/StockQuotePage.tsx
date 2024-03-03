@@ -15,7 +15,6 @@ import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
 import { Watchlists } from '../../interfaces/IWatchlistModel';
 import { WatchlistApiService } from '../../services/WatchlistApiService';
-import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from '../Watchlist/AddStockDialog';
 import TradingViewChart from './Components/TradingViewChart';
 
@@ -36,9 +35,8 @@ export const StockQuotePage: React.FC = () => {
   const [quote, setQuote] = useState<IStockQuote | null>(null);
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
   const [isAddStockDialog, setAddStockDialog] = useState(false);
-  const [state, setState] = useState<StockQuotePageStates>(initialState);
+  const [stockQuotePageState, setStockQuotePageState] = useState<StockQuotePageStates>(initialState);
   const location = useLocation();
-  const throwError = useAsyncError();
 
   useEffect(() => {
     const url = window.location.href;
@@ -46,11 +44,9 @@ export const StockQuotePage: React.FC = () => {
     const hash = hashIndex !== -1 ? url.slice(hashIndex + 1) : '';
     const searchParams = new URLSearchParams(hash);
     const symbolParam = searchParams.get('/quote?symbol');
-    queryWatchLists(symbolParam).catch((error) => {
-      throwError(error);
-    });
+    queryWatchLists(symbolParam);
 
-    if (!state.symbolParam) {
+    if (!stockQuotePageState.symbolParam) {
       return;
     }
     //might need later
@@ -96,7 +92,7 @@ export const StockQuotePage: React.FC = () => {
           inWatchList = true;
         }
       });
-      setState({ isInWatchList: inWatchList, watchlists: tempWls, symbolParam: symbolParam });
+      setStockQuotePageState({ isInWatchList: inWatchList, watchlists: tempWls, symbolParam: symbolParam });
     }
   };
 
@@ -125,7 +121,7 @@ export const StockQuotePage: React.FC = () => {
     );
   }
 
-  if (!state.symbolParam) {
+  if (!stockQuotePageState.symbolParam) {
     return <div></div>;
   }
 
@@ -133,15 +129,15 @@ export const StockQuotePage: React.FC = () => {
     <div style={{ backgroundColor: colorTheme === 'dark' ? '#333' : 'white' }}>
       <Box sx={{ flexGrow: 1, padding: '20px' }}>
         <AddStockDialog
-          addStockSymbol={state.symbolParam}
-          watchlists={state.watchlists}
+          addStockSymbol={stockQuotePageState.symbolParam}
+          watchlists={stockQuotePageState.watchlists}
           setWatchlists={(wl) => {
             var keys = Object.keys(wl);
-            setState({
-              ...state,
+            setStockQuotePageState({
+              ...stockQuotePageState,
               watchlists: wl,
               isInWatchList: keys.some((key) =>
-                wl[key].some((ti) => ti.symbol.toUpperCase() === state.symbolParam?.toUpperCase())
+                wl[key].some((ti) => ti.symbol.toUpperCase() === stockQuotePageState.symbolParam?.toUpperCase())
               )
             });
           }}
@@ -165,43 +161,50 @@ export const StockQuotePage: React.FC = () => {
             <Item elevation={0}>
               <Button
                 sx={{
-                  backgroundColor: state.isInWatchList ? 'var(--secondary-button-bg-color)' : 'var(--navbar-bg-color)'
+                  backgroundColor: stockQuotePageState.isInWatchList
+                    ? 'var(--secondary-button-bg-color)'
+                    : 'var(--navbar-bg-color)'
                 }}
                 component="label"
                 variant="contained"
                 onClick={handleAddToWatchlist}
                 size="large"
-                startIcon={state.isInWatchList ? <CheckCircle /> : <AddCircleOutlineOutlinedIcon />}
+                startIcon={stockQuotePageState.isInWatchList ? <CheckCircle /> : <AddCircleOutlineOutlinedIcon />}
               >
-                {state.isInWatchList ? 'Added' : 'Add To Watchlist'}
+                {stockQuotePageState.isInWatchList ? 'Added' : 'Add To Watchlist'}
               </Button>{' '}
             </Item>
           </Grid>
           <Grid xs={7}>
             <Item elevation={0}>
-              <SymbolInfo symbol={state.symbolParam} colorTheme={colorTheme} autosize></SymbolInfo>
-              <MiniChart colorTheme={colorTheme} width="100%" symbol={state.symbolParam} autosize></MiniChart>
+              <SymbolInfo symbol={stockQuotePageState.symbolParam} colorTheme={colorTheme} autosize></SymbolInfo>
+              <MiniChart
+                colorTheme={colorTheme}
+                width="100%"
+                symbol={stockQuotePageState.symbolParam}
+                autosize
+              ></MiniChart>
             </Item>
           </Grid>
           <Grid xs={5}>
             <Item elevation={0}>
               <TechnicalAnalysis
                 colorTheme={colorTheme}
-                symbol={state.symbolParam || ''}
+                symbol={stockQuotePageState.symbolParam || ''}
                 width="100%"
               ></TechnicalAnalysis>
             </Item>
           </Grid>
           <Grid xs={12}>
             <Item elevation={0}>
-              <TradingViewChart theme={colorTheme} symbol={state.symbolParam || ''} />
+              <TradingViewChart theme={colorTheme} symbol={stockQuotePageState.symbolParam || ''} />
             </Item>
           </Grid>
           <Grid xs={6}>
             <Item elevation={0}>
               <FundamentalData
                 colorTheme={colorTheme}
-                symbol={state.symbolParam}
+                symbol={stockQuotePageState.symbolParam}
                 height={760}
                 width="100%"
               ></FundamentalData>
@@ -211,7 +214,7 @@ export const StockQuotePage: React.FC = () => {
             <Timeline
               colorTheme={colorTheme}
               feedMode="symbol"
-              symbol={state.symbolParam}
+              symbol={stockQuotePageState.symbolParam}
               height={760}
               width="100%"
             ></Timeline>
