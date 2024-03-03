@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../index.css';
 import { UserApiService } from '../../services/UserApiService';
+import SearchBar from '../SearchBar';
 import NavigationAccount from './NavigationAccount';
 import NavigationSignin from './NavigationSignin';
 
@@ -17,7 +18,17 @@ const NavigationLogin: React.FC = () => {
     checkUserLoggedIn();
   }, []);
 
-  return <>{isUserLoggedIn == true ? <NavigationAccount /> : <NavigationSignin />}</>;
+  return (
+    <>
+      {isUserLoggedIn == true ? (
+        <>
+          <SearchBar /> <NavigationAccount />
+        </>
+      ) : (
+        <NavigationSignin />
+      )}
+    </>
+  );
 };
 
 export default NavigationLogin;

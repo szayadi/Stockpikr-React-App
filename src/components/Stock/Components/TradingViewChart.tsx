@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 
 interface TradingViewChartProps {
   symbol: string;
+  theme: string;
 }
 
-const TradingViewChart: React.FC<TradingViewChartProps> = ({ symbol }) => {
+const TradingViewChart: React.FC<TradingViewChartProps> = ({ theme, symbol }) => {
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://s3.tradingview.com/tv.js';
@@ -15,7 +16,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({ symbol }) => {
         autosize: true,
         symbol: symbol || '',
         timezone: 'America/Vancouver',
-        theme: 'light',
+        theme: theme,
         style: '1',
         locale: 'en',
         enable_publishing: false,
