@@ -19,13 +19,23 @@ import { useAsyncError } from '../GlobalErrorBoundary';
 import AddStockDialog from '../Watchlist/AddStockDialog';
 import TradingViewChart from './Components/TradingViewChart';
 
+interface StockQuotePageStates {
+  isInWatchList: boolean;
+  watchlists: Watchlists;
+  symbolParam: string | null;
+}
+
+var initialState: StockQuotePageStates = {
+  isInWatchList: false,
+  watchlists: {},
+  symbolParam: null
+};
+
 export const StockQuotePage: React.FC = () => {
-  const [symbolParam, setSymbolParam] = useState<string | null>(null);
   const [quote, setQuote] = useState<IStockQuote | null>(null);
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
-  const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [isAddStockDialog, setAddStockDialog] = useState(false);
-  const [watchlists, setWatchlists] = useState<Watchlists>();
+  const [state, setState] = useState<StockQuotePageStates>(initialState);
   const location = useLocation();
   const throwError = useAsyncError();
 
@@ -34,12 +44,12 @@ export const StockQuotePage: React.FC = () => {
     const hashIndex = url.indexOf('#');
     const hash = hashIndex !== -1 ? url.slice(hashIndex + 1) : '';
     const searchParams = new URLSearchParams(hash);
-    setSymbolParam(searchParams.get('/quote?symbol'));
-    queryWatchLists().catch((error) => {
+    const symbolParam = searchParams.get('/quote?symbol');
+    queryWatchLists(symbolParam).catch((error) => {
       // throwError(error);
     });
 
-    if (!symbolParam) {
+    if (!state.symbolParam) {
       return;
     }
     //might need later
@@ -69,10 +79,11 @@ export const StockQuotePage: React.FC = () => {
     // fetchCompanyProfile().catch((error) => {
     //   throwError(error);
     // });
-  }, []);
+  }, [location]);
 
-  const queryWatchLists = async () => {
+  const queryWatchLists = async (symbolParam: string | null) => {
     const wls = await WatchlistApiService.fetchWatchlistsByUserId(userID);
+    var inWatchList = false;
     if (Array.isArray(wls)) {
       let tempWls: Watchlists = {};
       wls.forEach((wl, i) => {
@@ -80,11 +91,11 @@ export const StockQuotePage: React.FC = () => {
           tempWls[wl.watchlistName] = [];
         }
         tempWls[wl.watchlistName] = wl.tickers;
-        if (wl.tickers.some((ticker) => ticker.symbol === symbolParam)) {
-          setIsInWatchlist(true);
+        if (wl.tickers.some((ticker) => ticker.symbol.toUpperCase() === symbolParam?.toUpperCase())) {
+          inWatchList = true;
         }
       });
-      setWatchlists(tempWls);
+      setState({ isInWatchList: inWatchList, watchlists: tempWls, symbolParam: symbolParam });
     }
   };
 
@@ -109,48 +120,59 @@ export const StockQuotePage: React.FC = () => {
     );
   }
 
-  if (!symbolParam) {
+  if (!state.symbolParam) {
     return <div></div>;
   }
 
   return (
     <Box sx={{ flexGrow: 1, margin: '20px' }}>
       <AddStockDialog
-        addStockSymbol={symbolParam}
-        watchlists={watchlists}
-        setWatchlists={setWatchlists}
-        isAddStockDialog={true}
+        addStockSymbol={state.symbolParam}
+        watchlists={state.watchlists}
+        setWatchlists={(wl) => {
+          var keys = Object.keys(wl);
+          setState({
+            ...state,
+            watchlists: wl,
+            isInWatchList: keys.some((key) =>
+              wl[key].some((ti) => ti.symbol.toUpperCase() === state.symbolParam?.toUpperCase())
+            )
+          });
+        }}
+        isAddStockDialog={isAddStockDialog}
         setAddStockDialog={setAddStockDialog}
       />
       <Grid container spacing={2}>
         <Grid xs={12} display="flex" justifyContent="right" alignItems="right">
           <Item elevation={0}>
             <Button
-              sx={{ backgroundColor: isInWatchlist ? 'var(--secondary-button-bg-color)' : 'var(--navbar-bg-color)' }}
+              sx={{
+                backgroundColor: state.isInWatchList ? 'var(--secondary-button-bg-color)' : 'var(--navbar-bg-color)'
+              }}
               component="label"
               variant="contained"
               onClick={handleAddToWatchlist}
               size="large"
-              startIcon={isInWatchlist ? <CheckCircle /> : <AddCircleOutlineOutlinedIcon />}
+              startIcon={state.isInWatchList ? <CheckCircle /> : <AddCircleOutlineOutlinedIcon />}
             >
-              {isInWatchlist ? 'Added' : 'Add To Watchlist'}
+              {state.isInWatchList ? 'Added' : 'Add To Watchlist'}
             </Button>{' '}
           </Item>
         </Grid>
         <Grid xs={4}>
           <Item elevation={0}>
-            <SymbolInfo symbol={symbolParam} autosize></SymbolInfo>
-            <FundamentalData symbol={symbolParam} height={760} width="100%"></FundamentalData>
+            <SymbolInfo symbol={state.symbolParam} autosize></SymbolInfo>
+            <FundamentalData symbol={state.symbolParam} height={760} width="100%"></FundamentalData>
           </Item>
         </Grid>
         <Grid xs={8}>
           <Item elevation={0}>
-            <TradingViewChart symbol={symbolParam || ''} />
+            <TradingViewChart symbol={state.symbolParam || ''} />
           </Item>
         </Grid>
         <Grid xs={4}>
           <Item elevation={0}>
-            <TechnicalAnalysis symbol={symbolParam || ''} width="100%"></TechnicalAnalysis>
+            <TechnicalAnalysis symbol={state.symbolParam || ''} width="100%"></TechnicalAnalysis>
           </Item>
         </Grid>
         <Grid xs={8}>

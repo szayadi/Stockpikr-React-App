@@ -58,7 +58,6 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
   };
 
   React.useEffect(() => {
-    console.log('hellow');
     fetchStockData(addStockSymbol);
   }, [addStockSymbol]);
 
@@ -113,14 +112,18 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
         <DialogContentText>{`Stock company name: ${stockInfo?.name}`}</DialogContentText>
         <DialogContentText>{`Current stock price: $${stockInfo?.price}`}</DialogContentText>
       </DialogContent>
-      {watchlistName && (
-        <WatchlistTabSelector
-          showDeleteIcon={false}
-          watchLists={watchlists!}
-          setWatchLists={setWatchlists}
-          selectedWatchList={wlKey}
-          setSelectedWatchList={setWlKey}
-        />
+      {!watchlistName && (
+        <DialogContent>
+          <DialogContentText style={{ paddingBottom: 12 }}>Save to watchlist:</DialogContentText>
+          <WatchlistTabSelector
+            addStockSymbol={addStockSymbol}
+            showDeleteIcon={false}
+            watchLists={watchlists!}
+            setWatchLists={setWatchlists}
+            selectedWatchList={wlKey}
+            setSelectedWatchList={setWlKey}
+          />
+        </DialogContent>
       )}
       <DialogContent>
         <DialogContentText>At what price would you like to buy the stock?</DialogContentText>
@@ -158,7 +161,10 @@ const AddStockDialog: React.FC<AddStockDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancelAddStockDialog}>Cancel</Button>
-        <Button onClick={onConfirmAddStockDialog} disabled={!isAddStockIdValid() || !isAddStockPriceValid()}>
+        <Button
+          onClick={onConfirmAddStockDialog}
+          disabled={!isAddStockIdValid() || !isAddStockPriceValid() || (!watchlistName && !wlKey)}
+        >
           Confirm
         </Button>
       </DialogActions>

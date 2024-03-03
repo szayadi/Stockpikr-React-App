@@ -1,6 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, ButtonGroup } from '@mui/material';
-import { useState } from 'react';
+import { Box, Button, ButtonGroup, DialogContentText } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { serializeError } from 'serialize-error';
 import { userID } from '../../helper/constants';
 import { Watchlists } from '../../interfaces/IWatchlistModel';
@@ -9,6 +9,7 @@ import AutocompleteComponent from './Autocomplete';
 import DeleteWatchListDialog from './DeleteWatchlistDialog';
 
 interface WatchlistTabSelectorProps {
+  addStockSymbol?: string;
   showDeleteIcon: boolean;
   watchLists: Watchlists;
   setWatchLists: (wl: Watchlists) => void;
@@ -25,17 +26,13 @@ export const WatchlistTabSelector = (props: WatchlistTabSelectorProps) => {
     setWlKeys(Object.keys(watchlists));
   };
 
-  // may need later
-  //   const isTickerInGivenWatchlist = (givenWatchlist: string) => {
-  //     return (
-  //       !!symbolParam &&
-  //       !watchlists.some(
-  //         (watchlist) =>
-  //           watchlist.watchlistName === givenWatchlist &&
-  //           watchlist.tickers.some((ticker) => ticker.symbol === symbolParam)
-  //       )
-  //     );
-  //   };
+  useEffect(() => {
+    var keys = Object.keys(props.watchLists);
+    if (keys.length > 0) {
+      props.setSelectedWatchList(keys[0]);
+    }
+    refreshWatchlist(props.watchLists);
+  }, []);
 
   const handleCreateNewWatchlist = async (value: string) => {
     if (value && props.watchLists) {
@@ -67,9 +64,19 @@ export const WatchlistTabSelector = (props: WatchlistTabSelectorProps) => {
     setDeleteWatchlistDialog(false);
   };
 
+  const isTickerInGivenWatchlist = () => {
+    if (!props.selectedWatchList || !props.watchLists) {
+      return false;
+    }
+    return props.watchLists?.[props.selectedWatchList].some((ti) => {
+      ti.symbol === props.addStockSymbol;
+    });
+  };
+
   return (
     <>
       <Box display="flex" flexDirection="row">
+        {isTickerInGivenWatchlist() && <DialogContentText>Symbol is already in watchlist!</DialogContentText>}
         <AutocompleteComponent
           watchListKeys={wlKeys}
           watchListKey={props.selectedWatchList}
