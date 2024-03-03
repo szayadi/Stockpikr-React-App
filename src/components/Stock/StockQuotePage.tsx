@@ -47,7 +47,7 @@ export const StockQuotePage: React.FC = () => {
     const searchParams = new URLSearchParams(hash);
     const symbolParam = searchParams.get('/quote?symbol');
     queryWatchLists(symbolParam).catch((error) => {
-      // throwError(error);
+      throwError(error);
     });
 
     if (!state.symbolParam) {
