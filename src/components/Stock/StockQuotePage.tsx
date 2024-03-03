@@ -1,12 +1,12 @@
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import { Button, Typography } from '@mui/material';
+import { Button, ToggleButton, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { FundamentalData, SymbolInfo, TechnicalAnalysis } from 'react-ts-tradingview-widgets';
+import { FundamentalData, MiniChart, SymbolInfo, TechnicalAnalysis, Timeline } from 'react-ts-tradingview-widgets';
 import { getErrorResponse } from '../../helper/errorResponse';
 import { ICompanyProfile } from '../../interfaces/ICompanyProfile';
 import { IStockQuote } from '../../interfaces/IStockQuote';
@@ -15,6 +15,7 @@ import TradingViewChart from './Components/TradingViewChart';
 
 export const StockQuotePage: React.FC = () => {
   const [symbolParam, setSymbolParam] = useState<string | null>(null);
+  const [colorTheme, setColorTheme] = useState<'light' | 'dark'>('light');
   const [quote, setQuote] = useState<IStockQuote | null>(null);
   const [companyProfile, setCompanyProfile] = useState<ICompanyProfile | null>(null);
   const throwError = useAsyncError();
@@ -61,8 +62,12 @@ export const StockQuotePage: React.FC = () => {
     //console.log('Added to watchlist');
   };
 
+  const toggleTheme = () => {
+    setColorTheme(colorTheme === 'light' ? 'dark' : 'light');
+  };
+
   const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    backgroundColor: colorTheme === 'dark' ? '#333' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
@@ -83,44 +88,67 @@ export const StockQuotePage: React.FC = () => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, margin: '20px' }}>
-      <Grid container spacing={2}>
-        <Grid xs={12} display="flex" justifyContent="right" alignItems="right">
-          <Item elevation={0}>
-            <Button
-              sx={{ backgroundColor: 'var(--navbar-bg-color)' }}
-              component="label"
-              variant="contained"
-              onClick={handleAddToWatchlist}
-              size="large"
-              startIcon={<AddCircleOutlineOutlinedIcon />}
-            >
-              Add To Watchlist
-            </Button>{' '}
-          </Item>
+    <div style={{ backgroundColor: colorTheme === 'dark' ? '#333' : 'white' }}>
+      <Box sx={{ flexGrow: 1, padding: '20px' }}>
+        <Grid container spacing={2}>
+          <Grid xs={6} display="flex" justifyContent="left" alignItems="left">
+            <Item elevation={0}>
+              <ToggleButton
+                value="check"
+                selected={colorTheme === 'dark'}
+                onChange={toggleTheme}
+                color={colorTheme === 'dark' ? 'primary' : 'secondary'}
+              >
+                Toggle Theme
+              </ToggleButton>
+            </Item>
+          </Grid>
+          <Grid xs={6} display="flex" justifyContent="right" alignItems="right">
+            <Item elevation={0}>
+              <Button
+                sx={{ backgroundColor: 'var(--navbar-bg-color)' }}
+                component="label"
+                variant="contained"
+                onClick={handleAddToWatchlist}
+                size="large"
+                startIcon={<AddCircleOutlineOutlinedIcon />}
+              >
+                Add To Watchlist
+              </Button>{' '}
+            </Item>
+          </Grid>
+          <Grid xs={7}>
+            <Item elevation={0}>
+              <SymbolInfo symbol={symbolParam} colorTheme={colorTheme} autosize></SymbolInfo>
+              <MiniChart colorTheme={colorTheme} width="100%" symbol={symbolParam} autosize></MiniChart>
+            </Item>
+          </Grid>
+          <Grid xs={5}>
+            <Item elevation={0}>
+              <TechnicalAnalysis colorTheme={colorTheme} symbol={symbolParam || ''} width="100%"></TechnicalAnalysis>
+            </Item>
+          </Grid>
+          <Grid xs={12}>
+            <Item elevation={0}>
+              <TradingViewChart theme={colorTheme} symbol={symbolParam || ''} />
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item elevation={0}>
+              <FundamentalData colorTheme={colorTheme} symbol={symbolParam} height={760} width="100%"></FundamentalData>
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Timeline
+              colorTheme={colorTheme}
+              feedMode="symbol"
+              symbol={symbolParam}
+              height={760}
+              width="100%"
+            ></Timeline>
+          </Grid>
         </Grid>
-        <Grid xs={4}>
-          <Item elevation={0}>
-            <SymbolInfo symbol={symbolParam} autosize></SymbolInfo>
-            <FundamentalData symbol={symbolParam} height={760} width="100%"></FundamentalData>
-          </Item>
-        </Grid>
-        <Grid xs={8}>
-          <Item elevation={0}>
-            <TradingViewChart symbol={symbolParam || ''} />
-          </Item>
-        </Grid>
-        <Grid xs={4}>
-          <Item elevation={0}>
-            <TechnicalAnalysis symbol={symbolParam || ''} width="100%"></TechnicalAnalysis>
-          </Item>
-        </Grid>
-        <Grid xs={8}>
-          <Item elevation={0}>
-            <div style={{ backgroundColor: 'lightgray', height: 400 }}>PlaceHolder</div>
-          </Item>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </div>
   );
 };
