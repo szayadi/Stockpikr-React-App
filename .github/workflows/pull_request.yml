@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-  REACT_APP_GOOGLE_OAUTH_URL: http://stockpikr.eastus2.cloudapp.azure.com:8080/login/federated/google
+  REACT_APP_GOOGLE_OAUTH_URL: https://stockpikr.eastus2.cloudapp.azure.com/login/federated/google
   GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
 jobs:
