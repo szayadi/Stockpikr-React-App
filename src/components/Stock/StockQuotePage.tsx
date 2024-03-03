@@ -44,7 +44,12 @@ export const StockQuotePage: React.FC = () => {
     const hash = hashIndex !== -1 ? url.slice(hashIndex + 1) : '';
     const searchParams = new URLSearchParams(hash);
     const symbolParam = searchParams.get('/quote?symbol');
-    queryWatchLists(symbolParam);
+
+    try {
+      queryWatchLists(symbolParam);
+    } catch (error) {
+      setStockQuotePageState({ ...stockQuotePageState, symbolParam });
+    }
 
     if (!stockQuotePageState.symbolParam) {
       return;
@@ -158,22 +163,25 @@ export const StockQuotePage: React.FC = () => {
             </Item>
           </Grid>
           <Grid xs={6} display="flex" justifyContent="right" alignItems="right">
-            <Item elevation={0}>
-              <Button
-                sx={{
-                  backgroundColor: stockQuotePageState.isInWatchList
-                    ? 'var(--secondary-button-bg-color)'
-                    : 'var(--navbar-bg-color)'
-                }}
-                component="label"
-                variant="contained"
-                onClick={handleAddToWatchlist}
-                size="large"
-                startIcon={stockQuotePageState.isInWatchList ? <CheckCircle /> : <AddCircleOutlineOutlinedIcon />}
-              >
-                {stockQuotePageState.isInWatchList ? 'Added' : 'Add To Watchlist'}
-              </Button>{' '}
-            </Item>
+            {/* Hide button if unable to fetch watchlists */}
+            {Object.keys(stockQuotePageState.watchlists).length > 0 && (
+              <Item elevation={0}>
+                <Button
+                  sx={{
+                    backgroundColor: stockQuotePageState.isInWatchList
+                      ? 'var(--secondary-button-bg-color)'
+                      : 'var(--navbar-bg-color)'
+                  }}
+                  component="label"
+                  variant="contained"
+                  onClick={handleAddToWatchlist}
+                  size="large"
+                  startIcon={stockQuotePageState.isInWatchList ? <CheckCircle /> : <AddCircleOutlineOutlinedIcon />}
+                >
+                  {stockQuotePageState.isInWatchList ? 'Added' : 'Add To Watchlist'}
+                </Button>{' '}
+              </Item>
+            )}
           </Grid>
           <Grid xs={7}>
             <Item elevation={0}>
