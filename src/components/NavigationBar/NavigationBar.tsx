@@ -1,7 +1,6 @@
 import { AppBar, Container, Toolbar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LogoImage from '../../assets/images/logo-title-light-mode.png';
-import SearchBar from '../SearchBar';
 import NavigationLogin from './NavigationLogin';
 
 import '../../index.css';
@@ -14,8 +13,6 @@ function NavigationHeader() {
           <Link to="/" style={{ textDecoration: 'none' }}>
             <img src={LogoImage} alt="Logo" style={{ height: '50px', marginRight: '10px', borderRadius: '10px' }} />
           </Link>
-
-          <SearchBar></SearchBar>
 
           <NavigationLogin />
         </Toolbar>
