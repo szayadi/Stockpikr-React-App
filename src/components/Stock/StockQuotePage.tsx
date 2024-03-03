@@ -1,3 +1,4 @@
+import { CheckCircle } from '@mui/icons-material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { Button, ToggleButton, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -163,14 +164,16 @@ export const StockQuotePage: React.FC = () => {
           <Grid xs={6} display="flex" justifyContent="right" alignItems="right">
             <Item elevation={0}>
               <Button
-                sx={{ backgroundColor: 'var(--navbar-bg-color)' }}
+                sx={{
+                  backgroundColor: state.isInWatchList ? 'var(--secondary-button-bg-color)' : 'var(--navbar-bg-color)'
+                }}
                 component="label"
                 variant="contained"
                 onClick={handleAddToWatchlist}
                 size="large"
-                startIcon={<AddCircleOutlineOutlinedIcon />}
+                startIcon={state.isInWatchList ? <CheckCircle /> : <AddCircleOutlineOutlinedIcon />}
               >
-                Add To Watchlist
+                {state.isInWatchList ? 'Added' : 'Add To Watchlist'}
               </Button>{' '}
             </Item>
           </Grid>
