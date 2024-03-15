@@ -1,3 +1,11 @@
+# Current Status
+This branch is currently 3 commits ahead of the backend repo.
+
+### Future Updates
+After pushing a new commit, make sure that all the CI/CD tests are passing.
+Run `npm build` and then copy over all the files generated in the `/build` folder into the `/public` folder on the backend repo for this project.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
