@@ -1,5 +1,5 @@
 {
-  "homepage": "http://Ring-A-Bell.github.io/StockPikr_Frontend",
+  "homepage": "http://mnzarn.github.io/StockPikr-Front-End",
   "name": "stockpikr_frontend",
   "version": "0.1.0",
   "private": true,
@@ -70,7 +70,7 @@
     "@types/swagger-ui-react": "^4.18.3",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "@typescript-eslint/parser": "^6.20.0",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
